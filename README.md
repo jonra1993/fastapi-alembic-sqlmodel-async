@@ -40,6 +40,8 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
 - [fastapi-sqlmodel-alembic](https://github.com/testdrivenio/fastapi-sqlmodel-alembic).
+- [sqlmodel-tutorial](https://sqlmodel.tiangolo.com/tutorial/fastapi/).
+
 
 
 ## License
