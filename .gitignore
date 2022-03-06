@@ -103,6 +103,8 @@ celerybeat.pid
 
 # Environments
 .env
+.env.production
+.env.development
 .venv
 env/
 venv/
@@ -127,3 +129,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+db_docker
+pgadmin
+
+.sonarqube/*
+sonarqube
