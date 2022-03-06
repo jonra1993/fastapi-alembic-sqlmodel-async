@@ -1,6 +1,6 @@
 # Async configuration for FastAPI and SQLModel
 
-This is a project template wich uses [FastAPI](https://fastapi.tiangolo.com/), [Alembic](https://alembic.sqlalchemy.org/en/latest/) and [SQLModel] (https://sqlmodel.tiangolo.com/) as ORM. It shows a complete async CRUD template using authentication.
+This is a project template wich uses [FastAPI](https://fastapi.tiangolo.com/), [Alembic](https://alembic.sqlalchemy.org/en/latest/) and [SQLModel](https://sqlmodel.tiangolo.com/) as ORM. It shows a complete async CRUD template using authentication.
 
 ## Set environment variables
 
