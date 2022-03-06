@@ -27,10 +27,19 @@ docker-compose exec fastapi_server python app/initial_data.py
 
 Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
+## Preview
+  
+<p align="center">
+  <img src="static/1.png" align="center"/>
+</p>
+<p align="center">
+  <img src="static/2.png" align="center"/>
+</p>
+
 ## Inspiration
 
-[full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
-[fastapi-sqlmodel-alembic](https://github.com/testdrivenio/fastapi-sqlmodel-alembic).
+- [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
+- [fastapi-sqlmodel-alembic](https://github.com/testdrivenio/fastapi-sqlmodel-alembic).
 
 
 ## License
