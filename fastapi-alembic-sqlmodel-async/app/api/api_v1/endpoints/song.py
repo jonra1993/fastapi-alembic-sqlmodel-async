@@ -36,7 +36,7 @@ async def add_song(song: ISongCreate, db_session: AsyncSession = Depends(deps.ge
     new_song = await crud.song.create(db_session, obj_in=song)    
     return IPostResponseBase(data=new_song)
 
-@router.put("/songs/{song_id}", response_model=IGetResponseBase[Song])
+@router.put("/songs/{song_id}", response_model=IPutResponseBase[Song])
 async def update_song(
     song_id: int,
     new_data: ISongUpdate,
@@ -50,7 +50,7 @@ async def update_song(
     )
     return IPutResponseBase(data=song_updated)
 
-@router.delete("/songs/{song_id}", response_model=IGetResponseBase[Song])
+@router.delete("/songs/{song_id}", response_model=IDeleteResponseBase[Song])
 async def remove_team(
     song_id: int,
     db_session: AsyncSession = Depends(deps.get_db),

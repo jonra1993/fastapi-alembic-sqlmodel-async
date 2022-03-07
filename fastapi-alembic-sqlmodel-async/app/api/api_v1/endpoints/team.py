@@ -37,7 +37,7 @@ async def get_team_by_id(
     return output
 
 
-@router.post("/team", response_model=IGetResponseBase[ITeamCreate])
+@router.post("/team", response_model=IPostResponseBase[ITeamCreate])
 async def create_team(
     team: ITeamCreate,
     db_session: AsyncSession = Depends(deps.get_db),
@@ -47,7 +47,7 @@ async def create_team(
     return output
 
 
-@router.put("/team/{team_id}", response_model=IGetResponseBase[ITeamRead])
+@router.put("/team/{team_id}", response_model=IPostResponseBase[ITeamRead])
 async def update_team(
     team_id: int,
     new_team: ITeamUpdate,
@@ -64,7 +64,7 @@ async def update_team(
     return output
 
 
-@router.delete("/team/{team_id}", response_model=IGetResponseBase[ITeamRead])
+@router.delete("/team/{team_id}", response_model=IDeleteResponseBase[ITeamRead])
 async def remove_team(
     team_id: int,
     db_session: AsyncSession = Depends(deps.get_db),

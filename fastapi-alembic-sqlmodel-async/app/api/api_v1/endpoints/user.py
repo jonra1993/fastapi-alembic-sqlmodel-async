@@ -54,7 +54,7 @@ async def create_user(
     output = IPostResponseBase(data=user)
     return output
 
-@router.delete("/user/{user_id}", response_model=IPostResponseBase[IUserResponse])
+@router.delete("/user/{user_id}", response_model=IDeleteResponseBase[IUserResponse])
 async def remove_hero(
     user_id: int,
     db_session: AsyncSession = Depends(deps.get_db),

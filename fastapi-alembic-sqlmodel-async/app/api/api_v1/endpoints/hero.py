@@ -38,7 +38,7 @@ async def get_hero_by_id(
     return output
 
 
-@router.post("/hero", response_model=IGetResponseBase[IHeroRead])
+@router.post("/hero", response_model=IPostResponseBase[IHeroRead])
 async def create_hero(
     hero: IHeroCreate,
     db_session: AsyncSession = Depends(deps.get_db),
@@ -48,7 +48,7 @@ async def create_hero(
     return output
 
 
-@router.put("/hero/{hero_id}", response_model=IGetResponseBase[IHeroRead])
+@router.put("/hero/{hero_id}", response_model=IPutResponseBase[IHeroRead])
 async def update_hero(
     hero_id: int,
     hero: IHeroUpdate,
@@ -64,7 +64,7 @@ async def update_hero(
     return output
 
 
-@router.delete("/hero/{hero_id}", response_model=IGetResponseBase[IHeroRead])
+@router.delete("/hero/{hero_id}", response_model=IDeleteResponseBase[IHeroRead])
 async def remove_hero(
     hero_id: int,
     db_session: AsyncSession = Depends(deps.get_db),
