@@ -39,8 +39,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def create(
         self, db_session: AsyncSession, *, obj_in: CreateSchemaType
     ) -> ModelType:
-        obj_in_data = jsonable_encoder(obj_in)
-        db_obj = self.model(**obj_in_data)  # type: ignore
+        db_obj = self.model.from_orm(obj_in)  # type: ignore
+        db_obj.created_at = datetime.utcnow()
+        db_obj.updated_at = datetime.utcnow() 
         db_session.add(db_obj)
         await db_session.commit()
         await db_session.refresh(db_obj)
