@@ -10,7 +10,7 @@ class Team(TeamBase, table=True):
     id: Optional[int] = Field(default=None, nullable=False, primary_key=True)
     updated_at: Optional[datetime]
     created_at: Optional[datetime]
-    heroes: List["Hero"] = Relationship(back_populates="team")
+    heroes: List["Hero"] = Relationship(back_populates="team", sa_relationship_kwargs={"lazy": "selectin"})
 
 class HeroBase(SQLModel):
     name: str = Field(index=True)
@@ -22,4 +22,4 @@ class Hero(HeroBase, table=True):
     id: Optional[int] = Field(default=None, nullable=False, primary_key=True)
     updated_at: Optional[datetime]
     created_at: Optional[datetime]
-    team: Optional[Team] = Relationship(back_populates="heroes")
+    team: Optional[Team] = Relationship(back_populates="heroes", sa_relationship_kwargs={"lazy": "selectin"})

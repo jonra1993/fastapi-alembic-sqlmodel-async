@@ -11,7 +11,7 @@ class Role(RoleBase, table=True):
     id: Optional[int] = Field(default=None, nullable=False, primary_key=True)
     updated_at: Optional[datetime]
     created_at: Optional[datetime]
-    users: List["User"] = Relationship(back_populates="role")
+    users: List["User"] = Relationship(back_populates="role", sa_relationship_kwargs={"lazy": "selectin"})
 
 class UserBase(SQLModel):
     first_name: str
@@ -33,4 +33,4 @@ class User(UserBase, table=True):
         nullable=False, index=True
     )
     role_id: Optional[int] = Field(default=None, foreign_key="role.id")
-    role: Optional[Role] = Relationship(back_populates="users")
+    role: Optional[Role] = Relationship(back_populates="users", sa_relationship_kwargs={"lazy": "selectin"})

@@ -4,7 +4,7 @@ from app.crud.base_sqlmodel import CRUDBase
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select
 from app.schemas.user import IUserCreate, IUserUpdate
-from app.models.user import User
+from app.models.user_role import User
 from app.core.security import verify_password, get_password_hash
 from datetime import datetime
 
