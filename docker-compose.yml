@@ -14,7 +14,7 @@ services:
       - 8000:8000
     env_file: ".env"
     depends_on:
-      - db
+      - database
   
   database:
     image: postgres:13.4
