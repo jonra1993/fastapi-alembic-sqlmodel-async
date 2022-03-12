@@ -19,18 +19,24 @@ $ docker-compose exec fastapi_server alembic revision --autogenerate
 $ docker-compose exec fastapi_server alembic upgrade head
 ```
 
-### Setup database with initial data
-This creates a sample user on databasse with username: admin@admin.com and pass: admin
+## Setup database with initial data
+This creates a sample user on databasse with **username: admin@admin.com** and **pass: admin** 
 ```
 docker-compose exec fastapi_server python app/initial_data.py
 ```
 
-Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+You can connect to Database using PGAdmin4 and use the credentials from .env file. Database port on local machine has been configured to **5454** on docker-compose.yml file
+
+<p align="center">
+  <img src="static/tables.png" align="center"/>
+</p>
 
 ## ERD Database model
 <p align="center">
   <img src="static/erd.png" align="center"/>
 </p>
+
+Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ## Preview
   
@@ -52,6 +58,7 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 - [x] Create sample one to many relationship
 - [x] Create sample many to many relationship
 - [x] Add JWT authentication
+- [ ] Add Role - Permissions setup and logic
 - [ ] Add one to one relationship sample
 - [ ] Add Celery sample
 - [ ] Add reverse proxy con docker compose

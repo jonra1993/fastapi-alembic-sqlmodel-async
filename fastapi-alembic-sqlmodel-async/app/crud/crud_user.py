@@ -25,7 +25,8 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
             is_superuser=obj_in.is_superuser,
             hashed_password=get_password_hash(obj_in.password),
             created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow()
+            updated_at=datetime.utcnow(),
+            role_id=obj_in.role_id
         )
         db_session.add(db_obj)
         await db_session.commit()

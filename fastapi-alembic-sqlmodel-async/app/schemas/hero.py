@@ -1,5 +1,6 @@
-from typing import List, Optional
+from typing import Optional
 from app.models.hero import HeroBase
+from app.models.team import TeamBase
 
 class IHeroCreate(HeroBase):
     pass
@@ -14,6 +15,6 @@ class IHeroUpdate(HeroBase):
     team_id: Optional[int] = None
 
 class IHeroReadWithTeam(IHeroRead):
-    team: Optional["ITeamRead"] = None
+    team: Optional[TeamBase] = None
 
     

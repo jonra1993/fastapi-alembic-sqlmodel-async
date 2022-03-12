@@ -1,4 +1,5 @@
 from typing import List
+from app.models.user import User
 from app.schemas.common import (
     IDeleteResponseBase,
     IGetResponseBase,
@@ -19,10 +20,10 @@ async def get_teams_list(
     skip: int = 0,
     limit: int = Query(default=100, le=100),
     db_session: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_active_user),
 ):
     teams = await crud.team.get_multi(db_session, skip=skip, limit=limit)
-    output = IGetResponseBase(data=teams)
-    return output
+    return IGetResponseBase(data=teams)    
 
 
 @router.get("/team/{team_id}", response_model=IGetResponseBase[ITeamReadWithHeroes])
@@ -33,18 +34,17 @@ async def get_team_by_id(
     team = await crud.team.get(db_session, id=team_id)
     if not team:
         raise HTTPException(status_code=404, detail="Team no found")
-    output = IGetResponseBase(data=ITeamReadWithHeroes.from_orm(team))
-    return output
+    return IGetResponseBase(data=ITeamReadWithHeroes.from_orm(team))    
 
 
-@router.post("/team", response_model=IPostResponseBase[ITeamCreate])
+@router.post("/team", response_model=IPostResponseBase[ITeamRead])
 async def create_team(
     team: ITeamCreate,
     db_session: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_active_user)
 ):
-    heroe = await crud.team.create(db_session, obj_in=team)
-    output = IPostResponseBase(data=heroe)
-    return output
+    team = await crud.team.create_team(db_session, obj_in=team, user_id=current_user.id)
+    return IPostResponseBase(data=team)    
 
 
 @router.put("/team/{team_id}", response_model=IPostResponseBase[ITeamRead])
@@ -52,26 +52,26 @@ async def update_team(
     team_id: int,
     new_team: ITeamUpdate,
     db_session: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_active_user)
 ):
-    current_hero = await crud.team.get(db_session=db_session, id=team_id)
-    if not current_hero:
+    current_team = await crud.team.get(db_session=db_session, id=team_id)
+    if not current_team:
         raise HTTPException(status_code=404, detail="Team not found")
     heroe_updated = await crud.team.update(
-        db_session=db_session, obj_current=current_hero, obj_new=new_team
+        db_session=db_session, obj_current=current_team, obj_new=new_team
     )
-    print('heroe_updated', heroe_updated)
-    output = IPutResponseBase(data=heroe_updated)
-    return output
+    return IPutResponseBase(data=heroe_updated)    
 
 
 @router.delete("/team/{team_id}", response_model=IDeleteResponseBase[ITeamRead])
 async def remove_team(
     team_id: int,
     db_session: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_active_user)
+
 ):
-    current_hero = await crud.team.get(db_session=db_session, id=team_id)
-    if not current_hero:
+    current_team = await crud.team.get(db_session=db_session, id=team_id)
+    if not current_team:
         raise HTTPException(status_code=404, detail="Team not found")
-    heroe = await crud.team.remove(db_session, id=team_id)
-    output = IDeleteResponseBase(data=heroe)
-    return output
+    team = await crud.team.remove(db_session, id=team_id)
+    return IDeleteResponseBase(data=team)

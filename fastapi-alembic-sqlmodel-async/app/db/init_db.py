@@ -24,7 +24,7 @@ users = [
         "first_name":"Admin",
         "last_name":"FastAPI",
         "password":settings.FIRST_SUPERUSER_PASSWORD,
-        "email":settings.FIRST_SUPERUSER,
+        "email":settings.FIRST_SUPERUSER_EMAIL,
         "is_superuser": True,
         "role":"admin"
     }         

@@ -5,7 +5,7 @@ from app.schemas.common import (
     IPostResponseBase,
     IPutResponseBase,
 )
-from app.schemas.group import IGroupCreate, IGroupRead, IGroupReadWithUsers, IGroupUpdate
+from app.schemas.group import IGroupCreate, IGroupRead, IGroupReadWithUsers, IGroupUpdate, IGroupReadWithUsers
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, Query, HTTPException
 from app.api import deps
@@ -66,5 +66,5 @@ async def add_user_to_group(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    group = await crud.group.add_user_to_group(db_session, user=user, group_id=group_id)
-    return IPostResponseBase(data=group)   
+    group = await crud.group.add_user_to_group(db_session, user=user, group_id=group_id)    
+    return IPostResponseBase(message="User added to group", data=group)   
