@@ -1,7 +1,7 @@
-from app.schemas.hero_team import ITeamCreate, ITeamUpdate
+from app.schemas.team import ITeamCreate, ITeamUpdate
 from app.crud.base_sqlmodel import CRUDBase
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.models.hero_team import Team
+from app.models.team import Team
 from datetime import datetime
 
 class CRUDTeam(CRUDBase[Team, ITeamCreate, ITeamUpdate]):

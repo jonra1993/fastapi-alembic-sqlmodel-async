@@ -3,7 +3,7 @@ from typing import AsyncGenerator
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
-from app.models.user_role import User
+from app.models.user import User
 from pydantic import ValidationError
 from app import crud
 from app.core import security

@@ -1,17 +1,8 @@
 from datetime import datetime
 from sqlmodel import Field, SQLModel, Relationship
+from app.models.links import LinkGroupUser
 from typing import List, Optional
 from pydantic import EmailStr
-
-class RoleBase(SQLModel):
-    name: str
-    description: str
-
-class Role(RoleBase, table=True):
-    id: Optional[int] = Field(default=None, nullable=False, primary_key=True)
-    updated_at: Optional[datetime]
-    created_at: Optional[datetime]
-    users: List["User"] = Relationship(back_populates="role", sa_relationship_kwargs={"lazy": "selectin"})
 
 class UserBase(SQLModel):
     first_name: str
@@ -33,4 +24,5 @@ class User(UserBase, table=True):
         nullable=False, index=True
     )
     role_id: Optional[int] = Field(default=None, foreign_key="role.id")
-    role: Optional[Role] = Relationship(back_populates="users", sa_relationship_kwargs={"lazy": "selectin"})
+    role: Optional["Role"] = Relationship(back_populates="users", sa_relationship_kwargs={"lazy": "selectin"})
+    groups: List["Group"] = Relationship(back_populates="users", link_model=LinkGroupUser)

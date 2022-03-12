@@ -5,7 +5,7 @@ from app.schemas.common import (
     IPostResponseBase,
     IPutResponseBase,
 )
-from app.schemas.hero_team import IHeroCreate, IHeroRead, IHeroReadWithTeam, IHeroUpdate
+from app.schemas.hero import IHeroCreate, IHeroRead, IHeroReadWithTeam, IHeroUpdate
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, Query
 from app.api import deps

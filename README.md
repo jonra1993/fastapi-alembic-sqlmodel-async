@@ -4,7 +4,7 @@ This is a project template which uses [FastAPI](https://fastapi.tiangolo.com/), 
 
 ## Set environment variables
 
-Create .env file on root folder and copy the content from .env.example and chage it according to your own configuration. 
+Create an **.env** file on root folder and copy the content from **.env.example**. Feel free to chage it according to your own configuration.
 
 ## Run project using Docker compose
 
@@ -27,6 +27,11 @@ docker-compose exec fastapi_server python app/initial_data.py
 
 Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
+## ERD Database model
+<p align="center">
+  <img src="static/erd.png" align="center"/>
+</p>
+
 ## Preview
   
 <p align="center">
@@ -36,13 +41,22 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
   <img src="static/2.png" align="center"/>
 </p>
 
-## Inspiration
+## Inspiration and References
 
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
 - [fastapi-sqlmodel-alembic](https://github.com/testdrivenio/fastapi-sqlmodel-alembic).
 - [sqlmodel-tutorial](https://sqlmodel.tiangolo.com/tutorial/fastapi/).
 
+## TODO List:
 
+- [x] Create sample one to many relationship
+- [x] Create sample many to many relationship
+- [x] Add JWT authentication
+- [ ] Add one to one relationship sample
+- [ ] Add Celery sample
+- [ ] Add reverse proxy con docker compose
+
+PR are welcome ❤️
 
 ## License
 

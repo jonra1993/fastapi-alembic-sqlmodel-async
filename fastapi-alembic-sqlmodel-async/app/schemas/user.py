@@ -1,4 +1,4 @@
-from app.models.user_role import User
+from app.models.user import User
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 
@@ -13,7 +13,10 @@ class IUserResponse(User):
     class Config:
         fields = {
             'hashed_password': {'exclude': True},
-        }    
+        }
+
+class IUserRead(IUserResponse):
+    pass      
 
 class IUserUpdate(BaseModel):
     id : int

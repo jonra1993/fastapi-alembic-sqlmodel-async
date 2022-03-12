@@ -1,3 +1,5 @@
-from .user_role import User, Role
-from .song import Song
-from .hero_team import Hero, Team
+from .user import User
+from .role import Role
+from .hero import Hero
+from .team import Team
+from .group import Group

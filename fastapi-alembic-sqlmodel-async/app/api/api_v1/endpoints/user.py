@@ -1,5 +1,5 @@
 from typing import Any, List
-from app.models.user_role import User, UserBase
+from app.models.user import User
 from app.schemas.common import (
     IDeleteResponseBase,
     IGetResponseBase,

@@ -1,8 +1,8 @@
 from typing import Optional
-from app.schemas.hero_team import IHeroCreate, IHeroUpdate
+from app.schemas.hero import IHeroCreate, IHeroUpdate
 from app.crud.base_sqlmodel import CRUDBase
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.models.hero_team import Hero
+from app.models.hero import Hero
 from datetime import datetime
 
 class CRUDHero(CRUDBase[Hero, IHeroCreate, IHeroUpdate]):
