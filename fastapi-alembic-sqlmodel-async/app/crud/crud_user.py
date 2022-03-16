@@ -32,7 +32,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         db_session.add(db_obj)
         await db_session.commit()
         await db_session.refresh(db_obj)
-        return await super().get(db_session, db_obj.id)
+        return db_obj
 
     def update(
         self,

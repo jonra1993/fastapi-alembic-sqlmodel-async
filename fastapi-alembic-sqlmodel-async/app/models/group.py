@@ -13,7 +13,7 @@ class Group(GroupBase, table=True):
     created_at: Optional[datetime]
     created_by_id: Optional[int] = Field(default=None, foreign_key="user.id")
     created_by: "User" = Relationship(sa_relationship_kwargs={"lazy":"selectin", "primaryjoin":"Group.created_by_id==User.id"})    
-    users: List["User"] = Relationship(back_populates="groups", link_model=LinkGroupUser)
+    users: List["User"] = Relationship(back_populates="groups", link_model=LinkGroupUser, sa_relationship_kwargs={"lazy": "selectin"})
 
 
 

@@ -25,4 +25,4 @@ class User(UserBase, table=True):
     )
     role_id: Optional[int] = Field(default=None, foreign_key="role.id")
     role: Optional["Role"] = Relationship(back_populates="users", sa_relationship_kwargs={"lazy": "selectin"})
-    groups: List["Group"] = Relationship(back_populates="users", link_model=LinkGroupUser)
+    groups: List["Group"] = Relationship(back_populates="users", link_model=LinkGroupUser, sa_relationship_kwargs={"lazy": "selectin"})
