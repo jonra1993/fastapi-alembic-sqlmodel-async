@@ -7,6 +7,7 @@ from app.schemas.user import IUserCreate, IUserUpdate
 from app.models.user import User
 from app.core.security import verify_password, get_password_hash
 from datetime import datetime
+from sqlalchemy.orm import selectinload
 
 
 class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
@@ -31,7 +32,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         db_session.add(db_obj)
         await db_session.commit()
         await db_session.refresh(db_obj)
-        return db_obj
+        return await super().get(db_session, db_obj.id)
 
     def update(
         self,

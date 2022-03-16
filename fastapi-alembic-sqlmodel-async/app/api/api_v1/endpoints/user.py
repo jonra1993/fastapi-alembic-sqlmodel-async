@@ -49,7 +49,7 @@ async def create_user(
     new_user: IUserCreate,
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_superuser),
-):
+):    
     user = await crud.user.get_by_email(db_session, email=new_user.email)
     if user:
         raise HTTPException(status_code=404, detail="There is already a user with same email")

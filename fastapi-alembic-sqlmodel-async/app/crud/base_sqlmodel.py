@@ -45,7 +45,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session.add(db_obj)
         await db_session.commit()
         await db_session.refresh(db_obj)
-        return db_obj
+        # return db_obj it shows relationship errors due to missing options(selectinload('*'))
+        return await self.get(db_session, db_obj.id)
 
     async def update(
         self,
@@ -69,7 +70,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session.add(obj_current)
         await db_session.commit()
         await db_session.refresh(obj_current)
-        return obj_current
+        # return db_obj it shows relationship errors due to missing options(selectinload('*'))
+        return await self.get(db_session, obj_current.id)
 
     async def remove(
         self, db_session: AsyncSession, *, id: Union[UUID, str, int]
