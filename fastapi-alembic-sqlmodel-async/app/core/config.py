@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = os.environ["PROJECT_NAME"]
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 180
     DATABASE_USER: str = os.environ.get("DATABASE_USER")
     DATABASE_PASSWORD: str = os.environ.get("DATABASE_PASSWORD")
     DATABASE_HOST: str = os.environ.get("DATABASE_HOST")

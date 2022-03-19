@@ -1,10 +1,10 @@
-from typing import List
 from app.models.user import User
 from app.schemas.common import (
     IGetResponseBase,
     IPostResponseBase,
     IPutResponseBase,
 )
+from fastapi_pagination import Page, Params
 from app.schemas.group import IGroupCreate, IGroupRead, IGroupReadWithUsers, IGroupUpdate, IGroupReadWithUsers
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, Query, HTTPException
@@ -13,14 +13,13 @@ from app import crud
 
 router = APIRouter()    
 
-@router.get("/group", response_model=IGetResponseBase[List[IGroupRead]])
+@router.get("/group", response_model=IGetResponseBase[Page[IGroupRead]])
 async def get_groups(
-    skip: int = 0,
-    limit: int = Query(default=100, le=100),
+    params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_user),
 ):
-    groups = await crud.group.get_multi(db_session, skip=skip, limit=limit)
+    groups = await crud.group.get_multi_paginated(db_session, params=params, schema=IGroupRead)
     return IGetResponseBase(data=groups)
 
 @router.get("/group/{group_id}", response_model=IGetResponseBase[IGroupReadWithUsers])

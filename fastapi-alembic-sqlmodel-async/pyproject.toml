@@ -19,6 +19,7 @@ SQLAlchemy-Utils = "^0.38.2"
 black = "^22.1.0"
 SQLAlchemy = "^1.4.31"
 python-multipart = "^0.0.5"
+fastapi-pagination = {extras = ["sqlmodel"], version = "^0.9.1"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

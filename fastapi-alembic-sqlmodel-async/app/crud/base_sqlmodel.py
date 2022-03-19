@@ -1,16 +1,22 @@
 from datetime import datetime
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from uuid import UUID
+from app.utils.map_schema import map_models_schema
+from app.db.async_sqlmodel import paginate
+from fastapi_pagination import Page
+from fastapi_pagination import Params
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from sqlmodel import SQLModel, select
+from sqlmodel import SQLModel, select, func
 from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlmodel.sql.expression import Select, SelectOfScalar
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
-
+SchemaType = TypeVar("SchemaType", bound=BaseModel)
+T = TypeVar("T", bound=SQLModel)
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: Type[ModelType]):
@@ -28,6 +34,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         response = await db_session.exec(select(self.model).where(self.model.id == id).options(selectinload('*')))
         return response.first()
 
+    async def get_count(
+        self, db_session: AsyncSession
+    ) -> Optional[ModelType]:
+        response = await db_session.exec(select(func.count()).select_from(select(self.model).subquery()))
+        return response.one()
+
     async def get_multi(
         self, db_session: AsyncSession, *, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
@@ -36,12 +48,21 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         )
         return response.all()
 
+    async def get_multi_paginated(
+        self, db_session: AsyncSession, *, params: Params, schema: SchemaType, query: Optional[Union[T, Select[T], SelectOfScalar[T]]] = None
+    ) -> Page[ModelType]:
+        if query == None:
+            query = self.model
+        paginated_data = await paginate(db_session, query, params)
+        paginated_data.items = map_models_schema(schema, paginated_data.items)
+        return paginated_data
+
     async def create(
         self, db_session: AsyncSession, *, obj_in: CreateSchemaType
     ) -> ModelType:
         db_obj = self.model.from_orm(obj_in)  # type: ignore
         db_obj.created_at = datetime.utcnow()
-        db_obj.updated_at = datetime.utcnow() 
+        db_obj.updated_at = datetime.utcnow()
         db_session.add(db_obj)
         await db_session.commit()
         await db_session.refresh(db_obj)

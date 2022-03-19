@@ -9,14 +9,14 @@ Create an **.env** file on root folder and copy the content from **.env.example*
 ## Run project using Docker compose
 
 ```sh
-$ docker-compose up -d --build
+docker-compose up --build
 ```
 
 ## Run Alembic migrations
 
 ```sh
-$ docker-compose exec fastapi_server alembic revision --autogenerate
-$ docker-compose exec fastapi_server alembic upgrade head
+docker-compose exec fastapi_server alembic revision --autogenerate
+docker-compose exec fastapi_server alembic upgrade head
 ```
 
 ## Setup database with initial data
@@ -58,6 +58,7 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 - [x] Create sample one to many relationship
 - [x] Create sample many to many relationship
 - [x] Add JWT authentication
+- [x] Add Pagination
 - [ ] Add Role - Permissions setup and logic
 - [ ] Add one to one relationship sample
 - [ ] Add Celery sample

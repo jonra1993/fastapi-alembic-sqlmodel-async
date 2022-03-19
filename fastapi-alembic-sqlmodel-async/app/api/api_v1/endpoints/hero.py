@@ -6,6 +6,7 @@ from app.schemas.common import (
     IPostResponseBase,
     IPutResponseBase,
 )
+from fastapi_pagination import Page, Params
 from app.schemas.hero import IHeroCreate, IHeroRead, IHeroReadWithTeam, IHeroUpdate
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -16,15 +17,14 @@ from app import crud
 router = APIRouter()
 
 
-@router.get("/hero", response_model=IGetResponseBase[List[IHeroReadWithTeam]])
+@router.get("/hero", response_model=IGetResponseBase[Page[IHeroReadWithTeam]])
 async def get_hero_list(
-    skip: int = 0,
-    limit: int = Query(default=100, le=100),
+    params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_user)
 ):
-    heroes = await crud.hero.get_multi(db_session, skip=skip, limit=limit)
-    return IGetResponseBase(data=map_models_schema(IHeroReadWithTeam, heroes))
+    heroes = await crud.hero.get_multi_paginated(db_session, params=params, schema=IHeroReadWithTeam)
+    return IGetResponseBase(data=heroes)
 
 
 @router.get("/hero/{hero_id}", response_model=IGetResponseBase[IHeroReadWithTeam])

@@ -1,7 +1,9 @@
 from ctypes import Union
 from fastapi import status
-from typing import Generic, Optional, TypeVar
+from typing import Any, Generic, List, Optional, TypeVar
 from pydantic.generics import GenericModel
+from pydantic import BaseModel
+from app.schemas.role import IRoleRead
 
 DataType = TypeVar("DataType")
 
@@ -23,3 +25,6 @@ class IPutResponseBase(IResponseBase[DataType], Generic[DataType]):
 
 class IDeleteResponseBase(IResponseBase[DataType], Generic[DataType]):
     message: str = "Data deleted correctly"
+
+class IMetaGeneral(BaseModel):
+    roles: List[IRoleRead]

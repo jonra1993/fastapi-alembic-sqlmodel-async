@@ -5,6 +5,7 @@ from app.schemas.common import (
     IPostResponseBase,
     IPutResponseBase,
 )
+from fastapi_pagination import Page, Params
 from app.schemas.role import IRoleCreate, IRoleRead, IRoleUpdate
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, Query, HTTPException
@@ -13,14 +14,13 @@ from app import crud
 
 router = APIRouter()    
 
-@router.get("/role", response_model=IGetResponseBase[List[IRoleRead]])
+@router.get("/role", response_model=IGetResponseBase[Page[IRoleRead]])
 async def get_roles(
-    skip: int = 0,
-    limit: int = Query(default=100, le=100),
+    params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_user),
 ):
-    roles = await crud.role.get_multi(db_session, skip=skip, limit=limit)   
+    roles = await crud.role.get_multi_paginated(db_session, params=params, schema=IRoleRead)
     return IGetResponseBase(data=roles)
 
 @router.get("/role/{role_id}", response_model=IGetResponseBase[IRoleRead])

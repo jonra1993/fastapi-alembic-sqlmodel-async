@@ -6,6 +6,7 @@ from app.schemas.common import (
     IPostResponseBase,
     IPutResponseBase,
 )
+from fastapi_pagination import Page, Params
 from app.schemas.team import ITeamCreate, ITeamRead, ITeamReadWithHeroes, ITeamUpdate
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -15,14 +16,13 @@ from app import crud
 router = APIRouter()
 
 
-@router.get("/team", response_model=IGetResponseBase[List[ITeamRead]])
+@router.get("/team", response_model=IGetResponseBase[Page[ITeamRead]])
 async def get_teams_list(
-    skip: int = 0,
-    limit: int = Query(default=100, le=100),
+    params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_user),
-):
-    teams = await crud.team.get_multi(db_session, skip=skip, limit=limit)
+):    
+    teams = await crud.team.get_multi_paginated(db_session, params=params, schema=ITeamRead)
     return IGetResponseBase(data=teams)    
 
 

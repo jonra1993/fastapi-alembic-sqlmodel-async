@@ -4,6 +4,7 @@ from app.schemas.common import (
     IGetResponseBase,
     IPostResponseBase,
 )
+from fastapi_pagination import Page, Params
 from app.schemas.user import IUserCreate, IUserRead, IUserReadWithoutGroups
 from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -15,18 +16,17 @@ from app.utils.map_schema import map_models_schema
 router = APIRouter()
 
 
-@router.get("/users", response_model=IGetResponseBase[List[IUserReadWithoutGroups]])
-async def read_users_list(
+@router.get("/users", response_model=IGetResponseBase[Page[IUserReadWithoutGroups]])
+async def read_users_list(    
+    params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
-    skip: int = 0,
-    limit: int = Query(default=100, le=100),
     current_user: User = Depends(deps.get_current_active_user),
 ):
     """
     Retrieve users.
-    """
-    users = await crud.user.get_multi(db_session, skip=skip, limit=limit)
-    return IGetResponseBase(data=map_models_schema(IUserReadWithoutGroups, users))
+    """    
+    users = await crud.user.get_multi_paginated(db_session, params=params, schema=IUserReadWithoutGroups)
+    return IGetResponseBase(data=users)
 
 
 @router.get("/user/{user_id}", response_model=IGetResponseBase[IUserRead])
