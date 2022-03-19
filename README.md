@@ -46,6 +46,9 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 <p align="center">
   <img src="static/2.png" align="center"/>
 </p>
+<p align="center">
+  <img src="static/.png" align="center"/>
+</p>
 
 ## Inspiration and References
 
