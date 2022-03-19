@@ -19,8 +19,8 @@ async def get_groups(
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_user),
 ):
-    groups = await crud.group.get_multi_paginated(db_session, params=params, schema=IGroupRead)
-    return IGetResponseBase(data=groups)
+    groups = await crud.group.get_multi_paginated(db_session, params=params)
+    return IGetResponseBase[Page[IGroupRead]](data=groups)
 
 @router.get("/group/{group_id}", response_model=IGetResponseBase[IGroupReadWithUsers])
 async def get_group_by_id(
@@ -29,7 +29,7 @@ async def get_group_by_id(
     current_user: User = Depends(deps.get_current_active_user),
 ):
     group = await crud.group.get(db_session, id=group_id)
-    return IGetResponseBase(data=IGroupReadWithUsers.from_orm(group))
+    return IGetResponseBase[IGroupReadWithUsers](data=group)
 
 @router.post("/group", response_model=IPostResponseBase[IGroupRead])
 async def create_group(
@@ -38,7 +38,7 @@ async def create_group(
     current_user: User = Depends(deps.get_current_active_user),
 ):
     new_group = await crud.group.create_group(db_session, obj_in=group, user_id=current_user.id)
-    return IPostResponseBase(data=new_group)  
+    return IPostResponseBase[IGroupRead](data=new_group)  
 
 @router.put("/group/{group_id}", response_model=IPutResponseBase[IGroupRead])
 async def update_group(
@@ -52,7 +52,7 @@ async def update_group(
         raise HTTPException(status_code=404, detail="Group not found")
 
     group_updated = await crud.group.update(db_session, obj_current=group_current, obj_new=group)
-    return IPutResponseBase(data=group_updated)  
+    return IPutResponseBase[IGroupRead](data=group_updated)  
 
 @router.post("/group/add_user/{user_id}/{group_id}", response_model=IPostResponseBase[IGroupRead])
 async def add_user_to_group(
@@ -66,4 +66,4 @@ async def add_user_to_group(
         raise HTTPException(status_code=404, detail="User not found")
     
     group = await crud.group.add_user_to_group(db_session, user=user, group_id=group_id)    
-    return IPostResponseBase(message="User added to group", data=group)   
+    return IPostResponseBase[IGroupRead](message="User added to group", data=group)   

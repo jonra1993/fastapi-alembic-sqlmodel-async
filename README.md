@@ -58,13 +58,14 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ## TODO List:
 
+- [x] Add Custom Response model
 - [x] Create sample one to many relationship
 - [x] Create sample many to many relationship
 - [x] Add JWT authentication
 - [x] Add Pagination
 - [ ] Add Role - Permissions setup and logic
 - [ ] Add one to one relationship sample
-- [ ] Add Celery sample
+- [ ] Add Celery sample for tasks
 - [ ] Add reverse proxy con docker compose
 
 PR are welcome ❤️

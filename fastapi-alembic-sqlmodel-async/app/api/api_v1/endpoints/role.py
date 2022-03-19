@@ -20,8 +20,8 @@ async def get_roles(
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_user),
 ):
-    roles = await crud.role.get_multi_paginated(db_session, params=params, schema=IRoleRead)
-    return IGetResponseBase(data=roles)
+    roles = await crud.role.get_multi_paginated(db_session, params=params)
+    return IGetResponseBase[Page[IRoleRead]](data=roles)
 
 @router.get("/role/{role_id}", response_model=IGetResponseBase[IRoleRead])
 async def get_role_by_id(
@@ -30,7 +30,7 @@ async def get_role_by_id(
     current_user: User = Depends(deps.get_current_active_user),
 ):
     role = await crud.role.get(db_session, id=role_id)
-    return IGetResponseBase(data=role)
+    return IGetResponseBase[IRoleRead](data=role)
 
 @router.post("/role", response_model=IPostResponseBase[IRoleRead])
 async def create_role(
@@ -39,7 +39,7 @@ async def create_role(
     current_user: User = Depends(deps.get_current_active_user),
 ):
     new_permission = await crud.role.create(db_session, obj_in=role)
-    return IPostResponseBase(data=new_permission)  
+    return IPostResponseBase[IRoleRead](data=new_permission)  
 
 @router.put("/role/{role_id}", response_model=IPutResponseBase[IRoleRead])
 async def update_permission(
@@ -53,5 +53,5 @@ async def update_permission(
         raise HTTPException(status_code=404, detail="Permission not found")
 
     updated_role = await crud.role.update(db_session, obj_current=current_role, obj_new=role)
-    return IPutResponseBase(data=updated_role)  
+    return IPutResponseBase[IRoleRead](data=updated_role)  
 

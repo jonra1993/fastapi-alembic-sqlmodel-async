@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from uuid import UUID
-from app.utils.map_schema import map_models_schema
 from app.db.async_sqlmodel import paginate
 from fastapi_pagination import Page
 from fastapi_pagination import Params
@@ -29,7 +28,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
 
     async def get(
-        self, db_session: AsyncSession, id: Union[str, int]
+        self, db_session: AsyncSession, *, id: Union[str, int]
     ) -> Optional[ModelType]:
         response = await db_session.exec(select(self.model).where(self.model.id == id).options(selectinload('*')))
         return response.first()
@@ -49,13 +48,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return response.all()
 
     async def get_multi_paginated(
-        self, db_session: AsyncSession, *, params: Params, schema: SchemaType, query: Optional[Union[T, Select[T], SelectOfScalar[T]]] = None
+        self, db_session: AsyncSession, *, params: Params, query: Optional[Union[T, Select[T], SelectOfScalar[T]]] = None
     ) -> Page[ModelType]:
         if query == None:
             query = self.model
-        paginated_data = await paginate(db_session, query, params)
-        paginated_data.items = map_models_schema(schema, paginated_data.items)
-        return paginated_data
+        return await paginate(db_session, query, params)        
 
     async def create(
         self, db_session: AsyncSession, *, obj_in: CreateSchemaType

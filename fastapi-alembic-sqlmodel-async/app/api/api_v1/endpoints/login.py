@@ -39,9 +39,9 @@ async def login(
         access_token=access_token,
         token_type="bearer",
         refresh_token=refresh_token,
-        user=IUserRead.from_orm(user)
+        user=user
     )
-    return IPostResponseBase(meta=meta_data, data=data, message="Login correctly")
+    return IPostResponseBase[Token](meta=meta_data, data=data, message="Login correctly")
 
 @router.post("/login/refresh_token", response_model=IPostResponseBase[TokenRead], status_code=201)
 async def get_refresh_token(
@@ -61,7 +61,7 @@ async def get_refresh_token(
         user = await crud.user.get(db_session, id=int(payload['sub']))
         if user.is_active:
             access_token = security.create_access_token( int(payload['sub']), expires_delta=access_token_expires)         
-            return IPostResponseBase(data=TokenRead(access_token=access_token,token_type= "bearer"), message="Access token generated correctly")
+            return IPostResponseBase[TokenRead](data=TokenRead(access_token=access_token,token_type= "bearer"), message="Access token generated correctly")
         else:
             raise HTTPException(status_code=404,detail="User inactive")
     else:

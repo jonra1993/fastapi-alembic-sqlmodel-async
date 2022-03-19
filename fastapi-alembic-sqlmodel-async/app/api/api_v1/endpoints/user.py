@@ -25,8 +25,8 @@ async def read_users_list(
     """
     Retrieve users.
     """    
-    users = await crud.user.get_multi_paginated(db_session, params=params, schema=IUserReadWithoutGroups)
-    return IGetResponseBase(data=users)
+    users = await crud.user.get_multi_paginated(db_session, params=params)
+    return IGetResponseBase[Page[IUserReadWithoutGroups]](data=users)
 
 @router.get("/user/order_by_created_at", response_model=IGetResponseBase[Page[IUserReadWithoutGroups]])
 async def get_hero_list_order_by_created_at(
@@ -35,8 +35,8 @@ async def get_hero_list_order_by_created_at(
     current_user: User = Depends(deps.get_current_active_user)
 ):
     query = select(User).order_by(User.created_at)
-    users = await crud.user.get_multi_paginated(db_session, query=query, params=params, schema=IUserReadWithoutGroups)
-    return IGetResponseBase(data=users)
+    users = await crud.user.get_multi_paginated(db_session, query=query, params=params)
+    return IGetResponseBase[Page[IUserReadWithoutGroups]](data=users)
 
 @router.get("/user/{user_id}", response_model=IGetResponseBase[IUserRead])
 async def get_user_by_id(
@@ -45,13 +45,13 @@ async def get_user_by_id(
     current_user: User = Depends(deps.get_current_active_user),
 ):
     user = await crud.user.get_user_by_id(db_session, id=user_id)
-    return IGetResponseBase(data=IUserRead.from_orm(user))
+    return IGetResponseBase[IUserRead](data=user)
 
 @router.get("/user", response_model=IGetResponseBase[IUserRead])
 async def get_my_data(
     current_user: User = Depends(deps.get_current_active_user),
 ):
-    return IGetResponseBase(data=IUserRead.from_orm(current_user))
+    return IGetResponseBase[IUserRead](data=current_user)
 
 @router.post("/user", response_model=IPostResponseBase[IUserRead])
 async def create_user(
@@ -63,7 +63,7 @@ async def create_user(
     if user:
         raise HTTPException(status_code=404, detail="There is already a user with same email")
     user = await crud.user.create(db_session, obj_in=new_user)
-    return IPostResponseBase(data=IUserRead.from_orm(user))
+    return IPostResponseBase[IUserRead](data=user)
 
 
 @router.delete("/user/{user_id}", response_model=IDeleteResponseBase[IUserRead])
@@ -79,7 +79,6 @@ async def remove_user(
     if not user:
         raise HTTPException(status_code=404, detail="User no found")    
     user = await crud.user.remove(db_session, id=user_id)
-    output = IDeleteResponseBase(
+    return IDeleteResponseBase[IUserRead](
         data=user
     )
-    return output

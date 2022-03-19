@@ -22,8 +22,8 @@ async def get_teams_list(
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_user),
 ):    
-    teams = await crud.team.get_multi_paginated(db_session, params=params, schema=ITeamRead)
-    return IGetResponseBase(data=teams)    
+    teams = await crud.team.get_multi_paginated(db_session, params=params)
+    return IGetResponseBase[Page[ITeamRead]](data=teams)    
 
 
 @router.get("/team/{team_id}", response_model=IGetResponseBase[ITeamReadWithHeroes])
@@ -34,7 +34,7 @@ async def get_team_by_id(
     team = await crud.team.get(db_session, id=team_id)
     if not team:
         raise HTTPException(status_code=404, detail="Team no found")
-    return IGetResponseBase(data=ITeamReadWithHeroes.from_orm(team))    
+    return IGetResponseBase[ITeamReadWithHeroes](data=team)
 
 
 @router.post("/team", response_model=IPostResponseBase[ITeamRead])
@@ -44,7 +44,7 @@ async def create_team(
     current_user: User = Depends(deps.get_current_active_user)
 ):
     team = await crud.team.create_team(db_session, obj_in=team, user_id=current_user.id)
-    return IPostResponseBase(data=team)    
+    return IPostResponseBase[ITeamRead](data=team)    
 
 
 @router.put("/team/{team_id}", response_model=IPostResponseBase[ITeamRead])
@@ -60,7 +60,7 @@ async def update_team(
     heroe_updated = await crud.team.update(
         db_session=db_session, obj_current=current_team, obj_new=new_team
     )
-    return IPutResponseBase(data=heroe_updated)    
+    return IPutResponseBase[ITeamRead](data=heroe_updated)    
 
 
 @router.delete("/team/{team_id}", response_model=IDeleteResponseBase[ITeamRead])
@@ -74,4 +74,4 @@ async def remove_team(
     if not current_team:
         raise HTTPException(status_code=404, detail="Team not found")
     team = await crud.team.remove(db_session, id=team_id)
-    return IDeleteResponseBase(data=team)
+    return IDeleteResponseBase[ITeamRead](data=team)
