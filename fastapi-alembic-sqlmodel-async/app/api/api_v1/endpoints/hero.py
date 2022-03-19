@@ -1,5 +1,6 @@
 from typing import List
 from app.models.user import User
+from app.models.hero import Hero
 from app.schemas.common import (
     IDeleteResponseBase,
     IGetResponseBase,
@@ -12,6 +13,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, Query
 from app.utils.map_schema import map_models_schema
 from app.api import deps
+from sqlmodel import select
 from app import crud
 
 router = APIRouter()
@@ -26,6 +28,15 @@ async def get_hero_list(
     heroes = await crud.hero.get_multi_paginated(db_session, params=params, schema=IHeroReadWithTeam)
     return IGetResponseBase(data=heroes)
 
+@router.get("/hero/by_created_at", response_model=IGetResponseBase[Page[IHeroReadWithTeam]])
+async def get_hero_list_order_by_created_at(
+    params: Params = Depends(),
+    db_session: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_active_user)
+):
+    query = select(Hero).order_by(Hero.created_at)
+    heroes = await crud.hero.get_multi_paginated(db_session, query=query, params=params, schema=IHeroReadWithTeam)
+    return IGetResponseBase(data=heroes)
 
 @router.get("/hero/{hero_id}", response_model=IGetResponseBase[IHeroReadWithTeam])
 async def get_hero_by_id(
