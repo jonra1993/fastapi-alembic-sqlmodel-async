@@ -30,7 +30,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get(
         self, db_session: AsyncSession, *, id: Union[str, int]
     ) -> Optional[ModelType]:
-        response = await db_session.exec(select(self.model).where(self.model.id == id).options(selectinload('*')))
+        response = await db_session.exec(select(self.model).where(self.model.id == id))
         return response.first()
 
     async def get_count(
