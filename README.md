@@ -4,7 +4,7 @@ This is a project template which uses [FastAPI](https://fastapi.tiangolo.com/), 
 
 ## Set environment variables
 
-Create an **.env** file on root folder and copy the content from **.env.example**. Feel free to chage it according to your own configuration.
+Create an **.env** file on root folder and copy the content from **.env.example**. Feel free to change it according to your own configuration.
 
 ## Run project using Docker compose
 
