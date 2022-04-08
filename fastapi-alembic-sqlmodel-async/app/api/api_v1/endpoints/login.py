@@ -12,7 +12,6 @@ from app.core import security
 from app.core.config import settings
 from app.schemas.token import TokenRead, Token, RefreshToken
 from app.schemas.common import IMetaGeneral, IPostResponseBase
-from app.schemas.user import IUserRead
 
 router = APIRouter()
 

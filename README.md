@@ -63,10 +63,11 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 - [x] Create sample many to many relationship
 - [x] Add JWT authentication
 - [x] Add Pagination
+- [ ] Add jsonb field on table sample
 - [ ] Add Role - Permissions setup and logic
 - [ ] Add one to one relationship sample
 - [ ] Add Celery sample for tasks
-- [ ] Add reverse proxy con docker compose
+- [ ] Add reverse proxy with docker compose
 
 PR are welcome ❤️
 

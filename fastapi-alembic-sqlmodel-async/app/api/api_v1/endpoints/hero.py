@@ -1,4 +1,3 @@
-from typing import List
 from app.models.user import User
 from app.models.hero import Hero
 from app.schemas.common import (
@@ -10,8 +9,7 @@ from app.schemas.common import (
 from fastapi_pagination import Page, Params
 from app.schemas.hero import IHeroCreate, IHeroRead, IHeroReadWithTeam, IHeroUpdate
 from sqlmodel.ext.asyncio.session import AsyncSession
-from fastapi import APIRouter, Depends, HTTPException, Query
-from app.utils.map_schema import map_models_schema
+from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from sqlmodel import select
 from app import crud

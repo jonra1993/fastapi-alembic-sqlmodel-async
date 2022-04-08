@@ -1,4 +1,3 @@
-from typing import List
 from app.schemas.common import (
     IDeleteResponseBase,
     IGetResponseBase,
@@ -7,7 +6,7 @@ from app.schemas.common import (
 from fastapi_pagination import Page, Params
 from app.schemas.user import IUserCreate, IUserRead, IUserReadWithoutGroups
 from sqlmodel.ext.asyncio.session import AsyncSession
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from app import crud
 from app.models import User

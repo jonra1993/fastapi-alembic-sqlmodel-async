@@ -7,7 +7,7 @@ from app.schemas.common import (
 from fastapi_pagination import Page, Params
 from app.schemas.group import IGroupCreate, IGroupRead, IGroupReadWithUsers, IGroupUpdate, IGroupReadWithUsers
 from sqlmodel.ext.asyncio.session import AsyncSession
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from app import crud
 
