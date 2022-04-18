@@ -63,6 +63,7 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 - [x] Create sample many to many relationship
 - [x] Add JWT authentication
 - [x] Add Pagination
+- [x] Add User birthday field with timezone
 - [ ] Add jsonb field on table sample
 - [ ] Add Role - Permissions setup and logic
 - [ ] Add one to one relationship sample

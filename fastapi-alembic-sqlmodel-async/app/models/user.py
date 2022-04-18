@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, SQLModel, Relationship, Column, DateTime
 from app.models.links import LinkGroupUser
 from typing import List, Optional
 from pydantic import EmailStr
@@ -10,7 +10,7 @@ class UserBase(SQLModel):
     email: EmailStr = Field(nullable=True, index=True, sa_column_kwargs={"unique": True})    
     is_active: bool = Field(default=True)
     is_superuser: bool = Field(default=False)
-    birthdate: Optional[datetime]
+    birthdate: Optional[datetime] = Field(sa_column=Column(DateTime(timezone=True), nullable=True)) #birthday with timezone
     phone: Optional[str]
     state: Optional[str]
     country: Optional[str]
