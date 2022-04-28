@@ -1,13 +1,11 @@
 from datetime import datetime
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from uuid import UUID
-from app.db.async_sqlmodel import paginate
-from fastapi_pagination import Page
-from fastapi_pagination import Params
+from fastapi_pagination import Page, Params
+from fastapi_pagination.ext.async_sqlmodel import paginate
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlmodel import SQLModel, select, func
-from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel.sql.expression import Select, SelectOfScalar
 
