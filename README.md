@@ -25,7 +25,7 @@ This creates a sample user on databasse with **username: admin@admin.com** and *
 docker-compose exec fastapi_server python app/initial_data.py
 ```
 
-You can connect to Database using PGAdmin4 and use the credentials from .env file. Database port on local machine has been configured to **5454** on docker-compose.yml file
+You can connect to the Database using PGAdmin4 and use the credentials from .env file. Database port on local machine has been configured to **5454** on docker-compose.yml file
 
 <p align="center">
   <img src="static/tables.png" align="center"/>
@@ -36,7 +36,8 @@ You can connect to Database using PGAdmin4 and use the credentials from .env fil
   <img src="static/erd.png" align="center"/>
 </p>
 
-Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+As this project uses traefik, you can access to the documentation with the following path [http://fastapi.localhost/docs](http://fastapi.localhost/docs)
 
 ## Preview
   
@@ -49,6 +50,19 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 <p align="center">
   <img src="static/3.png" align="center"/>
 </p>
+
+## Traefik Dashboard
+You can access to Traefik Dashboard using the following link [http://traefik.localhost/](http://traefik.localhost/). You should use **username: test** and **pass: test**. If you want to change the password, you can find more information of how to do it [here](https://doc.traefik.io/traefik/operations/api/)
+
+<p align="center">
+  <img src="static/traefik1.png" align="center"/>
+</p>
+<p align="center">
+  <img src="static/traefik2.png" align="center"/>
+</p>
+
+## Static files
+All files on static folder will be server by nginx container as static files. You can check it with this link [http://localhost/static/1.png](http://localhost/static/1.png)
 
 ## Inspiration and References
 
@@ -64,11 +78,13 @@ Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
 - [x] Add JWT authentication
 - [x] Add Pagination
 - [x] Add User birthday field with timezone
+- [x] Add reverse proxy (traefik) with docker compose
+- [x] Add static server with nginx
 - [ ] Add jsonb field on table sample
 - [ ] Add Role - Permissions setup and logic
 - [ ] Add one to one relationship sample
 - [ ] Add Celery sample for tasks
-- [ ] Add reverse proxy with docker compose
+
 
 PR are welcome ❤️
 

@@ -1,0 +1,46 @@
+upstream docker-backend-api {
+  server traefik-proxy:80 max_fails=0;
+}
+
+server {
+  listen  8080;
+  #  include  /etc/nginx/conf.d/ssl.conf; # uncomment if using ssl; see ssl.conf.template for example configuration
+
+  proxy_read_timeout 3600;
+  proxy_connect_timeout 300;
+  proxy_send_timeout 300;
+  
+
+  keepalive_timeout   30;
+  client_max_body_size 800M;
+
+  location /robots.txt {
+    return 200 "User-agent: *\nDisallow: /\n";
+  }
+
+  location / {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header Host $host;
+    proxy_pass http://docker-backend-api/;
+    proxy_read_timeout 3600;
+    proxy_connect_timeout 300;
+    proxy_send_timeout 300;
+
+
+  }
+
+  location /static/ {
+        alias /code/static/; # where our static files are hosted
+    }
+
+
+  location /nginx_status {
+    stub_status on;
+
+    access_log off;
+    allow 127.0.0.1;
+    deny all;
+  }
+}

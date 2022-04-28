@@ -1,0 +1,24 @@
+api:
+  dashboard: true
+  # insecure: true # Don't do that in production
+
+# Entrypoints
+entryPoints:
+  web:
+    address: :80
+
+  websecure:
+    address: :443
+    
+# Providers
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+
+log:
+  filePath: "/traefik/logs/traefik.log"
+  format: json
+
+accessLog:
+  filePath: "/traefik/logs/access.log"
