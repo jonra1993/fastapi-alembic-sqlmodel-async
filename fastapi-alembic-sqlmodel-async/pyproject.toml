@@ -17,7 +17,7 @@ cryptography = "^36.0.1"
 passlib = "^1.7.4"
 SQLAlchemy-Utils = "^0.38.2"
 black = "^22.1.0"
-SQLAlchemy = "^1.4.31"
+SQLAlchemy = "1.4.35"
 python-multipart = "^0.0.5"
 fastapi-pagination = {extras = ["sqlmodel"], version = "^0.9.1"}
 
