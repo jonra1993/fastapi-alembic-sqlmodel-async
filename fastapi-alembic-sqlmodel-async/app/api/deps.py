@@ -53,21 +53,12 @@ def get_current_user(required_roles: List[str] = None) -> User:
             if is_valid_role == False:
                 raise HTTPException(
                     status_code=403,
-                    detail=f'Role "{role}" is required to perform this action',
+                    detail=f'Role "{required_roles}" is required to perform this action',
                 )
         
         return user
 
     return current_user
 
-
-def get_current_active_superuser(
-    current_user: User = Depends(get_current_user()),
-) -> User:
-    if not current_user.is_superuser:
-        raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
-        )
-    return current_user
 
 

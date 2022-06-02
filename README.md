@@ -85,9 +85,10 @@ All files on static folder will be server by nginx container as static files. Yo
 - [x] Add User birthday field with timezone
 - [x] Add reverse proxy (traefik) with docker compose
 - [x] Add static server with nginx
+- [x] Add basic RBAC (Role base access control)
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
-- [ ] Add Login - Role - Permissions setup and logic using Keycloak
+- [ ] Add AuthN and AuthZ using Keycloak
 - [ ] Add one to one relationship sample
 - [ ] Add Celery sample for tasks
 
