@@ -45,6 +45,16 @@ class Settings(BaseSettings):
         elif isinstance(v, (list, str)):
             return v
         raise ValueError(v)
+
+    KEYCLOAK_USER = os.environ["KEYCLOAK_USER"]
+    KEYCLOAK_PASSWORD = os.environ["KEYCLOAK_PASSWORD"]
+    KEYCLOAK_SERVER = os.environ["KEYCLOAK_SERVER"]
+    KEYCLOAK_CLIENT_ID = os.environ["KEYCLOAK_CLIENT_ID"]
+    KEYCLOAK_CLIENT_SECRET = os.environ["KEYCLOAK_CLIENT_SECRET"]
+    KEYCLOAK_ADMIN_CLIENT_SECRET = os.environ["KEYCLOAK_ADMIN_CLIENT_SECRET"]
+    KEYCLOAK_REALM = os.environ["KEYCLOAK_REALM"]
+    KEYCLOAK_CALLBACK_URI = os.environ["KEYCLOAK_CALLBACK_URI"]
+        
     class Config:
         case_sensitive = True
         env_file = os.path.expanduser("~/.env")

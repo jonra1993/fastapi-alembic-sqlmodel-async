@@ -37,7 +37,40 @@ services:
       - POSTGRES_DATABASE=${DATABASE_NAME}
       - POSTGRES_HOST_AUTH_METHOD= "trust"
       - POSTGRESQL_POSTGRES_PASSWORD= ${DATABASE_PASSWORD}
-      
+
+  keycloak:
+    image: jboss/keycloak:16.1.0  
+    container_name: keycloak 
+    volumes:
+      - ./keycloak/realm-export.json:/opt/jboss/keycloak/imports/realm-export.json
+    command:
+      - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: ${DATABASE_HOST}
+      DB_DATABASE: "${KEYCLOAK_DATABASE}"
+      DB_USER: "${DATABASE_USER}"
+      DB_SCHEMA: public
+      DB_PASSWORD: "${DATABASE_PASSWORD}"
+      KEYCLOAK_USER: "${KEYCLOAK_USER}"
+      KEYCLOAK_PASSWORD: "${KEYCLOAK_PASSWORD}"
+      PROXY_ADDRESS_FORWARDING: "true"
+      #ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE and WARN.
+      KEYCLOAK_LOGLEVEL: OFF
+    logging:
+      driver: none
+    expose:
+      - "8080"       
+    depends_on:
+      - database
+    restart:
+      always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak_local.entrypoints=web"
+      - "traefik.http.routers.keycloak_local.rule=Host(`keycloak.${LOCAL_1}`, `keycloak.${LOCAL_2}`, `keycloak.${EXT_ENDPOINT1}`, `keycloak.${EXT_ENDPOINT2}`, `keycloak.${EXT_ENDPOINT3}`)"
+      - traefik.http.services.keycloak_localservice.loadbalancer.server.port=8080
+
   traefik-proxy:
     container_name: traefik-proxy
     restart: always

@@ -20,6 +20,8 @@ black = "^22.1.0"
 SQLAlchemy = "1.4.35"
 python-multipart = "^0.0.5"
 fastapi-pagination = {extras = ["sqlmodel"], version = "^0.9.1"}
+fastapi_keycloak = "^1.0.5"
+httpx = "^0.23.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -1,90 +1,72 @@
-from datetime import timedelta
 from typing import Any
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel.ext.asyncio.session import AsyncSession
-from jose import jwt
-from pydantic import EmailStr
-from pydantic import ValidationError
-from app import crud
 from app.api import deps
-from app.core import security
 from app.core.config import settings
-from app.schemas.token import TokenRead, Token, RefreshToken
+from app.schemas.token import OpenIDToken
 from app.schemas.common import IMetaGeneral, IPostResponseBase
+from fastapi_keycloak import FastAPIKeycloak, UsernamePassword, OIDCUser, KeycloakUser
+from app.utils.keycloak import get_auth_token
 
 router = APIRouter()
 
-@router.post("/login", response_model=IPostResponseBase[Token], status_code=201)
+@router.post("/login/access-token")
 async def login(
-    email: EmailStr = Body(...),
-    password: str = Body(...),
-    db_session: AsyncSession = Depends(deps.get_db),
-    meta_data: IMetaGeneral = Depends(deps.get_general_meta)
-) -> Any:
-    """
-    Login for all users
-    """
-    user = await crud.user.authenticate(db_session, email=email, password=password)
-    if not user:
-        raise HTTPException(status_code=400, detail="Email or Password incorrect")
-    elif not user.is_active:
-        raise HTTPException(status_code=400, detail="User is inactive")
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    refresh_token_expires = timedelta(minutes=settings.REFRESH_TOKEN_EXPIRE_MINUTES)
-    access_token = security.create_access_token(user.id, expires_delta=access_token_expires)
-    refresh_token = security.create_refresh_token(user.id, expires_delta=refresh_token_expires)
-    data = Token(
-        access_token=access_token,
-        token_type="bearer",
-        refresh_token=refresh_token,
-        user=user
-    )
-    return IPostResponseBase[Token](meta=meta_data, data=data, message="Login correctly")
-
-@router.post("/login/refresh_token", response_model=IPostResponseBase[TokenRead], status_code=201)
-async def get_refresh_token(
-    body: RefreshToken = Body(...),
-    db_session: AsyncSession = Depends(deps.get_db),
-) -> Any:
-    """
-    Get Refresh token
-    """
-    try:
-        payload = jwt.decode(body.refresh_token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])
-    except (jwt.JWTError, ValidationError):
-        raise HTTPException(status_code=403,detail="Refresh token invalid")
-
-    if payload['type'] == 'refresh':
-        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        user = await crud.user.get(db_session, id=int(payload['sub']))
-        if user.is_active:
-            access_token = security.create_access_token( int(payload['sub']), expires_delta=access_token_expires)         
-            return IPostResponseBase[TokenRead](data=TokenRead(access_token=access_token,token_type= "bearer"), message="Access token generated correctly")
-        else:
-            raise HTTPException(status_code=404,detail="User inactive")
-    else:
-        raise HTTPException(status_code=404,detail="Incorrect token")
-
-@router.post("/login/access-token", response_model=TokenRead)
-async def login_access_token(
-    db_session: AsyncSession = Depends(deps.get_db),
     form_data: OAuth2PasswordRequestForm = Depends(),
+    idp: FastAPIKeycloak = Depends(deps.get_auth_session),
+) -> OpenIDToken:
+    token = await get_auth_token(
+        form_data=form_data,
+        client_id=settings.KEYCLOAK_CLIENT_ID,
+        client_secret=settings.KEYCLOAK_CLIENT_SECRET,
+        token_uri=idp.token_uri,
+    )
+    print("token", token)
+    return token
+
+
+@router.post("/login", response_model=IPostResponseBase[KeycloakUser])
+async def login_backoffice(
+    form: UsernamePassword = Body(...),
+    db_session: AsyncSession = Depends(deps.get_db),
+    meta_data: IMetaGeneral = Depends(deps.get_general_meta),
+    idp: FastAPIKeycloak = Depends(deps.get_auth_session),
 ) -> Any:
     """
-    OAuth2 compatible token login, get an access token for future requests
-    """    
-    user = await crud.user.authenticate(
-        db_session, email=form_data.username, password=form_data.password
+    Login for all user in the backoffice
+    """
+    token = idp.user_login(
+        username=form.username, password=form.password.get_secret_value()
     )
-    if not user:
-        raise HTTPException(status_code=400, detail="Incorrect email or password")
-    elif not user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    return {
-        "access_token": security.create_access_token(
-            user.id, expires_delta=access_token_expires
-        ),
-        "token_type": "bearer",
-    }
+    decoded_token = idp._decode_token(token=token.access_token, audience="account")
+    user = OIDCUser.parse_obj(decoded_token)
+    user_data = idp.get_user(user_id=user.sub)
+    roles = idp.get_all_roles()
+    return IPostResponseBase[KeycloakUser](
+        meta={"roles": roles}, data=user_data, message="Login correctly"
+    )
+# @router.post("/login/refresh_token", response_model=IPostResponseBase[TokenRead], status_code=201)
+# async def get_refresh_token(
+#     body: RefreshToken = Body(...),
+#     db_session: AsyncSession = Depends(deps.get_db),
+# ) -> Any:
+#     """
+#     Get Refresh token
+#     """
+#     try:
+#         payload = jwt.decode(body.refresh_token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])
+#     except (jwt.JWTError, ValidationError):
+#         raise HTTPException(status_code=403,detail="Refresh token invalid")
+
+#     if payload['type'] == 'refresh':
+#         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+#         user = await crud.user.get(db_session, id=int(payload['sub']))
+#         if user.is_active:
+#             access_token = security.create_access_token( int(payload['sub']), expires_delta=access_token_expires)         
+#             return IPostResponseBase[TokenRead](data=TokenRead(access_token=access_token,token_type= "bearer"), message="Access token generated correctly")
+#         else:
+#             raise HTTPException(status_code=404,detail="User inactive")
+#     else:
+#         raise HTTPException(status_code=404,detail="Incorrect token")
+
