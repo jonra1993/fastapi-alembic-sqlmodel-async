@@ -11,6 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from app import crud
 from uuid import UUID
+from app.schemas.role import IRoleEnum
 
 router = APIRouter()    
 
@@ -36,7 +37,7 @@ async def get_role_by_id(
 async def create_role(
     role: IRoleCreate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin])),
 ):
     new_permission = await crud.role.create(db_session, obj_in=role)
     return IPostResponseBase[IRoleRead](data=new_permission)  
@@ -46,7 +47,7 @@ async def update_permission(
     role_id: UUID,
     role: IRoleUpdate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin])),
 ):
     current_role = await crud.role.get(db_session=db_session, id=role_id)
     if not current_role:

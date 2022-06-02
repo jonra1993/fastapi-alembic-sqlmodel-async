@@ -12,6 +12,7 @@ from app import crud
 from app.models import User
 from sqlmodel import select
 from uuid import UUID
+from app.schemas.role import IRoleEnum
 
 router = APIRouter()
 
@@ -20,7 +21,7 @@ router = APIRouter()
 async def read_users_list(    
     params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     """
     Retrieve users.
@@ -32,7 +33,7 @@ async def read_users_list(
 async def get_hero_list_order_by_created_at(
     params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     query = select(User).order_by(User.created_at)
     users = await crud.user.get_multi_paginated(db_session, query=query, params=params)
@@ -42,7 +43,7 @@ async def get_hero_list_order_by_created_at(
 async def get_user_by_id(
     user_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     user = await crud.user.get_user_by_id(db_session, id=user_id)
     return IGetResponseBase[IUserRead](data=user)
@@ -57,7 +58,7 @@ async def get_my_data(
 async def create_user(
     new_user: IUserCreate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_superuser),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin])),
 ):    
     user = await crud.user.get_by_email(db_session, email=new_user.email)
     if user:
@@ -70,7 +71,7 @@ async def create_user(
 async def remove_user(
     user_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_superuser),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin])),
 ):
     if current_user.id == user_id:
         raise HTTPException(status_code=404, detail="Users can not delete theirselfs")

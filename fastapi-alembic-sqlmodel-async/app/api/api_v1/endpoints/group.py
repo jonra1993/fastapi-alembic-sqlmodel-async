@@ -11,6 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from app import crud
 from uuid import UUID
+from app.schemas.role import IRoleEnum
 
 router = APIRouter()    
 
@@ -36,7 +37,7 @@ async def get_group_by_id(
 async def create_group(
     group: IGroupCreate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     new_group = await crud.group.create_group(db_session, obj_in=group, user_id=current_user.id)
     return IPostResponseBase[IGroupRead](data=new_group)  
@@ -46,7 +47,7 @@ async def update_group(
     group_id: UUID,
     group: IGroupUpdate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     group_current = await crud.group.get(db_session=db_session, id=group_id)
     if not group_current:
@@ -60,7 +61,7 @@ async def add_user_to_group(
     user_id: UUID,
     group_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     user = await crud.user.get(db_session=db_session, id=user_id)
     if not user:

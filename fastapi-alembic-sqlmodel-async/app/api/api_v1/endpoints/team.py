@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from app import crud
 from uuid import UUID
+from app.schemas.role import IRoleEnum
 
 router = APIRouter()
 
@@ -30,6 +31,7 @@ async def get_teams_list(
 async def get_team_by_id(
     team_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     team = await crud.team.get(db_session, id=team_id)
     if not team:
@@ -41,7 +43,7 @@ async def get_team_by_id(
 async def create_team(
     team: ITeamCreate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     team = await crud.team.create_team(db_session, obj_in=team, user_id=current_user.id)
     return IPostResponseBase[ITeamRead](data=team)    
@@ -52,7 +54,7 @@ async def update_team(
     team_id: UUID,
     new_team: ITeamUpdate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     current_team = await crud.team.get(db_session=db_session, id=team_id)
     if not current_team:
@@ -67,7 +69,7 @@ async def update_team(
 async def remove_team(
     team_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 
 ):
     current_team = await crud.team.get(db_session=db_session, id=team_id)

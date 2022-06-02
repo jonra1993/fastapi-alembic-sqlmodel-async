@@ -20,10 +20,14 @@ docker-compose exec fastapi_server alembic upgrade head
 ```
 
 ## Setup database with initial data
-This creates a sample user on databasse with **username: admin@admin.com** and **pass: admin** 
+This creates a sample users on database.
 ```
 docker-compose exec fastapi_server python app/initial_data.py
 ```
+
+- **Admin credentials ->** *username:* admin@admin.com and *password:* admin 
+- **Manager credentials ->** *username:* manager@example.com and *password:* admin 
+- **User credentials ->** *username:* user@example.com and *password:* admin 
 
 You can connect to the Database using PGAdmin4 and use the credentials from .env file. Database port on local machine has been configured to **5454** on docker-compose.yml file
 
@@ -69,6 +73,7 @@ All files on static folder will be server by nginx container as static files. Yo
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
 - [fastapi-sqlmodel-alembic](https://github.com/testdrivenio/fastapi-sqlmodel-alembic).
 - [sqlmodel-tutorial](https://sqlmodel.tiangolo.com/tutorial/fastapi/).
+- [fastapi-keycloak](https://github.com/code-specialist/fastapi-keycloak)
 
 ## TODO List:
 
@@ -80,8 +85,9 @@ All files on static folder will be server by nginx container as static files. Yo
 - [x] Add User birthday field with timezone
 - [x] Add reverse proxy (traefik) with docker compose
 - [x] Add static server with nginx
+- [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
-- [ ] Add Role - Permissions setup and logic
+- [ ] Add Login - Role - Permissions setup and logic using Keycloak
 - [ ] Add one to one relationship sample
 - [ ] Add Celery sample for tasks
 

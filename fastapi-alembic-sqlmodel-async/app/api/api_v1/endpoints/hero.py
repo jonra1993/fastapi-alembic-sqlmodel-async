@@ -14,6 +14,7 @@ from app.api import deps
 from sqlmodel import select
 from app import crud
 from uuid import UUID
+from app.schemas.role import IRoleEnum
 
 router = APIRouter()
 
@@ -53,7 +54,7 @@ async def get_hero_by_id(
 async def create_hero(
     hero: IHeroCreate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     heroe = await crud.hero.create_hero(db_session, obj_in=hero, user_id=current_user.id)
     return IPostResponseBase[IHeroRead](data=heroe)
@@ -64,7 +65,7 @@ async def update_hero(
     hero_id: UUID,
     hero: IHeroUpdate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     current_hero = await crud.hero.get(db_session=db_session, id=hero_id)
     if not current_hero:
@@ -80,7 +81,7 @@ async def update_hero(
 async def remove_hero(
     hero_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_user()),
+    current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
     current_hero = await crud.hero.get(db_session=db_session, id=hero_id)
     if not current_hero:
