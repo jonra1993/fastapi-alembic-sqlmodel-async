@@ -11,7 +11,7 @@ class IUserCreate(BaseModel):
     password : Optional[str]
     email: EmailStr
     is_superuser: bool = False
-    role_id: UUID
+    role_id: Optional[UUID]
         
 class IUserReadWithoutGroups(UserBase):
     id: UUID

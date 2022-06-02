@@ -56,7 +56,7 @@ async def create_hero(
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
-    heroe = await crud.hero.create_hero(db_session, obj_in=hero, user_id=current_user.id)
+    heroe = await crud.hero.create(db_session, obj_in=hero, created_by_id=current_user.id)
     return IPostResponseBase[IHeroRead](data=heroe)
 
 

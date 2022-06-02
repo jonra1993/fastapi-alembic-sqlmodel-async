@@ -39,7 +39,7 @@ async def create_group(
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
 ):
-    new_group = await crud.group.create_group(db_session, obj_in=group, user_id=current_user.id)
+    new_group = await crud.group.create(db_session, obj_in=group, created_by_id=current_user.id)
     return IPostResponseBase[IGroupRead](data=new_group)  
 
 @router.put("/group/{group_id}", response_model=IPutResponseBase[IGroupRead])
