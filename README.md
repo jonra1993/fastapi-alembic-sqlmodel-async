@@ -86,7 +86,7 @@ All files on static folder will be server by nginx container as static files. Yo
 - [x] Add reverse proxy (traefik) with docker compose
 - [x] Add static server with nginx
 - [x] Add basic RBAC (Role base access control)
-- [x] Add sample heroes, teams and groups on init db
+- [ ] Add sample heroes, teams and groups on init db
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
 - [ ] Add AuthN and AuthZ using Keycloak
