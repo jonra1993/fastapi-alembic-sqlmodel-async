@@ -2,9 +2,10 @@ from app.models.hero import HeroBase
 from typing import List, Optional
 from app.models.team import TeamBase
 from pydantic import BaseModel
+from uuid import UUID
 
 class ITeamRead(TeamBase):
-    id: int
+    id: UUID
 
 class ITeamCreate(TeamBase):
     pass

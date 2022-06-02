@@ -1,11 +1,12 @@
-from typing import List
+from enum import Enum
 from app.models.role import RoleBase
+from uuid import UUID
 
 class IRoleCreate(RoleBase):
     pass
 
 class IRoleRead(RoleBase):
-    id: int
+    id: UUID
 
 class IRoleReadWithRoles(RoleBase):
     pass
@@ -13,3 +14,8 @@ class IRoleReadWithRoles(RoleBase):
 
 class IRoleUpdate(RoleBase):
     pass
+
+class IRoleEnum(str, Enum):
+    admin = 'admin'
+    manager = 'manager'
+    user = 'user'    

@@ -1,11 +1,12 @@
 from datetime import datetime
 from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
 from uuid import UUID
-from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.async_sqlmodel import paginate
+from fastapi_pagination import Params, Page
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlmodel import SQLModel, select, func
+from sqlalchemy.orm import selectinload
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel.sql.expression import Select, SelectOfScalar
 
@@ -26,10 +27,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
 
     async def get(
-        self, db_session: AsyncSession, *, id: Union[str, int]
+        self, db_session: AsyncSession, *, id: Union[UUID, str]
     ) -> Optional[ModelType]:
-        response = await db_session.exec(select(self.model).where(self.model.id == id))
+        response = await db_session.exec(select(self.model).where(self.model.id == id).options(selectinload('*')))
         return response.first()
+
+    async def get_by_ids(self, db_session: AsyncSession, list_ids: List[Union[UUID, str]],) -> Optional[List[ModelType]]:
+        response = await db_session.exec(select(self.model).where(self.model.id.in_(list_ids)))
+        return response.all()
 
     async def get_count(
         self, db_session: AsyncSession
@@ -46,18 +51,22 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return response.all()
 
     async def get_multi_paginated(
-        self, db_session: AsyncSession, *, params: Params, query: Optional[Union[T, Select[T], SelectOfScalar[T]]] = None
+        self, db_session: AsyncSession, *, params: Optional[Params] = Params(), query: Optional[Union[T, Select[T], SelectOfScalar[T]]] = None
     ) -> Page[ModelType]:
         if query == None:
             query = self.model
-        return await paginate(db_session, query, params)        
+        return await paginate(db_session, query, params)
+
 
     async def create(
-        self, db_session: AsyncSession, *, obj_in: CreateSchemaType
+        self, db_session: AsyncSession, *, obj_in: Union[CreateSchemaType, ModelType], created_by_id: Optional[Union[UUID, str]] = None
     ) -> ModelType:
         db_obj = self.model.from_orm(obj_in)  # type: ignore
         db_obj.created_at = datetime.utcnow()
         db_obj.updated_at = datetime.utcnow()
+        if(created_by_id):
+            db_obj.created_by_id = created_by_id        
+
         db_session.add(db_obj)
         await db_session.commit()
         await db_session.refresh(db_obj)
@@ -68,7 +77,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session: AsyncSession,
         *,
         obj_current: ModelType,
-        obj_new: Union[UpdateSchemaType, Dict[str, Any]]
+        obj_new: Union[UpdateSchemaType, Dict[str, Any], ModelType]
     ) -> ModelType:
         obj_data = jsonable_encoder(obj_current)
 
@@ -88,7 +97,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj_current
 
     async def remove(
-        self, db_session: AsyncSession, *, id: Union[UUID, str, int]
+        self, db_session: AsyncSession, *, id: Union[UUID, str]
     ) -> ModelType:
         response = await db_session.exec(select(self.model).where(self.model.id == id))
         obj = response.one()

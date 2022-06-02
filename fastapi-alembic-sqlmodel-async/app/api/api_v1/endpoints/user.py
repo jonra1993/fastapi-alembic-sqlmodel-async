@@ -11,6 +11,7 @@ from app.api import deps
 from app import crud
 from app.models import User
 from sqlmodel import select
+from uuid import UUID
 
 router = APIRouter()
 
@@ -19,7 +20,7 @@ router = APIRouter()
 async def read_users_list(    
     params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     """
     Retrieve users.
@@ -31,7 +32,7 @@ async def read_users_list(
 async def get_hero_list_order_by_created_at(
     params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user()),
 ):
     query = select(User).order_by(User.created_at)
     users = await crud.user.get_multi_paginated(db_session, query=query, params=params)
@@ -39,16 +40,16 @@ async def get_hero_list_order_by_created_at(
 
 @router.get("/user/{user_id}", response_model=IGetResponseBase[IUserRead])
 async def get_user_by_id(
-    user_id: int,
+    user_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     user = await crud.user.get_user_by_id(db_session, id=user_id)
     return IGetResponseBase[IUserRead](data=user)
 
 @router.get("/user", response_model=IGetResponseBase[IUserRead])
 async def get_my_data(
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     return IGetResponseBase[IUserRead](data=current_user)
 
@@ -67,7 +68,7 @@ async def create_user(
 
 @router.delete("/user/{user_id}", response_model=IDeleteResponseBase[IUserRead])
 async def remove_user(
-    user_id: int,
+    user_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_active_superuser),
 ):

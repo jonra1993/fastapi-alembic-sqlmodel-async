@@ -3,6 +3,8 @@ from sqlmodel import Field, SQLModel, Relationship, Column, DateTime
 from app.models.links import LinkGroupUser
 from typing import List, Optional
 from pydantic import EmailStr
+from app.models.base_uuid_model import BaseUUIDModel
+from uuid import UUID
 
 class UserBase(SQLModel):
     first_name: str
@@ -14,15 +16,12 @@ class UserBase(SQLModel):
     phone: Optional[str]
     state: Optional[str]
     country: Optional[str]
-    address: Optional[str]
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
+    address: Optional[str]    
 
-class User(UserBase, table=True):
-    id: Optional[int] = Field(default=None, nullable=False, primary_key=True)
+class User(BaseUUIDModel, UserBase, table=True):    
     hashed_password: str = Field(
         nullable=False, index=True
     )
-    role_id: Optional[int] = Field(default=None, foreign_key="role.id")
+    role_id: Optional[UUID] = Field(default=None, foreign_key="role.id")
     role: Optional["Role"] = Relationship(back_populates="users", sa_relationship_kwargs={"lazy": "selectin"})
     groups: List["Group"] = Relationship(back_populates="users", link_model=LinkGroupUser, sa_relationship_kwargs={"lazy": "selectin"})

@@ -7,15 +7,14 @@ from app.schemas.user import IUserCreate, IUserUpdate
 from app.models.user import User
 from app.core.security import verify_password, get_password_hash
 from datetime import datetime
-from sqlalchemy.orm import selectinload
-
+from uuid import UUID
 
 class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
     async def get_by_email(self, db_session: AsyncSession, *, email: str) -> Optional[User]:
         users =  await db_session.exec(select(User).where(User.email == email))
         return users.first()
 
-    async def get_user_by_id(self, db_session: AsyncSession, id: int) -> Optional[User]:
+    async def get_user_by_id(self, db_session: AsyncSession, id: UUID) -> Optional[User]:
         return await super().get(db_session, id=id)
 
     async def create(self, db_session: AsyncSession, *, obj_in: IUserCreate) -> User:

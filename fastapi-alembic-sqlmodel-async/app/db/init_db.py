@@ -27,7 +27,23 @@ users = [
         "email":settings.FIRST_SUPERUSER_EMAIL,
         "is_superuser": True,
         "role":"admin"
-    }         
+    },
+    {
+        "first_name":"Manager",
+        "last_name":"FastAPI",
+        "password":settings.FIRST_SUPERUSER_PASSWORD,
+        "email":"manager@example.com",
+        "is_superuser": False,
+        "role":"manager"
+    },
+    {
+        "first_name":"User",
+        "last_name":"FastAPI",
+        "password":settings.FIRST_SUPERUSER_PASSWORD,
+        "email":"user@example.com",
+        "is_superuser": False,
+        "role":"user"
+    }                 
 ]
 
 async def init_db(db_session: AsyncSession) -> None:

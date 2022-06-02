@@ -1,5 +1,4 @@
-from typing import AsyncGenerator
-
+from typing import AsyncGenerator, List
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
@@ -26,36 +25,44 @@ async def get_general_meta(
     current_roles = await crud.role.get_multi(db_session, skip=0, limit=100)
     return IMetaGeneral(roles=current_roles)
 
-async def get_current_user(
-    db_session: AsyncSession = Depends(get_db), token: str = Depends(reusable_oauth2)
-) -> User:
-    try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
-        )
-    except (jwt.JWTError, ValidationError):
-        print(ValidationError)
+def get_current_user(required_roles: List[str] = None) -> User:
+    async def current_user(
+            db_session: AsyncSession = Depends(get_db),
+            token: str = Depends(reusable_oauth2)
+    ) -> User:        
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])
+        except (jwt.JWTError, ValidationError):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Could not validate credentials",
+            )
+        user: User = await crud.user.get_user_by_id(db_session, id=payload["sub"])
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        if not user.is_active:
+            raise HTTPException(status_code=400, detail="Inactive user")
 
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Could not validate credentials",
-        )
-    user = await crud.user.get_user_by_id(db_session, id=int(payload["sub"]))
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+        if required_roles:
+            is_valid_role = False
+            for role in required_roles:
+                if role == user.role.name:
+                    is_valid_role = True
+                    
+            if is_valid_role == False:
+                raise HTTPException(
+                    status_code=403,
+                    detail=f'Role "{role}" is required to perform this action',
+                )
+        
+        return user
 
-
-def get_current_active_user(
-    current_user: User = Depends(get_current_user),
-) -> User:
-    if not current_user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
 
 def get_current_active_superuser(
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(get_current_user()),
 ) -> User:
     if not current_user.is_superuser:
         raise HTTPException(

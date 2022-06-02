@@ -1,15 +1,12 @@
-from datetime import datetime
-from sqlmodel import Field, SQLModel, Relationship
-from typing import List, Optional
+from sqlmodel import SQLModel, Relationship
+from typing import List
+from app.models.base_uuid_model import BaseUUIDModel
 
 class RoleBase(SQLModel):
     name: str
     description: str
 
-class Role(RoleBase, table=True):
-    id: Optional[int] = Field(default=None, nullable=False, primary_key=True)
-    updated_at: Optional[datetime]
-    created_at: Optional[datetime]
+class Role(BaseUUIDModel, RoleBase, table=True):    
     users: List["User"] = Relationship(back_populates="role", sa_relationship_kwargs={"lazy": "selectin"})
 
 

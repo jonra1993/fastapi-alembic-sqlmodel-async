@@ -10,6 +10,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from app import crud
+from uuid import UUID
 
 router = APIRouter()    
 
@@ -17,16 +18,16 @@ router = APIRouter()
 async def get_groups(
     params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     groups = await crud.group.get_multi_paginated(db_session, params=params)
     return IGetResponseBase[Page[IGroupRead]](data=groups)
 
 @router.get("/group/{group_id}", response_model=IGetResponseBase[IGroupReadWithUsers])
 async def get_group_by_id(
-    group_id: int,
+    group_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     group = await crud.group.get(db_session, id=group_id)
     return IGetResponseBase[IGroupReadWithUsers](data=group)
@@ -35,17 +36,17 @@ async def get_group_by_id(
 async def create_group(
     group: IGroupCreate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     new_group = await crud.group.create_group(db_session, obj_in=group, user_id=current_user.id)
     return IPostResponseBase[IGroupRead](data=new_group)  
 
 @router.put("/group/{group_id}", response_model=IPutResponseBase[IGroupRead])
 async def update_group(
-    group_id: int,
+    group_id: UUID,
     group: IGroupUpdate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     group_current = await crud.group.get(db_session=db_session, id=group_id)
     if not group_current:
@@ -56,10 +57,10 @@ async def update_group(
 
 @router.post("/group/add_user/{user_id}/{group_id}", response_model=IPostResponseBase[IGroupRead])
 async def add_user_to_group(
-    user_id: int,
-    group_id: int,
+    user_id: UUID,
+    group_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     user = await crud.user.get(db_session=db_session, id=user_id)
     if not user:

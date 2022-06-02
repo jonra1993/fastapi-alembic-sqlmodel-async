@@ -3,6 +3,7 @@ from app.models.group import GroupBase
 from pydantic import BaseModel, EmailStr
 from .role import IRoleRead
 from typing import Optional, List
+from uuid import UUID
 
 class IUserCreate(BaseModel):
     first_name: Optional[str]
@@ -10,18 +11,18 @@ class IUserCreate(BaseModel):
     password : Optional[str]
     email: EmailStr
     is_superuser: bool = False
-    role_id: int
+    role_id: UUID
         
 class IUserReadWithoutGroups(UserBase):
-    id: int
+    id: UUID
     role: Optional[IRoleRead] = None
 
 
 class IGroupRead(GroupBase):
-    id: int
+    id: UUID
     
 class IUserRead(UserBase):
-    id: int    
+    id: UUID    
     role: Optional[IRoleRead] = None
     groups: List[IGroupRead] = []
 

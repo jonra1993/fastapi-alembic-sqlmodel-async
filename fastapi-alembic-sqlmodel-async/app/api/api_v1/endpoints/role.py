@@ -10,6 +10,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from app import crud
+from uuid import UUID
 
 router = APIRouter()    
 
@@ -17,16 +18,16 @@ router = APIRouter()
 async def get_roles(
     params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     roles = await crud.role.get_multi_paginated(db_session, params=params)
     return IGetResponseBase[Page[IRoleRead]](data=roles)
 
 @router.get("/role/{role_id}", response_model=IGetResponseBase[IRoleRead])
 async def get_role_by_id(
-    role_id: int,
+    role_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     role = await crud.role.get(db_session, id=role_id)
     return IGetResponseBase[IRoleRead](data=role)
@@ -35,17 +36,17 @@ async def get_role_by_id(
 async def create_role(
     role: IRoleCreate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     new_permission = await crud.role.create(db_session, obj_in=role)
     return IPostResponseBase[IRoleRead](data=new_permission)  
 
 @router.put("/role/{role_id}", response_model=IPutResponseBase[IRoleRead])
 async def update_permission(
-    role_id: int,
+    role_id: UUID,
     role: IRoleUpdate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user),
+    current_user: User = Depends(deps.get_current_user()),
 ):
     current_role = await crud.role.get(db_session=db_session, id=role_id)
     if not current_role:

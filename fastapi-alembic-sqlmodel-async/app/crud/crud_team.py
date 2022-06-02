@@ -3,9 +3,10 @@ from app.crud.base_sqlmodel import CRUDBase
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.models.team import Team
 from datetime import datetime
+from uuid import UUID
 
 class CRUDTeam(CRUDBase[Team, ITeamCreate, ITeamUpdate]):
-    async def create_team(self, db_session: AsyncSession, *, obj_in: ITeamCreate, user_id: int) -> Team:        
+    async def create_team(self, db_session: AsyncSession, *, obj_in: ITeamCreate, user_id: UUID) -> Team:        
         db_obj = Team.from_orm(obj_in)
         db_obj.created_at = datetime.utcnow()
         db_obj.updated_at = datetime.utcnow()

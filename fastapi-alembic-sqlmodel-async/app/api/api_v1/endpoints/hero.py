@@ -13,6 +13,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from sqlmodel import select
 from app import crud
+from uuid import UUID
 
 router = APIRouter()
 
@@ -21,7 +22,7 @@ router = APIRouter()
 async def get_hero_list(
     params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user()),
 ):
     heroes = await crud.hero.get_multi_paginated(db_session, params=params)
     return IGetResponseBase[Page[IHeroReadWithTeam]](data=heroes)
@@ -30,7 +31,7 @@ async def get_hero_list(
 async def get_hero_list_order_by_created_at(
     params: Params = Depends(),
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user()),
 ):
     query = select(Hero).order_by(Hero.created_at)
     heroes = await crud.hero.get_multi_paginated(db_session, query=query, params=params)
@@ -38,9 +39,9 @@ async def get_hero_list_order_by_created_at(
 
 @router.get("/hero/{hero_id}", response_model=IGetResponseBase[IHeroReadWithTeam])
 async def get_hero_by_id(
-    hero_id: int,
+    hero_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user()),
 ):
     hero = await crud.hero.get(db_session, id=hero_id)
     if not hero:
@@ -52,7 +53,7 @@ async def get_hero_by_id(
 async def create_hero(
     hero: IHeroCreate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user()),
 ):
     heroe = await crud.hero.create_hero(db_session, obj_in=hero, user_id=current_user.id)
     return IPostResponseBase[IHeroRead](data=heroe)
@@ -60,10 +61,10 @@ async def create_hero(
 
 @router.put("/hero/{hero_id}", response_model=IPutResponseBase[IHeroRead])
 async def update_hero(
-    hero_id: int,
+    hero_id: UUID,
     hero: IHeroUpdate,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user()),
 ):
     current_hero = await crud.hero.get(db_session=db_session, id=hero_id)
     if not current_hero:
@@ -77,9 +78,9 @@ async def update_hero(
 
 @router.delete("/hero/{hero_id}", response_model=IDeleteResponseBase[IHeroRead])
 async def remove_hero(
-    hero_id: int,
+    hero_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
-    current_user: User = Depends(deps.get_current_active_user)
+    current_user: User = Depends(deps.get_current_user()),
 ):
     current_hero = await crud.hero.get(db_session=db_session, id=hero_id)
     if not current_hero:
