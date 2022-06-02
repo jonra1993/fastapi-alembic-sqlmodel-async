@@ -37,7 +37,7 @@ You can connect to the Database using PGAdmin4 and use the credentials from .env
 
 ## ERD Database model
 <p align="center">
-  <img src="static/erd.png" align="center"/>
+  <img src="static/erd.jpg" align="center"/>
 </p>
 
 
