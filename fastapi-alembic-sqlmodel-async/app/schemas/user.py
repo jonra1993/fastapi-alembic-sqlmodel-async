@@ -4,6 +4,7 @@ from pydantic import BaseModel, EmailStr
 from .role import IRoleRead
 from typing import Optional, List
 from uuid import UUID
+from enum import Enum
 
 class IUserCreate(BaseModel):
     first_name: Optional[str]
@@ -30,3 +31,7 @@ class IUserUpdate(BaseModel):
     id : int
     email : EmailStr
     is_active : bool = True
+
+class IUserStatus(str, Enum):
+    active = 'active'
+    inactive = 'inactive'

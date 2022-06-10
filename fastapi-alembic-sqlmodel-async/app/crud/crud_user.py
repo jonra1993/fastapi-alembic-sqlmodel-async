@@ -17,7 +17,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
     async def get_user_by_id(self, db_session: AsyncSession, id: UUID) -> Optional[User]:
         return await super().get(db_session, id=id)
 
-    async def create(self, db_session: AsyncSession, *, obj_in: IUserCreate) -> User:
+    async def create_with_role(self, db_session: AsyncSession, *, obj_in: IUserCreate) -> User:
         db_obj = User(
             first_name=obj_in.first_name,
             last_name=obj_in.last_name,
