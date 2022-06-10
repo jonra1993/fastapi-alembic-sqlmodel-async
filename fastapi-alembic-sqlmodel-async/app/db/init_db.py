@@ -37,4 +37,4 @@ async def init_db(db_session: AsyncSession) -> None:
         role = await crud.role.get_role_by_name(db_session, name=user["role"])
         if not current_user:
             user["data"].role_id=role.id
-            await crud.user.create(db_session, obj_in=user["data"])
+            await crud.user.create_with_role(db_session, obj_in=user["data"])
