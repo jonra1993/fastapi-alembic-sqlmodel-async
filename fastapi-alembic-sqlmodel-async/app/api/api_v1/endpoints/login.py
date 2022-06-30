@@ -57,9 +57,9 @@ async def get_refresh_token(
 
     if payload['type'] == 'refresh':
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        user = await crud.user.get(db_session, id=int(payload['sub']))
+        user = await crud.user.get(db_session, id=payload['sub'])
         if user.is_active:
-            access_token = security.create_access_token( int(payload['sub']), expires_delta=access_token_expires)         
+            access_token = security.create_access_token(payload['sub'], expires_delta=access_token_expires)         
             return IPostResponseBase[TokenRead](data=TokenRead(access_token=access_token,token_type= "bearer"), message="Access token generated correctly")
         else:
             raise HTTPException(status_code=404,detail="User inactive")
