@@ -1,10 +1,8 @@
-from typing import List
 from app.schemas.role import IRoleCreate, IRoleUpdate
 from app.models.role import Role
 from app.models.user import User
 from app.crud.base_sqlmodel import CRUDBase
 from sqlmodel.ext.asyncio.session import AsyncSession
-from datetime import datetime
 from sqlmodel import select
 from uuid import UUID
 
