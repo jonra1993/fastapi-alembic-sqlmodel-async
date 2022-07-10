@@ -38,6 +38,14 @@ services:
       - POSTGRES_HOST_AUTH_METHOD= "trust"
       - POSTGRESQL_POSTGRES_PASSWORD= ${DATABASE_PASSWORD}
       
+  redis_server:
+    container_name: redis_server
+    image: "redis:alpine"
+    restart: always
+    expose:
+      - "6379"
+    env_file: .env
+
   traefik-proxy:
     container_name: traefik-proxy
     restart: always

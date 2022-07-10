@@ -4,6 +4,9 @@ from app.api.api_v1.api import api_router
 from app.core.config import settings
 from app.db.session import SessionLocal
 from sqlmodel import text
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+import aioredis
 
 app = FastAPI(
     title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
@@ -22,7 +25,7 @@ if settings.BACKEND_CORS_ORIGINS:
 async def add_postgresql_extension() -> None:
     async with SessionLocal() as session:
         query = text("CREATE EXTENSION IF NOT EXISTS pg_trgm")
-        await session.execute(query)
+        return await session.execute(query)
 
 @app.get("/")
 async def root():
@@ -31,6 +34,8 @@ async def root():
 @app.on_event("startup")
 async def on_startup():
     await add_postgresql_extension()
+    redis =  aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}", encoding="utf8", decode_responses=True)
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     print('startup fastapi')    
 
 app.include_router(api_router, prefix=settings.API_V1_STR)

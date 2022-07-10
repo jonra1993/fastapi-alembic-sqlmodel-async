@@ -73,7 +73,9 @@ All files on static folder will be server by nginx container as static files. Yo
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
 - [fastapi-sqlmodel-alembic](https://github.com/testdrivenio/fastapi-sqlmodel-alembic).
 - [sqlmodel-tutorial](https://sqlmodel.tiangolo.com/tutorial/fastapi/).
-- [fastapi-keycloak](https://github.com/code-specialist/fastapi-keycloak)
+- [fastapi-pagination](https://github.com/uriyyo/fastapi-pagination).
+- [fastapi-cache](https://github.com/long2ice/fastapi-cache).
+- [fastapi-keycloak](https://github.com/code-specialist/fastapi-keycloak).
 
 ## TODO List:
 
@@ -87,6 +89,8 @@ All files on static folder will be server by nginx container as static files. Yo
 - [x] Add static server with nginx
 - [x] Add basic RBAC (Role base access control)
 - [x] Add sample heroes, teams and groups on init db
+- [x] Add cache configuration using fastapi-cache2 and redis
+- [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
 - [ ] Add AuthN and AuthZ using Keycloak

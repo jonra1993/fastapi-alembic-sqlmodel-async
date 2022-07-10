@@ -20,6 +20,7 @@ black = "^22.1.0"
 SQLAlchemy = "1.4.35"
 python-multipart = "^0.0.5"
 fastapi-pagination = {extras = ["sqlmodel"], version = "^0.9.1"}
+fastapi-cache2 = {extras = ["redis"], version = "^0.1.8"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

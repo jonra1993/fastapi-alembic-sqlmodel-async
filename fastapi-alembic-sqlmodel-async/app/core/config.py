@@ -5,17 +5,17 @@ import secrets
 
 class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
-    PROJECT_NAME: str = os.environ["PROJECT_NAME"]
+    PROJECT_NAME: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 180
-    DATABASE_USER: str = os.environ.get("DATABASE_USER")
-    DATABASE_PASSWORD: str = os.environ.get("DATABASE_PASSWORD")
-    DATABASE_HOST: str = os.environ.get("DATABASE_HOST")
-    DATABASE_PORT: Union[int, str] = os.environ.get("DATABASE_PORT")
-    DATABASE_NAME: str = os.environ.get("DATABASE_NAME")
-    ASYNC_DATABASE_URI: Optional[
-        Any
-    ] = f"postgresql+asyncpg://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
+    DATABASE_USER: str
+    DATABASE_PASSWORD: str
+    DATABASE_HOST: str
+    DATABASE_PORT: Union[int, str]
+    DATABASE_NAME: str
+    REDIS_HOST: str
+    REDIS_PORT: str
+    ASYNC_DATABASE_URI: Optional[str]
 
     @validator("ASYNC_DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
@@ -26,18 +26,16 @@ class Settings(BaseSettings):
             user=values.get("DATABASE_USER"),
             password=values.get("DATABASE_PASSWORD"),
             host=values.get("DATABASE_HOST"),
-            port=values.get("DATABASE_PORT"),
+            port=str(values.get("DATABASE_PORT")),
             path=f"/{values.get('DATABASE_NAME') or ''}",
         )
 
-    FIRST_SUPERUSER_EMAIL: EmailStr = os.environ.get("FIRST_SUPERUSER_EMAIL")
-    FIRST_SUPERUSER_PASSWORD: str = os.environ.get("FIRST_SUPERUSER_PASSWORD")
-    API_V1_STR: str = "/api/v1"
+    FIRST_SUPERUSER_EMAIL: EmailStr
+    FIRST_SUPERUSER_PASSWORD: str
+
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ENCRYPT_KEY = secrets.token_urlsafe(32)
-    BACKEND_CORS_ORIGINS: Union[List[str], List[AnyHttpUrl]] = os.environ[
-        "BACKEND_CORS_ORIGINS"
-    ]
+    BACKEND_CORS_ORIGINS: Union[List[str], List[AnyHttpUrl]]
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
         if isinstance(v, str) and not v.startswith("["):
@@ -45,6 +43,7 @@ class Settings(BaseSettings):
         elif isinstance(v, (list, str)):
             return v
         raise ValueError(v)
+    
     class Config:
         case_sensitive = True
         env_file = os.path.expanduser("~/.env")
