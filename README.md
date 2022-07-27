@@ -74,7 +74,7 @@ All files on static folder will be server by nginx container as static files. Yo
 
 ## Production Deployment
 Remember to use a persistant PostgreSQL database, update the new credentials on .env file and use this command to run the project in a production environment. For testing this configuration on localhost you can uncomment the database container and 
-depends_on of fastapi container otherwise it will not worked on a local environment.
+depends_on of fastapi container otherwise it will not work on a local environment.
 
 ```sh
 docker-compose up --build
