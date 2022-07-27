@@ -46,14 +46,33 @@ services:
       - "6379"
     env_file: .env
 
+  nginx:
+    container_name: nginx
+    restart: unless-stopped
+    logging:
+      driver: none
+    image: "nginx:latest"
+    expose:
+      - "8080"    
+    volumes:
+      - ./static:/code/static
+      - ./nginx-config-files/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx-config-files/app.nginx.template:/etc/nginx/templates/app.nginx.template
+      - "${EB_LOG_BASE_DIR:-./nginx-config-files}/nginx-proxy:/var/log/nginx"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx_local.entrypoints=web"
+      - "traefik.http.routers.nginx_local.rule=Host(`nginx.${LOCAL_1}`, `nginx.${LOCAL_2}`, `nginx.${EXT_ENDPOINT1}`)"
+      - traefik.http.services.nginx_local_service.loadbalancer.server.port=8080
+
   traefik-proxy:
     container_name: traefik-proxy
     restart: always
     image: "traefik:latest"
     command:
       - "--providers.docker=true"
-    expose:
-      - 80
+    ports:
+      - "80:80"
     depends_on:      
       - fastapi_server
     volumes:
@@ -67,17 +86,3 @@ services:
       - "traefik.http.routers.dashboard.service=api@internal"
       - "traefik.http.routers.dashboard.middlewares=auth"
       - "traefik.http.middlewares.auth.basicauth.usersfile=/.htpasswd"
-
-  nginx:
-    container_name: nginx
-    restart: unless-stopped
-    logging:
-      driver: none
-    image: "nginx:latest"
-    ports:
-      - "80:8080"
-    volumes:
-      - ./static:/code/static
-      - ./nginx-config-files/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx-config-files/app.nginx.template:/etc/nginx/templates/app.nginx.template
-      - "${EB_LOG_BASE_DIR:-./nginx-config-files}/nginx-proxy:/var/log/nginx"

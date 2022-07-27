@@ -56,7 +56,7 @@ As this project uses traefik, you can access to the documentation with the follo
 </p>
 
 ## Traefik Dashboard
-You can access to Traefik Dashboard using the following link [http://traefik.localhost/](http://traefik.localhost/). You should use **username: test** and **pass: test**. If you want to change the password, you can find more information of how to do it [here](https://doc.traefik.io/traefik/operations/api/)
+Traefik has been configurated as reverse proxy on the ingress of the project; you can access to Traefik Dashboard using the following link [http://traefik.localhost/](http://traefik.localhost/). You should use **username: test** and **pass: test**. If you want to change the password, you can find more information of how to do it [here](https://doc.traefik.io/traefik/operations/api/)
 
 <p align="center">
   <img src="static/traefik1.png" align="center"/>
@@ -66,7 +66,8 @@ You can access to Traefik Dashboard using the following link [http://traefik.loc
 </p>
 
 ## Static files
-All files on static folder will be server by nginx container as static files. You can check it with this link [http://localhost/static/1.png](http://localhost/static/1.png)
+All files on static folder will be server by nginx container as static files. You can check it with this link [http://nginx.localhost/1.png](http://nginx.localhost/1.png)
+
 
 ## Inspiration and References
 
@@ -90,11 +91,12 @@ All files on static folder will be server by nginx container as static files. Yo
 - [x] Add basic RBAC (Role base access control)
 - [x] Add sample heroes, teams and groups on init db
 - [x] Add cache configuration using fastapi-cache2 and redis
+- [ ] Add one to one relationship sample
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
 - [ ] Add AuthN and AuthZ using Keycloak
-- [ ] Add one to one relationship sample
+- [ ] Convert repo into template using cookiecutter
 - [ ] Add Celery sample for tasks
 
 
