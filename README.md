@@ -9,27 +9,27 @@ Create an **.env** file on root folder and copy the content from **.env.example*
 ## Run project using Docker compose
 
 ```sh
-docker-compose up --build
+docker-compose -f docker-compose-dev.yml up --build
 ```
 
 ## Run Alembic migrations
 
 ```sh
-docker-compose exec fastapi_server alembic revision --autogenerate
-docker-compose exec fastapi_server alembic upgrade head
+docker-compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate
+docker-compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head
 ```
 
 ## Setup database with initial data
 This creates a sample users on database.
 ```
-docker-compose exec fastapi_server python app/initial_data.py
+docker-compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py
 ```
 
 - **Admin credentials ->** *username:* admin@admin.com and *password:* admin 
 - **Manager credentials ->** *username:* manager@example.com and *password:* admin 
 - **User credentials ->** *username:* user@example.com and *password:* admin 
 
-You can connect to the Database using PGAdmin4 and use the credentials from .env file. Database port on local machine has been configured to **5454** on docker-compose.yml file
+You can connect to the Database using PGAdmin4 and use the credentials from .env file. Database port on local machine has been configured to **5454** on docker-compose-dev.yml file
 
 <p align="center">
   <img src="static/tables.png" align="center"/>
@@ -40,8 +40,12 @@ You can connect to the Database using PGAdmin4 and use the credentials from .env
   <img src="static/erd.jpg" align="center"/>
 </p>
 
+## Containers architecture
+<p align="center">
+  <img src="static/container_architecture.png" align="center"/>
+</p>
 
-As this project uses traefik, you can access to the documentation with the following path [http://fastapi.localhost/docs](http://fastapi.localhost/docs)
+As this project uses [traefik](https://doc.traefik.io/traefik/routing/routers/) as reverse proxy, which uses namespaces routing, you can access to the documentation with the following path [http://fastapi.localhost/docs](http://fastapi.localhost/docs)
 
 ## Preview
   
@@ -68,6 +72,13 @@ Traefik has been configurated as reverse proxy on the ingress of the project; yo
 ## Static files
 All files on static folder will be server by nginx container as static files. You can check it with this link [http://nginx.localhost/1.png](http://nginx.localhost/1.png)
 
+## Production Deployment
+Remember to use a persistant PostgreSQL database, update the new credentials on .env file and use this command to run the project in a production environment. For testing this configuration on localhost you can uncomment the database container and 
+depends_on of fastapi container otherwise it will not worked on a local environment.
+
+```sh
+docker-compose up --build
+```
 
 ## Inspiration and References
 
@@ -96,6 +107,7 @@ All files on static folder will be server by nginx container as static files. Yo
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
 - [ ] Add AuthN and AuthZ using Keycloak
+- [ ] Add instructions for production deployment using github actions and dockerhub (CI/CD)
 - [ ] Convert repo into template using cookiecutter
 - [ ] Add Celery sample for tasks
 

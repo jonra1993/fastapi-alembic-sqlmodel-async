@@ -5,38 +5,38 @@ services:
     container_name: fastapi_server
     build: ./fastapi-alembic-sqlmodel-async
     restart: always
-    command: "sh -c 'alembic upgrade head && gunicorn -w 3 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000 --timeout 600'"
+    command: "sh -c 'alembic upgrade head && uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000'"
     volumes:
       - ./fastapi-alembic-sqlmodel-async:/code
     expose:
       - "8000"
     env_file: ".env"
-    # depends_on:
-    #   - database
+    depends_on:
+      - database
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.fastapi_local.entrypoints=web"
       - "traefik.http.routers.fastapi_local.rule=Host(`fastapi.${LOCAL_1}`, `fastapi.${LOCAL_2}`, `fastapi.${EXT_ENDPOINT1}`)"
       - traefik.http.services.fastapi_localservice.loadbalancer.server.port=8000
   
-  # database:
-  #   image: bitnami/postgresql:13.3.0
-  #   restart: always
-  #   container_name: database
-  #   env_file: ".env"
-  #   user: root
-  #   volumes:
-  #     - ./db_docker:/bitnami/postgresql
-  #   ports:
-  #     - 5454:5432  # Remove this on production
-  #   expose:
-  #     - 5432
-  #   environment:
-  #     - POSTGRES_USERNAME=${DATABASE_USER}
-  #     - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-  #     - POSTGRES_DATABASE=${DATABASE_NAME}
-  #     - POSTGRES_HOST_AUTH_METHOD= "trust"
-  #     - POSTGRESQL_POSTGRES_PASSWORD= ${DATABASE_PASSWORD}
+  database:
+    image: bitnami/postgresql:13.3.0
+    restart: always
+    container_name: database
+    env_file: ".env"
+    user: root
+    volumes:
+      - ./db_docker:/bitnami/postgresql
+    ports:
+      - 5454:5432  # Remove this on production
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USERNAME=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DATABASE=${DATABASE_NAME}
+      - POSTGRES_HOST_AUTH_METHOD= "trust"
+      - POSTGRESQL_POSTGRES_PASSWORD= ${DATABASE_PASSWORD}
       
   redis_server:
     container_name: redis_server
