@@ -12,13 +12,6 @@ Create an **.env** file on root folder and copy the content from **.env.example*
 docker-compose -f docker-compose-dev.yml up --build
 ```
 
-## Run Alembic migrations
-
-```sh
-docker-compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate
-docker-compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head
-```
-
 ## Setup database with initial data
 This creates a sample users on database.
 ```
@@ -71,6 +64,13 @@ Traefik has been configurated as reverse proxy on the ingress of the project; yo
 
 ## Static files
 All files on static folder will be server by nginx container as static files. You can check it with this link [http://nginx.localhost/1.png](http://nginx.localhost/1.png)
+
+## Run Alembic migrations (Only if you change the DB model)
+
+```sh
+docker-compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate
+docker-compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head
+```
 
 ## Production Deployment
 Remember to use a persistant PostgreSQL database, update the new credentials on .env file and use this command to run the project in a production environment. For testing this configuration on localhost you can uncomment the database container and 
