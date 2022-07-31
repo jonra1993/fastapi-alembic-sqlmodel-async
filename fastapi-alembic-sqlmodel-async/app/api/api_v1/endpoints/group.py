@@ -62,8 +62,7 @@ async def add_user_to_group(
     group_id: UUID,
     db_session: AsyncSession = Depends(deps.get_db),
     current_user: User = Depends(deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])),
-):
-    print("user_id", user_id)
+):    
     user = await crud.user.get(db_session=db_session, id=user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
