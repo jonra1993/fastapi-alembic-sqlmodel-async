@@ -12,7 +12,7 @@ class CRUDRole(CRUDBase[Role, IRoleCreate, IRoleUpdate]):
         return role.first()
 
     async def add_role_to_user(self, db_session: AsyncSession, *, user: User, role_id: UUID) -> Role:
-        role = await super().get(db_session, role_id)
+        role = await super().get(db_session, id=role_id)
         role.users.append(user)        
         db_session.add(role)
         await db_session.commit()
