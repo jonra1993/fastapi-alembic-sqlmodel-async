@@ -75,7 +75,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         user = await self.get_by_email(db_session, email=email)
         if not user:
             return None
-        if not verify_password(password, user.hashed_password):
+        if not await verify_password(password, user.hashed_password):
             return None
         return user
 
