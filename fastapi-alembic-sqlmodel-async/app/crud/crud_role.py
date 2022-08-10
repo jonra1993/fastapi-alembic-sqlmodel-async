@@ -11,7 +11,7 @@ from uuid import UUID
 class CRUDRole(CRUDBase[Role, IRoleCreate, IRoleUpdate]):
     async def get_role_by_name(self, *, name: str, db_session: Optional[AsyncSession] = None) -> Role:
         if db_session == None:
-            db_session = db.session()
+            db_session = db.session
         role = await db_session.execute(select(Role).where(Role.name == name))
         return role.scalar_one_or_none()
 

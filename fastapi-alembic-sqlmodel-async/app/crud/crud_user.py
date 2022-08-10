@@ -13,7 +13,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
     async def get_by_email(self, *, email: str, db_session: Optional[AsyncSession] = None) -> Optional[User]:
         if db_session == None:
-            db_session = db.session()
+            db_session = db.session
         users =  await db_session.execute(select(User).where(User.email == email))
         return users.scalar_one_or_none()        
 
@@ -22,7 +22,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
 
     async def create_with_role(self, *, obj_in: IUserCreate, db_session: Optional[AsyncSession] = None) -> User:
         if db_session == None:
-            db_session = db.session()
+            db_session = db.session
         db_obj = User(
             first_name=obj_in.first_name,
             last_name=obj_in.last_name,

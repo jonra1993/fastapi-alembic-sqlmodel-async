@@ -11,7 +11,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 class CRUDGroup(CRUDBase[Group, IGroupCreate, IGroupUpdate]):
     async def get_group_by_name(self, *, name: str, db_session: Optional[AsyncSession] = None) -> Group:
         if db_session == None:
-            db_session = db.session()
+            db_session = db.session
         group = await db_session.execute(select(Group).where(Group.name == name))
         return group.scalar_one_or_none()
 
@@ -25,7 +25,7 @@ class CRUDGroup(CRUDBase[Group, IGroupCreate, IGroupUpdate]):
 
     async def add_users_to_group(self, *, users: List[User], group_id: UUID, db_session: Optional[AsyncSession] = None) -> Group:
         if db_session == None:
-            db_session = db.session()
+            db_session = db.session
         group = await super().get(id=group_id)
         group.users.extend(users)        
         db_session.add(group)
