@@ -21,6 +21,8 @@ SQLAlchemy = "1.4.35"
 python-multipart = "^0.0.5"
 fastapi-pagination = {extras = ["sqlmodel"], version = "^0.9.1"}
 fastapi-cache2 = {extras = ["redis"], version = "^0.1.8"}
+fastapi-async-sqlalchemy = "^0.3.12"
+aioredis = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
