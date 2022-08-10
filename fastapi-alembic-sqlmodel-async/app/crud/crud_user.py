@@ -8,16 +8,21 @@ from app.models.user import User
 from app.core.security import verify_password, get_password_hash
 from datetime import datetime
 from uuid import UUID
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
-    async def get_by_email(self, *, email: str) -> Optional[User]:
-        users =  await db.session.execute(select(User).where(User.email == email))
+    async def get_by_email(self, *, email: str, db_session: Optional[AsyncSession] = None) -> Optional[User]:
+        if db_session == None:
+            db_session = db.session()
+        users =  await db_session.execute(select(User).where(User.email == email))
         return users.scalar_one_or_none()        
 
     async def get_user_by_id(self, id: UUID) -> Optional[User]:
         return await super().get(id=id)
 
-    async def create_with_role(self, *, obj_in: IUserCreate) -> User:
+    async def create_with_role(self, *, obj_in: IUserCreate, db_session: Optional[AsyncSession] = None) -> User:
+        if db_session == None:
+            db_session = db.session()
         db_obj = User(
             first_name=obj_in.first_name,
             last_name=obj_in.last_name,
@@ -28,9 +33,9 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
             updated_at=datetime.utcnow(),
             role_id=obj_in.role_id
         )
-        db.session.add(db_obj)
-        await db.session.commit()
-        await db.session.refresh(db_obj)
+        db_session.add(db_obj)
+        await db_session.commit()
+        await db_session.refresh(db_obj)
         return db_obj
 
     def update(
