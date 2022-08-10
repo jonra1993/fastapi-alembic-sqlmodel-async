@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional, Union
 from pydantic.networks import EmailStr
 from app.crud.base_sqlmodel import CRUDBase
-from sqlmodel.ext.asyncio.session import AsyncSession
+from fastapi_async_sqlalchemy import db
 from sqlmodel import select
 from app.schemas.user import IUserCreate, IUserUpdate
 from app.models.user import User
@@ -10,14 +10,14 @@ from datetime import datetime
 from uuid import UUID
 
 class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
-    async def get_by_email(self, db_session: AsyncSession, *, email: str) -> Optional[User]:
-        users =  await db_session.exec(select(User).where(User.email == email))
-        return users.first()
+    async def get_by_email(self, *, email: str) -> Optional[User]:
+        users =  await db.session.execute(select(User).where(User.email == email))
+        return users.scalar_one_or_none()        
 
-    async def get_user_by_id(self, db_session: AsyncSession, id: UUID) -> Optional[User]:
-        return await super().get(db_session, id=id)
+    async def get_user_by_id(self, id: UUID) -> Optional[User]:
+        return await super().get(id=id)
 
-    async def create_with_role(self, db_session: AsyncSession, *, obj_in: IUserCreate) -> User:
+    async def create_with_role(self, *, obj_in: IUserCreate) -> User:
         db_obj = User(
             first_name=obj_in.first_name,
             last_name=obj_in.last_name,
@@ -28,14 +28,13 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
             updated_at=datetime.utcnow(),
             role_id=obj_in.role_id
         )
-        db_session.add(db_obj)
-        await db_session.commit()
-        await db_session.refresh(db_obj)
+        db.session.add(db_obj)
+        await db.session.commit()
+        await db.session.refresh(db_obj)
         return db_obj
 
     def update(
         self,
-        db_session: AsyncSession,
         *,
         db_obj: User,
         obj_in: Union[IUserUpdate, Dict[str, Any]]
@@ -49,12 +48,11 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         update_data["first_name"] = obj_in.first_name
         update_data["last_name"] = obj_in.last_name
 
-        response = super().update(db_session, db_obj=db_obj, obj_in=update_data)
+        response = super().update(db.session, db_obj=db_obj, obj_in=update_data)
         return response
 
     async def update_is_active(
         self,
-        db_session: AsyncSession,
         *,
         db_obj: List[User],
         obj_in: Union[int, str, Dict[str, Any]]
@@ -63,16 +61,16 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         for x in db_obj:
             setattr(x, "is_active", obj_in.is_active)
             setattr(x, "updated_at", datetime.utcnow())
-            db_session.add(x)
-            await db_session.commit()
-            await db_session.refresh(x)
+            db.session.add(x)
+            await db.session.commit()
+            await db.session.refresh(x)
             response.append(x)
         return response
 
     async def authenticate(
-        self, db_session: AsyncSession, *, email: EmailStr, password: str
+        self, *, email: EmailStr, password: str
     ) -> Optional[User]:
-        user = await self.get_by_email(db_session, email=email)
+        user = await self.get_by_email(email=email)        
         if not user:
             return None
         if not verify_password(password, user.hashed_password):

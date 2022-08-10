@@ -2,6 +2,7 @@ from typing import Generic, List, Optional, TypeVar
 from pydantic.generics import GenericModel
 from pydantic import BaseModel
 from app.schemas.role import IRoleRead
+from enum import Enum
 
 DataType = TypeVar("DataType")
 
@@ -24,3 +25,7 @@ class IDeleteResponseBase(IResponseBase[DataType], Generic[DataType]):
 
 class IMetaGeneral(BaseModel):
     roles: List[IRoleRead]
+
+class IOrderEnum(str, Enum):
+    ascendent = 'ascendent'
+    descendent = 'descendent'

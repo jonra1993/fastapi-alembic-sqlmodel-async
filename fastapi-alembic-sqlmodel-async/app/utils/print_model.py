@@ -1,5 +1,5 @@
 from fastapi.encoders import jsonable_encoder
-from typing import List, TypeVar
+from typing import TypeVar
 from sqlmodel import SQLModel
 
 ModelType = TypeVar("ModelType", bound=SQLModel)

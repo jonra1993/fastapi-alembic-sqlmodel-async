@@ -19,7 +19,7 @@ SQLAlchemy-Utils = "^0.38.2"
 black = "^22.1.0"
 SQLAlchemy = "1.4.35"
 python-multipart = "^0.0.5"
-fastapi-pagination = {extras = ["sqlmodel"], version = "^0.9.1"}
+fastapi-pagination = {extras = ["sqlalchemy"], version = "^0.9.3"}
 fastapi-cache2 = {extras = ["redis"], version = "^0.1.8"}
 fastapi-async-sqlalchemy = "^0.3.12"
 aioredis = "^2.0.1"

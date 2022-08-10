@@ -88,6 +88,7 @@ docker-compose up --build
 - [fastapi-pagination](https://github.com/uriyyo/fastapi-pagination).
 - [fastapi-cache](https://github.com/long2ice/fastapi-cache).
 - [fastapi-keycloak](https://github.com/code-specialist/fastapi-keycloak).
+- [fastapi-async-sqlalchemy](https://github.com/h0rn3t/fastapi-async-sqlalchemy).
 
 ## TODO List:
 
@@ -102,7 +103,7 @@ docker-compose up --build
 - [x] Add basic RBAC (Role base access control)
 - [x] Add sample heroes, teams and groups on init db
 - [x] Add cache configuration using fastapi-cache2 and redis
-- [ ] Create a global database pool of sessions to avoid to pass the session as dependency injection on each handle
+- [x] Create a global database pool of sessions to avoid to pass the session as dependency injection on each handle
 - [ ] Add one to one relationship sample
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column

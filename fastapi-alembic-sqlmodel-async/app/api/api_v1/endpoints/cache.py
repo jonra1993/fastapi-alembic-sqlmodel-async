@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Union
+from typing import Union
 
 from fastapi import APIRouter
 from app.schemas.common import (

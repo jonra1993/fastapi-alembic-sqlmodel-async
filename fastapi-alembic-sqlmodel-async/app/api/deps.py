@@ -19,17 +19,12 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
         yield session
 
-async def get_general_meta(
-    db_session: AsyncSession = Depends(get_db)
-) -> IMetaGeneral:
-    current_roles = await crud.role.get_multi(db_session, skip=0, limit=100)
+async def get_general_meta() -> IMetaGeneral:
+    current_roles = await crud.role.get_multi(skip=0, limit=100)
     return IMetaGeneral(roles=current_roles)
 
 def get_current_user(required_roles: List[str] = None) -> User:
-    async def current_user(
-            db_session: AsyncSession = Depends(get_db),
-            token: str = Depends(reusable_oauth2)
-    ) -> User:        
+    async def current_user(token: str = Depends(reusable_oauth2)) -> User:        
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])
         except (jwt.JWTError, ValidationError):
@@ -37,7 +32,7 @@ def get_current_user(required_roles: List[str] = None) -> User:
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Could not validate credentials",
             )
-        user: User = await crud.user.get_user_by_id(db_session, id=payload["sub"])
+        user: User = await crud.user.get_user_by_id(id=payload["sub"])
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         
@@ -55,6 +50,7 @@ def get_current_user(required_roles: List[str] = None) -> User:
                     status_code=403,
                     detail=f'Role "{required_roles}" is required to perform this action',
                 )
+        
         
         return user
 

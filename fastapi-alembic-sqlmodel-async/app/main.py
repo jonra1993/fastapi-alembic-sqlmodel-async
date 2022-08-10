@@ -6,10 +6,16 @@ from app.db.session import SessionLocal
 from sqlmodel import text
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from fastapi_async_sqlalchemy import SQLAlchemyMiddleware
 import aioredis
 
 app = FastAPI(
     title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
+)
+
+app.add_middleware(
+    SQLAlchemyMiddleware,
+    db_url=settings.ASYNC_DATABASE_URI
 )
 
 # Set all CORS enabled origins
