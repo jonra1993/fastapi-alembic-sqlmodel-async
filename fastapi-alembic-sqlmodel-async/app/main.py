@@ -15,7 +15,13 @@ app = FastAPI(
 
 app.add_middleware(
     SQLAlchemyMiddleware,
-    db_url=settings.ASYNC_DATABASE_URI
+    db_url=settings.ASYNC_DATABASE_URI,
+        engine_args={
+        "echo": False,
+        "pool_pre_ping": True,
+        "pool_size": settings.POOL_SIZE,
+        "max_overflow": 64,
+    }
 )
 
 # Set all CORS enabled origins

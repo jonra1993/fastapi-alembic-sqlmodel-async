@@ -15,6 +15,9 @@ class Settings(BaseSettings):
     DATABASE_NAME: str
     REDIS_HOST: str
     REDIS_PORT: str
+    DB_POOL_SIZE = 83
+    WEB_CONCURRENCY = 9
+    POOL_SIZE = max(DB_POOL_SIZE // WEB_CONCURRENCY, 5)
     ASYNC_DATABASE_URI: Optional[str]
 
     @validator("ASYNC_DATABASE_URI", pre=True)

@@ -41,7 +41,7 @@ def run_migrations_offline():
     Calls to context.execute() here emit the given string to the
     script output.
     """
-    url = settings.SQLALCHEMY_DATABASE_URI
+    url = settings.ASYNC_DATABASE_URI
     context.configure(
         url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True, dialect_opts={"paramstyle": "named"}
     )
