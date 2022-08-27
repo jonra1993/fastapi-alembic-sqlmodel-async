@@ -1,7 +1,7 @@
 from typing import Generic, List, Optional, TypeVar
 from pydantic.generics import GenericModel
 from pydantic import BaseModel
-from app.schemas.role import IRoleRead
+from app.schemas.role_schema import IRoleRead
 from enum import Enum
 
 DataType = TypeVar("DataType")

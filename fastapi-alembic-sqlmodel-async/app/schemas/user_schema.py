@@ -1,7 +1,7 @@
-from app.models.user import UserBase
-from app.models.group import GroupBase
+from app.models.user_model import UserBase
+from app.models.group_model import GroupBase
 from pydantic import BaseModel, EmailStr
-from .role import IRoleRead
+from .role_schema import IRoleRead
 from typing import Optional, List
 from uuid import UUID
 from enum import Enum

@@ -2,14 +2,14 @@ from typing import AsyncGenerator, List
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
-from app.models.user import User
+from app.models.user_model import User
 from pydantic import ValidationError
 from app import crud
 from app.core import security
 from app.core.config import settings
 from app.db.session import SessionLocal
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.schemas.common import IMetaGeneral
+from app.schemas.common_schema import IMetaGeneral
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"

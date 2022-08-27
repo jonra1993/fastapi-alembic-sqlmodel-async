@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlmodel import Field, SQLModel, Relationship, Column, DateTime
-from app.models.links import LinkGroupUser
+from app.models.links_model import LinkGroupUser
 from typing import List, Optional
 from pydantic import EmailStr
 from app.models.base_uuid_model import BaseUUIDModel

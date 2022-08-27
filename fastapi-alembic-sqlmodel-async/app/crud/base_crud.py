@@ -27,9 +27,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         self.model = model
 
-    async def get(self, *, id: Union[UUID, str]) -> Optional[ModelType]:
+    async def get(self, *, id: Union[UUID, str], db_session: Optional[AsyncSession] = None) -> Optional[ModelType]:
+        db_session = db_session or db.session        
         query = select(self.model).where(self.model.id == id)
-        response = await db.session.execute(query)
+        response = await db_session.execute(query)
         return response.scalar_one_or_none()
 
     async def get_by_ids(
@@ -70,8 +71,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         created_by_id: Optional[Union[UUID, str]] = None,
         db_session: Optional[AsyncSession] = None,
     ) -> ModelType:
-        if db_session == None:
-            db_session = db.session
+        db_session = db_session or db.session
         db_obj = self.model.from_orm(obj_in)  # type: ignore
         db_obj.created_at = datetime.utcnow()
         db_obj.updated_at = datetime.utcnow()

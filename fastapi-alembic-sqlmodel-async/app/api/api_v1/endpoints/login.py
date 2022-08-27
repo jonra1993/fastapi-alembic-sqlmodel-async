@@ -9,13 +9,13 @@ from app import crud
 from app.api import deps
 from app.core import security
 from app.core.config import settings
-from app.schemas.token import TokenRead, Token, RefreshToken
-from app.schemas.common import IMetaGeneral, IPostResponseBase
+from app.schemas.token_schema import TokenRead, Token, RefreshToken
+from app.schemas.common_schema import IMetaGeneral, IPostResponseBase
 
 router = APIRouter()
 
 
-@router.post("/login", response_model=IPostResponseBase[Token], status_code=201)
+@router.post("", response_model=IPostResponseBase[Token], status_code=201)
 async def login(
     email: EmailStr = Body(...),
     password: str = Body(...),
@@ -24,7 +24,7 @@ async def login(
     """
     Login for all users
     """
-    user = await crud.user.authenticate(email=email, password=password)    
+    user = await crud.user.authenticate(email=email, password=password)
     if not user:
         raise HTTPException(status_code=400, detail="Email or Password incorrect")
     elif not user.is_active:
@@ -49,13 +49,13 @@ async def login(
 
 
 @router.post(
-    "/login/refresh_token", response_model=IPostResponseBase[TokenRead], status_code=201
+    "/refresh_token", response_model=IPostResponseBase[TokenRead], status_code=201
 )
 async def get_refresh_token(
     body: RefreshToken = Body(...),
 ) -> Any:
     """
-    Get Refresh token
+    Gets a refresh token
     """
     try:
         payload = jwt.decode(
@@ -81,7 +81,7 @@ async def get_refresh_token(
         raise HTTPException(status_code=404, detail="Incorrect token")
 
 
-@router.post("/login/access-token", response_model=TokenRead)
+@router.post("/access-token", response_model=TokenRead)
 async def login_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ) -> Any:

@@ -4,7 +4,8 @@ from typing import Optional, Dict, Any, Union, List
 import secrets
 
 class Settings(BaseSettings):
-    API_V1_STR: str = "/api/v1"
+    API_VERSION: str = "v1" 
+    API_V1_STR: str = f"/api/{API_VERSION}"
     PROJECT_NAME: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 180

@@ -1,12 +1,12 @@
 from typing import Dict, List, Union
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app import crud
-from app.schemas.role import IRoleCreate
+from app.schemas.role_schema import IRoleCreate
 from app.core.config import settings
-from app.schemas.user import IUserCreate
-from app.schemas.team import ITeamCreate
-from app.schemas.hero import IHeroCreate
-from app.schemas.group import IGroupCreate
+from app.schemas.user_schema import IUserCreate
+from app.schemas.team_schema import ITeamCreate
+from app.schemas.hero_schema import IHeroCreate
+from app.schemas.group_schema import IGroupCreate
 
 roles: List[IRoleCreate] = [
     IRoleCreate(name="admin", description="This the Admin role"),

@@ -1,10 +1,10 @@
 from typing import Any, Dict, List, Optional, Union
 from pydantic.networks import EmailStr
-from app.crud.base_sqlmodel import CRUDBase
+from app.crud.base_crud import CRUDBase
 from fastapi_async_sqlalchemy import db
 from sqlmodel import select
-from app.schemas.user import IUserCreate, IUserUpdate
-from app.models.user import User
+from app.schemas.user_schema import IUserCreate, IUserUpdate
+from app.models.user_model import User
 from app.core.security import verify_password, get_password_hash
 from datetime import datetime
 from uuid import UUID
@@ -12,8 +12,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
     async def get_by_email(self, *, email: str, db_session: Optional[AsyncSession] = None) -> Optional[User]:
-        if db_session == None:
-            db_session = db.session
+        db_session = db_session or db.session
         users =  await db_session.execute(select(User).where(User.email == email))
         return users.scalar_one_or_none()        
 
@@ -21,8 +20,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         return await super().get(id=id)
 
     async def create_with_role(self, *, obj_in: IUserCreate, db_session: Optional[AsyncSession] = None) -> User:
-        if db_session == None:
-            db_session = db.session
+        db_session = db_session or db.session
         db_obj = User(
             first_name=obj_in.first_name,
             last_name=obj_in.last_name,

@@ -1,6 +1,6 @@
 from typing import Optional
-from app.models.hero import HeroBase
-from app.models.team import TeamBase
+from app.models.hero_model import HeroBase
+from app.models.team_model import TeamBase
 from uuid import UUID
 
 class IHeroCreate(HeroBase):

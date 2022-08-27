@@ -1,6 +1,6 @@
 from typing import List
-from app.models.group import GroupBase
-from .user import IUserReadWithoutGroups
+from app.models.group_model import GroupBase
+from .user_schema import IUserReadWithoutGroups
 from uuid import UUID
 
 class IGroupCreate(GroupBase):

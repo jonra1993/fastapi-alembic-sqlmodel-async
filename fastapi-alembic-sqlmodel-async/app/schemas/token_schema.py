@@ -1,4 +1,4 @@
-from .user import IUserRead
+from .user_schema import IUserRead
 from pydantic import BaseModel
 
 class Token(BaseModel):

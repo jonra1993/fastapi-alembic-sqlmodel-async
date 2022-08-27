@@ -1,6 +1,6 @@
 from sqlmodel import Field, Relationship, SQLModel
 from typing import List, Optional
-from .links import LinkGroupUser
+from .links_model import LinkGroupUser
 from app.models.base_uuid_model import BaseUUIDModel
 from uuid import UUID
 
