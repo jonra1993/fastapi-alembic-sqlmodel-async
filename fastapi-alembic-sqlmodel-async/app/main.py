@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from app.api.api_v1.api import api_router
 from app.core.config import settings
-from app.db.session import SessionLocal
+from fastapi_async_sqlalchemy import db
 from sqlmodel import text
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -39,10 +39,9 @@ if settings.BACKEND_CORS_ORIGINS:
 
 
 async def add_postgresql_extension() -> None:
-    async with SessionLocal() as session:
+    async with db():
         query = text("CREATE EXTENSION IF NOT EXISTS pg_trgm")
-        return await session.execute(query)
-
+        return await db.session.execute(query)
 
 @app.get("/")
 async def root():
