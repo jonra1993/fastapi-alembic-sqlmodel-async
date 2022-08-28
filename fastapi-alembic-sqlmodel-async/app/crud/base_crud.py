@@ -22,13 +22,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         """
         CRUD object with default methods to Create, Read, Update, Delete (CRUD).
         **Parameters**
-        * `model`: A SQLAlchemy model class
+        * `model`: A SQLModel model class
         * `schema`: A Pydantic model (schema) class
         """
         self.model = model
 
-    async def get(self, *, id: Union[UUID, str], db_session: Optional[AsyncSession] = None) -> Optional[ModelType]:
-        db_session = db_session or db.session        
+    async def get(
+        self, *, id: Union[UUID, str], db_session: Optional[AsyncSession] = None
+    ) -> Optional[ModelType]:
+        db_session = db_session or db.session
         query = select(self.model).where(self.model.id == id)
         response = await db_session.execute(query)
         return response.scalar_one_or_none()
@@ -37,21 +39,33 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self,
         *,
         list_ids: List[Union[UUID, str]],
+        db_session: Optional[AsyncSession] = None,
     ) -> Optional[List[ModelType]]:
-        response = await db.session.execute(
+        db_session = db_session or db.session
+        response = await db_session.execute(
             select(self.model).where(self.model.id.in_(list_ids))
         )
         return response.scalars().all()
 
-    async def get_count(self) -> Optional[ModelType]:
-        response = await db.session.execute(
+    async def get_count(
+        self, db_session: Optional[AsyncSession] = None
+    ) -> Optional[ModelType]:
+        db_session = db_session or db.session
+        response = await db_session.execute(
             select(func.count()).select_from(select(self.model).subquery())
         )
         return response.scalar_one()
 
-    async def get_multi(self, *, skip: int = 0, limit: int = 100) -> List[ModelType]:
+    async def get_multi(
+        self,
+        *,
+        skip: int = 0,
+        limit: int = 100,
+        db_session: Optional[AsyncSession] = None,
+    ) -> List[ModelType]:
+        db_session = db_session or db.session
         query = select(self.model).offset(skip).limit(limit).order_by(self.model.id)
-        response = await db.session.execute(query)
+        response = await db_session.execute(query)
         return response.scalars().all()
 
     async def get_multi_paginated(
@@ -59,10 +73,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         *,
         params: Optional[Params] = Params(),
         query: Optional[Union[T, Select[T]]] = None,
+        db_session: Optional[AsyncSession] = None,
     ) -> Page[ModelType]:
+        db_session = db_session or db.session
         if query == None:
             query = select(self.model)
-        return await paginate(db.session, query, params)
+        return await paginate(db_session, query, params)
 
     async def create(
         self,
@@ -88,7 +104,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         *,
         obj_current: ModelType,
         obj_new: Union[UpdateSchemaType, Dict[str, Any], ModelType],
+        db_session: Optional[AsyncSession] = None,
     ) -> ModelType:
+        db_session = db_session or db.session
         obj_data = jsonable_encoder(obj_current)
 
         if isinstance(obj_new, dict):
@@ -103,16 +121,19 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             if field == "updated_at":
                 setattr(obj_current, field, datetime.utcnow())
 
-        db.session.add(obj_current)
-        await db.session.commit()
-        await db.session.refresh(obj_current)
+        db_session.add(obj_current)
+        await db_session.commit()
+        await db_session.refresh(obj_current)
         return obj_current
 
-    async def remove(self, *, id: Union[UUID, str]) -> ModelType:
-        response = await db.session.execute(
+    async def remove(
+        self, *, id: Union[UUID, str], db_session: Optional[AsyncSession] = None
+    ) -> ModelType:
+        db_session = db_session or db.session
+        response = await db_session.execute(
             select(self.model).where(self.model.id == id)
         )
         obj = response.scalar_one()
-        await db.session.delete(obj)
-        await db.session.commit()
+        await db_session.delete(obj)
+        await db_session.commit()
         return obj
