@@ -812,7 +812,7 @@ typing-extensions = ">=3.7.4"
 
 [[package]]
 name = "sqlmodel"
-version = "0.0.7"
+version = "0.0.8"
 description = "SQLModel, SQL databases in Python, designed for simplicity, compatibility, and robustness."
 category = "main"
 optional = false
@@ -961,7 +961,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "adf7bb36ab6213ba2f0a0bd5fd50570c4e97693c6a3262de77468731885f5942"
+content-hash = "e337aa2408819e8d03854992b0e0e86b9b8c91235646cc3941e032158b3061a5"
 
 [metadata.files]
 aioredis = [
