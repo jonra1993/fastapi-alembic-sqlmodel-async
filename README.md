@@ -9,13 +9,13 @@ Create an **.env** file on root folder and copy the content from **.env.example*
 ## Run project using Docker compose
 
 ```sh
-docker-compose -f docker-compose-dev.yml up --build
+docker compose -f docker-compose-dev.yml up --build
 ```
 
 ## Setup database with initial data
 This creates a sample users on database.
 ```
-docker-compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py
+docker compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py
 ```
 
 - **Admin credentials ->** *username:* admin@admin.com and *password:* admin 
@@ -68,8 +68,8 @@ All files on static folder will be server by nginx container as static files. Yo
 ## Run Alembic migrations (Only if you change the DB model)
 
 ```sh
-docker-compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate
-docker-compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head
+docker compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate
+docker compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head
 ```
 
 ## Production Deployment
@@ -77,7 +77,7 @@ Remember to use a persistant PostgreSQL database, update the new credentials on 
 depends_on of fastapi container otherwise it will not work on a local environment.
 
 ```sh
-docker-compose up --build
+docker compose up --build
 ```
 
 ## Inspiration and References
@@ -104,6 +104,7 @@ docker-compose up --build
 - [x] Add sample heroes, teams and groups on init db
 - [x] Add cache configuration using fastapi-cache2 and redis
 - [x] Create a global database pool of sessions to avoid to pass the session as dependency injection on each handle
+- [x] Refactor tablename so all tables are created using snake case
 - [ ] Add one to one relationship sample
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column

@@ -1,7 +1,14 @@
 from typing import Optional
 import uuid as uuid_pkg
-from sqlmodel import SQLModel, Field
+from app.utils.snake_case_converter import snake_case
+from sqlmodel import SQLModel as _SQLModel, Field
+from sqlalchemy.orm import declared_attr
 from datetime import datetime
+
+class SQLModel(_SQLModel):
+    @declared_attr  # type: ignore
+    def __tablename__(cls) -> str:
+        return snake_case(cls.__name__)
 
 class BaseUUIDModel(SQLModel):
     id: uuid_pkg.UUID = Field(

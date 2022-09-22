@@ -2,8 +2,8 @@ from sqlmodel import Field, Relationship, SQLModel
 from typing import List, Optional
 from .links_model import LinkGroupUser
 from app.models.base_uuid_model import BaseUUIDModel
+from app.models.user_model import User
 from uuid import UUID
-
 
 class GroupBase(SQLModel):
     name: str
