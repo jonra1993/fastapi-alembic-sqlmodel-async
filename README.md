@@ -104,7 +104,7 @@ docker compose up --build
 - [x] Add sample heroes, teams and groups on init db
 - [x] Add cache configuration using fastapi-cache2 and redis
 - [x] Create a global database pool of sessions to avoid to pass the session as dependency injection on each handle
-- [x] Refactor tablename so all tables are created using snake case
+- [x] Refactor tablename to Pascal case
 - [ ] Add one to one relationship sample
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column

@@ -10,7 +10,7 @@ class GroupBase(SQLModel):
     description: str
 
 class Group(BaseUUIDModel, GroupBase, table=True):    
-    created_by_id: Optional[UUID] = Field(default=None, foreign_key="user.id")
+    created_by_id: Optional[UUID] = Field(default=None, foreign_key="User.id")
     created_by: "User" = Relationship(sa_relationship_kwargs={"lazy":"selectin", "primaryjoin":"Group.created_by_id==User.id"})    
     users: List["User"] = Relationship(back_populates="groups", link_model=LinkGroupUser, sa_relationship_kwargs={"lazy": "selectin"})
 

@@ -22,6 +22,6 @@ class User(BaseUUIDModel, UserBase, table=True):
     hashed_password: str = Field(
         nullable=False, index=True
     )
-    role_id: Optional[UUID] = Field(default=None, foreign_key="role.id")
+    role_id: Optional[UUID] = Field(default=None, foreign_key="Role.id")
     role: Optional["Role"] = Relationship(back_populates="users", sa_relationship_kwargs={"lazy": "selectin"})
     groups: List["Group"] = Relationship(back_populates="users", link_model=LinkGroupUser, sa_relationship_kwargs={"lazy": "selectin"})
