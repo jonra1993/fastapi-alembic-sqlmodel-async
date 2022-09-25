@@ -3,10 +3,15 @@ from app.schemas.common_schema import (
     IDeleteResponseBase,
     IGetResponseBase,
     IPostResponseBase,
-    IPutResponseBase,
+    create_response,
 )
 from fastapi_pagination import Page, Params
-from app.schemas.team_schema import ITeamCreate, ITeamRead, ITeamReadWithHeroes, ITeamUpdate
+from app.schemas.team_schema import (
+    ITeamCreate,
+    ITeamRead,
+    ITeamReadWithHeroes,
+    ITeamUpdate,
+)
 from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
 from app import crud
@@ -25,7 +30,7 @@ async def get_teams_list(
     Gets a paginated list of teams
     """
     teams = await crud.team.get_multi_paginated(params=params)
-    return IGetResponseBase[Page[ITeamRead]](data=teams)
+    return create_response(data=teams)
 
 
 @router.get("/{team_id}", response_model=IGetResponseBase[ITeamReadWithHeroes])
@@ -39,7 +44,7 @@ async def get_team_by_id(
     team = await crud.team.get(id=team_id)
     if not team:
         raise HTTPException(status_code=404, detail="Team no found")
-    return IGetResponseBase[ITeamReadWithHeroes](data=team)
+    return create_response(data=team)
 
 
 @router.post("", response_model=IPostResponseBase[ITeamRead])
@@ -53,7 +58,7 @@ async def create_team(
     Creates a new team
     """
     team = await crud.team.create(obj_in=team, created_by_id=current_user.id)
-    return IPostResponseBase[ITeamRead](data=team)
+    return create_response(data=team)
 
 
 @router.put("/{team_id}", response_model=IPostResponseBase[ITeamRead])
@@ -71,7 +76,7 @@ async def update_team(
     if not current_team:
         raise HTTPException(status_code=404, detail="Team not found")
     heroe_updated = await crud.team.update(obj_current=current_team, obj_new=new_team)
-    return IPutResponseBase[ITeamRead](data=heroe_updated)
+    return create_response(data=heroe_updated)
 
 
 @router.delete("/{team_id}", response_model=IDeleteResponseBase[ITeamRead])
@@ -88,4 +93,4 @@ async def remove_team(
     if not current_team:
         raise HTTPException(status_code=404, detail="Team not found")
     team = await crud.team.remove(id=team_id)
-    return IDeleteResponseBase[ITeamRead](data=team)
+    return create_response(data=team)

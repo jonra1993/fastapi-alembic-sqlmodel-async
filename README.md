@@ -89,6 +89,7 @@ docker compose up --build
 - [fastapi-cache](https://github.com/long2ice/fastapi-cache).
 - [fastapi-keycloak](https://github.com/code-specialist/fastapi-keycloak).
 - [fastapi-async-sqlalchemy](https://github.com/h0rn3t/fastapi-async-sqlalchemy).
+- [fastapi-best-practices](https://github.com/zhanymkanov/fastapi-best-practices).
 
 ## TODO List:
 

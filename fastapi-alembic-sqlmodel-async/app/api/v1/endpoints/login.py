@@ -10,7 +10,7 @@ from app.api import deps
 from app.core import security
 from app.core.config import settings
 from app.schemas.token_schema import TokenRead, Token, RefreshToken
-from app.schemas.common_schema import IMetaGeneral, IPostResponseBase
+from app.schemas.common_schema import IMetaGeneral, IPostResponseBase, create_response
 
 router = APIRouter()
 
@@ -43,9 +43,7 @@ async def login(
         refresh_token=refresh_token,
         user=user,
     )
-    return IPostResponseBase[Token](
-        meta=meta_data, data=data, message="Login correctly"
-    )
+    return create_response(meta=meta_data, data=data, message="Login correctly")
 
 
 @router.post(
@@ -71,7 +69,7 @@ async def get_refresh_token(
             access_token = security.create_access_token(
                 payload["sub"], expires_delta=access_token_expires
             )
-            return IPostResponseBase[TokenRead](
+            return create_response(
                 data=TokenRead(access_token=access_token, token_type="bearer"),
                 message="Access token generated correctly",
             )

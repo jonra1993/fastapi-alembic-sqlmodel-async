@@ -6,9 +6,15 @@ from app.schemas.common_schema import (
     IGetResponseBase,
     IPostResponseBase,
     IPutResponseBase,
+    create_response,
 )
 from fastapi_pagination import Page, Params
-from app.schemas.hero_schema import IHeroCreate, IHeroRead, IHeroReadWithTeam, IHeroUpdate
+from app.schemas.hero_schema import (
+    IHeroCreate,
+    IHeroRead,
+    IHeroReadWithTeam,
+    IHeroUpdate,
+)
 from fastapi import APIRouter, Depends, HTTPException, Query
 from app.api import deps
 from sqlmodel import select
@@ -29,7 +35,7 @@ async def get_hero_list(
     Gets a paginated list of heroes
     """
     heroes = await crud.hero.get_multi_paginated(params=params)
-    return IGetResponseBase[Page[IHeroReadWithTeam]](data=heroes)
+    return create_response(data=heroes)
 
 
 @router.get("/by_created_at", response_model=IGetResponseBase[Page[IHeroReadWithTeam]])
@@ -49,7 +55,7 @@ async def get_hero_list_order_by_created_at(
         query = select(Hero).order_by(Hero.created_at.asc())
 
     heroes = await crud.hero.get_multi_paginated(query=query, params=params)
-    return IGetResponseBase[Page[IHeroReadWithTeam]](data=heroes)
+    return create_response(data=heroes)
 
 
 @router.get("/{hero_id}", response_model=IGetResponseBase[IHeroReadWithTeam])
@@ -63,7 +69,7 @@ async def get_hero_by_id(
     hero = await crud.hero.get(id=hero_id)
     if not hero:
         raise HTTPException(status_code=404, detail="Hero not found")
-    return IGetResponseBase[IHeroReadWithTeam](data=hero)
+    return create_response(data=hero)
 
 
 @router.post("", response_model=IPostResponseBase[IHeroRead])
@@ -77,7 +83,7 @@ async def create_hero(
     Creates a new hero
     """
     heroe = await crud.hero.create(obj_in=hero, created_by_id=current_user.id)
-    return IPostResponseBase[IHeroRead](data=heroe)
+    return create_response(data=heroe)
 
 
 @router.put("/{hero_id}", response_model=IPutResponseBase[IHeroRead])
@@ -95,7 +101,7 @@ async def update_hero(
     if not current_hero:
         raise HTTPException(status_code=404, detail="Hero not found")
     heroe_updated = await crud.hero.update(obj_new=hero, obj_current=current_hero)
-    return IPutResponseBase[IHeroRead](data=heroe_updated)
+    return create_response(data=heroe_updated)
 
 
 @router.delete("/{hero_id}", response_model=IDeleteResponseBase[IHeroRead])
@@ -112,4 +118,4 @@ async def remove_hero(
     if not current_hero:
         raise HTTPException(status_code=404, detail="Hero not found")
     heroe = await crud.hero.remove(id=hero_id)
-    return IDeleteResponseBase[IHeroRead](data=heroe)
+    return create_response(data=heroe)

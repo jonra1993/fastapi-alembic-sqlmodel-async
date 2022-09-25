@@ -3,6 +3,7 @@ from app.schemas.common_schema import (
     IGetResponseBase,
     IPostResponseBase,
     IPutResponseBase,
+    create_response,
 )
 from fastapi_pagination import Page, Params
 from app.schemas.role_schema import IRoleCreate, IRoleRead, IRoleUpdate
@@ -24,7 +25,7 @@ async def get_roles(
     Gets a paginated list of roles
     """
     roles = await crud.role.get_multi_paginated(params=params)
-    return IGetResponseBase[Page[IRoleRead]](data=roles)
+    return create_response(data=roles)
 
 
 @router.get("/{role_id}", response_model=IGetResponseBase[IRoleRead])
@@ -36,7 +37,7 @@ async def get_role_by_id(
     Gets a role by its id
     """
     role = await crud.role.get(id=role_id)
-    return IGetResponseBase[IRoleRead](data=role)
+    return create_response(data=role)
 
 
 @router.post("", response_model=IPostResponseBase[IRoleRead])
@@ -50,7 +51,7 @@ async def create_role(
     Create a new role
     """
     new_permission = await crud.role.create(obj_in=role)
-    return IPostResponseBase[IRoleRead](data=new_permission)
+    return create_response(data=new_permission)
 
 
 @router.put("/{role_id}", response_model=IPutResponseBase[IRoleRead])
@@ -69,4 +70,4 @@ async def update_permission(
         raise HTTPException(status_code=404, detail="Permission not found")
 
     updated_role = await crud.role.update(obj_current=current_role, obj_new=role)
-    return IPutResponseBase[IRoleRead](data=updated_role)
+    return create_response(data=updated_role)

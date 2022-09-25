@@ -3,6 +3,7 @@ from app.schemas.common_schema import (
     IGetResponseBase,
     IPostResponseBase,
     IPutResponseBase,
+    create_response,
 )
 from fastapi_pagination import Page, Params
 from app.schemas.group_schema import (
@@ -30,7 +31,7 @@ async def get_groups(
     Gets a paginated list of groups
     """
     groups = await crud.group.get_multi_paginated(params=params)
-    return IGetResponseBase[Page[IGroupRead]](data=groups)
+    return create_response(data=groups)
 
 
 @router.get("/{group_id}", response_model=IGetResponseBase[IGroupReadWithUsers])
@@ -42,7 +43,7 @@ async def get_group_by_id(
     Gets a group by its id
     """
     group = await crud.group.get(id=group_id)
-    return IGetResponseBase[IGroupReadWithUsers](data=group)
+    return create_response(data=group)
 
 
 @router.post("", response_model=IPostResponseBase[IGroupRead])
@@ -56,7 +57,7 @@ async def create_group(
     Creates a new group
     """
     new_group = await crud.group.create(obj_in=group, created_by_id=current_user.id)
-    return IPostResponseBase[IGroupRead](data=new_group)
+    return create_response(data=new_group)
 
 
 @router.put("/{group_id}", response_model=IPutResponseBase[IGroupRead])
@@ -75,7 +76,7 @@ async def update_group(
         raise HTTPException(status_code=404, detail="Group not found")
 
     group_updated = await crud.group.update(obj_current=group_current, obj_new=group)
-    return IPutResponseBase[IGroupRead](data=group_updated)
+    return create_response(data=group_updated)
 
 
 @router.post(
@@ -96,4 +97,4 @@ async def add_user_into_a_group(
         raise HTTPException(status_code=404, detail="User not found")
 
     group = await crud.group.add_user_to_group(user=user, group_id=group_id)
-    return IPostResponseBase[IGroupRead](message="User added to group", data=group)
+    return create_response(message="User added to group", data=group)
