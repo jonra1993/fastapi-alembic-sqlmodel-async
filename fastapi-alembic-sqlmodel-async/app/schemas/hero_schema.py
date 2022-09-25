@@ -16,6 +16,6 @@ class IHeroUpdate(HeroBase):
     team_id: Optional[UUID] = None
 
 class IHeroReadWithTeam(IHeroRead):
-    team: Optional[TeamBase] = None
+    team: TeamBase
 
     

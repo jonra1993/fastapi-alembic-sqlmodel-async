@@ -1,4 +1,6 @@
-from typing import Optional
+from typing import Optional, cast
+
+from app.schemas.common_schema import IResponseBase
 from app.models.user_model import User
 from app.models.hero_model import Hero
 from app.schemas.common_schema import (
@@ -38,7 +40,7 @@ async def get_hero_list(
     return create_response(data=heroes)
 
 
-@router.get("/by_created_at", response_model=IGetResponseBase[Page[IHeroReadWithTeam]])
+@router.get("/by_created_at", response_model=IResponseBase[Page[IHeroReadWithTeam]])
 async def get_hero_list_order_by_created_at(
     order: Optional[IOrderEnum] = Query(
         default=IOrderEnum.ascendent, description="It is optional. Default is ascendent"

@@ -97,7 +97,7 @@ async def get_user_by_id(
     """
     Gets a user by its id
     """
-    user = await crud.user.get_user_by_id(id=user_id)
+    user = await crud.user.get(id=user_id)
     return create_response(data=user)
 
 
@@ -113,7 +113,7 @@ async def get_my_data(
 
 @router.post("", response_model=IPostResponseBase[IUserRead])
 async def create_user(
-    new_user: IUserCreate,
+    new_user: IUserCreate = Depends(deps.user_exists),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
@@ -121,18 +121,13 @@ async def create_user(
     """
     Creates a new user
     """
-    user = await crud.user.get_by_email(email=new_user.email)
-    if user:
-        raise HTTPException(
-            status_code=404, detail="There is already a user with same email"
-        )
     user = await crud.user.create_with_role(obj_in=new_user)
     return create_response(data=user)
 
 
 @router.delete("/{user_id}", response_model=IDeleteResponseBase[IUserRead])
 async def remove_user(
-    user_id: UUID,
+    user_id: UUID = Depends(deps.is_valid_user),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
@@ -143,8 +138,5 @@ async def remove_user(
     if current_user.id == user_id:
         raise HTTPException(status_code=404, detail="Users can not delete theirselfs")
 
-    user = await crud.user.get_user_by_id(id=user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User no found")
     user = await crud.user.remove(id=user_id)
     return create_response(data=user)

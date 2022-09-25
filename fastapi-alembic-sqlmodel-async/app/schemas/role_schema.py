@@ -5,12 +5,8 @@ from uuid import UUID
 class IRoleCreate(RoleBase):
     pass
 
-class IRoleRead(RoleBase):
+class IRoleRead(RoleBase):    
     id: UUID
-
-class IRoleReadWithRoles(RoleBase):
-    pass
-    #roles: List[IUserRead]
 
 class IRoleUpdate(RoleBase):
     pass
