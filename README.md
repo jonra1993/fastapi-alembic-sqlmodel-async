@@ -38,7 +38,7 @@ You can connect to the Database using PGAdmin4 and use the credentials from .env
   <img src="static/container_architecture.png" align="center"/>
 </p>
 
-As this project uses [traefik](https://doc.traefik.io/traefik/routing/routers/) as reverse proxy, which uses namespaces routing, you can access to the documentation with the following path [http://fastapi.localhost/docs](http://fastapi.localhost/docs)
+As this project uses [traefik](https://doc.traefik.io/traefik/routing/routers/) as a reverse proxy, which uses namespaces routing, you can access the documentation with the following path [http://fastapi.localhost/docs](http://fastapi.localhost/docs)
 
 ## Preview
   
@@ -50,7 +50,7 @@ As this project uses [traefik](https://doc.traefik.io/traefik/routing/routers/) 
 </p>
 
 ## Traefik Dashboard
-Traefik has been configurated as reverse proxy on the ingress of the project; you can access to Traefik Dashboard using the following link [http://traefik.localhost/](http://traefik.localhost/). You should use **username: test** and **pass: test**. If you want to change the password, you can find more information of how to do it [here](https://doc.traefik.io/traefik/operations/api/)
+Traefik has been configurated as a reverse proxy on the ingress of the project; you can access Traefik Dashboard using the following link [http://traefik.localhost/](http://traefik.localhost/). You should use **username: test** and **pass: test**. If you want to change the password, you can find more information on how to do it [here](https://doc.traefik.io/traefik/operations/api/)
 
 <p align="center">
   <img src="static/traefik1.png" align="center"/>
@@ -60,10 +60,10 @@ Traefik has been configurated as reverse proxy on the ingress of the project; yo
 </p>
 
 ## Static files
-All files on static folder will be server by nginx container as static files. You can check it with this link [http://nginx.localhost/1.png](http://nginx.localhost/1.png)
+All files on static folder will be served by nginx container as static files. You can check it with this link [http://nginx.localhost/1.png](http://nginx.localhost/1.png)
 
 ## Minio server
-This template allows that users can upload their photos. The images are stored and presigned using the open source Object Storage Service (OSS) [minio](https://min.io/), which allows to storade images in buckets in a secure way.
+This template allows users can upload their photos. The images are stored using the open source Object Storage Service (OSS) [minio](https://min.io/), which provides storage of images using buckets in a secure way through presigned URLs.
 - **Minio credentials ->** *username:* minioadmin and *password:* minioadmin 
 
 <p align="center">
@@ -94,6 +94,7 @@ docker compose up --build
 - [fastapi-cache](https://github.com/long2ice/fastapi-cache).
 - [fastapi-keycloak](https://github.com/code-specialist/fastapi-keycloak).
 - [fastapi-async-sqlalchemy](https://github.com/h0rn3t/fastapi-async-sqlalchemy).
+- [fastapi-minio](https://github.com/Longdh57/fastapi-minio).
 - [fastapi-best-practices](https://github.com/zhanymkanov/fastapi-best-practices).
 
 ## TODO List:
