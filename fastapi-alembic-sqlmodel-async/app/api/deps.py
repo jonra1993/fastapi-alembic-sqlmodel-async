@@ -1,6 +1,8 @@
 from typing import AsyncGenerator, List
 from uuid import UUID
 from fastapi import Depends, HTTPException, status
+from app.schemas.user_schema import IUserRead
+from app.utils.minio_client import MinioClient
 from app.schemas.user_schema import IUserCreate
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
@@ -12,6 +14,7 @@ from app.core.config import settings
 from app.db.session import SessionLocal
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.common_schema import IMetaGeneral
+from app.utils.minio_client import MinioClient
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
@@ -58,6 +61,14 @@ def get_current_user(required_roles: List[str] = None) -> User:
 
     return current_user
 
+def minio_auth() -> MinioClient:
+    minio_client = MinioClient(
+        access_key=settings.MINIO_ROOT_USER,
+        secret_key=settings.MINIO_ROOT_PASSWORD,
+        bucket_name=settings.MINIO_BUCKET,
+        minio_url=settings.MINIO_URL
+    )
+    return minio_client
 
 async def user_exists(new_user: IUserCreate) -> IUserCreate:
     user = await crud.user.get_by_email(email=new_user.email)
@@ -67,10 +78,10 @@ async def user_exists(new_user: IUserCreate) -> IUserCreate:
         )
     return new_user
 
-async def is_valid_user(user_id: UUID) -> UUID:
+async def is_valid_user(user_id: UUID) -> IUserRead:
     user = await crud.user.get(id=user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User no found")
         
-    return user_id
+    return user
 

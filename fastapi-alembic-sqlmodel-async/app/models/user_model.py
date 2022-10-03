@@ -1,6 +1,7 @@
 from datetime import datetime
 from sqlmodel import Field, SQLModel, Relationship, Column, DateTime
 from app.models.links_model import LinkGroupUser
+from app.models.media_model import ImageMedia
 from typing import List, Optional
 from pydantic import EmailStr
 from app.models.base_uuid_model import BaseUUIDModel
@@ -25,3 +26,5 @@ class User(BaseUUIDModel, UserBase, table=True):
     role_id: Optional[UUID] = Field(default=None, foreign_key="Role.id")
     role: Optional["Role"] = Relationship(back_populates="users", sa_relationship_kwargs={"lazy": "selectin"})
     groups: List["Group"] = Relationship(back_populates="users", link_model=LinkGroupUser, sa_relationship_kwargs={"lazy": "selectin"})
+    image_id: Optional[UUID] = Field(default=None, foreign_key="ImageMedia.id")
+    image: ImageMedia = Relationship(sa_relationship_kwargs={"lazy":"selectin", "primaryjoin":"User.image_id==ImageMedia.id"})

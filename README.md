@@ -30,7 +30,7 @@ You can connect to the Database using PGAdmin4 and use the credentials from .env
 
 ## ERD Database model
 <p align="center">
-  <img src="static/erd.jpg" align="center"/>
+  <img src="static/erd.png" align="center"/>
 </p>
 
 ## Containers architecture
@@ -48,9 +48,6 @@ As this project uses [traefik](https://doc.traefik.io/traefik/routing/routers/) 
 <p align="center">
   <img src="static/2.png" align="center"/>
 </p>
-<p align="center">
-  <img src="static/3.png" align="center"/>
-</p>
 
 ## Traefik Dashboard
 Traefik has been configurated as reverse proxy on the ingress of the project; you can access to Traefik Dashboard using the following link [http://traefik.localhost/](http://traefik.localhost/). You should use **username: test** and **pass: test**. If you want to change the password, you can find more information of how to do it [here](https://doc.traefik.io/traefik/operations/api/)
@@ -64,6 +61,14 @@ Traefik has been configurated as reverse proxy on the ingress of the project; yo
 
 ## Static files
 All files on static folder will be server by nginx container as static files. You can check it with this link [http://nginx.localhost/1.png](http://nginx.localhost/1.png)
+
+## Minio server
+This template allows that users can upload their photos. The images are stored and presigned using the open source Object Storage Service (OSS) [minio](https://min.io/), which allows to storade images in buckets in a secure way.
+- **Minio credentials ->** *username:* minioadmin and *password:* minioadmin 
+
+<p align="center">
+  <img src="static/minio.png" align="center"/>
+</p>
 
 ## Run Alembic migrations (Only if you change the DB model)
 
@@ -106,7 +111,8 @@ docker compose up --build
 - [x] Add cache configuration using fastapi-cache2 and redis
 - [x] Create a global database pool of sessions to avoid to pass the session as dependency injection on each handle
 - [x] Refactor tablename to Pascal case
-- [ ] Add one to one relationship sample
+- [x] Add one to one relationship sample
+- [x] Add sample to upload images and store them using minio
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample

@@ -37,6 +37,11 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_EMAIL: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
 
+    MINIO_ROOT_USER: str
+    MINIO_ROOT_PASSWORD: str
+    MINIO_URL: str
+    MINIO_BUCKET: str
+    
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ENCRYPT_KEY = secrets.token_urlsafe(32)
     BACKEND_CORS_ORIGINS: Union[List[str], List[AnyHttpUrl]]

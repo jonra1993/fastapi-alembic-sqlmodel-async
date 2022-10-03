@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router as api_router_v1
@@ -28,7 +28,7 @@ app.add_middleware(
     },
 )
 
-# Set all CORS origins enabled 
+# Set all CORS origins enabled
 if settings.BACKEND_CORS_ORIGINS:
     app.add_middleware(
         CORSMiddleware,
@@ -43,6 +43,18 @@ async def add_postgresql_extension() -> None:
     async with db():
         query = text("CREATE EXTENSION IF NOT EXISTS pg_trgm")
         return await db.session.execute(query)
+
+
+class CustomException(Exception):
+    http_code: int
+    code: str
+    message: str
+
+    def __init__(self, http_code: int = None, code: str = None, message: str = None):
+        self.http_code = http_code if http_code else 500
+        self.code = code if code else str(self.http_code)
+        self.message = message
+
 
 @app.get("/")
 async def root():
@@ -59,6 +71,7 @@ async def on_startup():
     )
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     print("startup fastapi")
+
 
 # Add Routers
 app.include_router(api_router_v1, prefix=settings.API_V1_STR)

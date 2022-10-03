@@ -10,9 +10,9 @@ services:
       - ./fastapi-alembic-sqlmodel-async:/code
     expose:
       - "8000"
-    env_file: ".env"
-    # depends_on:
-    #   - database
+    env_file: ".env"    
+    links:
+      - traefik-proxy:storage.localhost
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.fastapi_local.entrypoints=web"
@@ -64,6 +64,30 @@ services:
       - "traefik.http.routers.nginx_local.entrypoints=web"
       - "traefik.http.routers.nginx_local.rule=Host(`nginx.${LOCAL_1}`, `nginx.${LOCAL_2}`, `nginx.${EXT_ENDPOINT1}`)"
       - traefik.http.services.nginx_local_service.loadbalancer.server.port=8080
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    volumes:
+      - ./minio/data:/data
+    expose:
+      - "9000"
+      - "9091"    
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_BROWSER_REDIRECT_URL: http://stash.localhost
+    command: "server /data --console-address ':9090'"    
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.minio.entrypoints=web
+      - traefik.http.routers.minio.service=minio
+      - traefik.http.routers.minio.rule=Host(`storage.${LOCAL_1}`, `storage.${LOCAL_2}`, `storage.${EXT_ENDPOINT1}`)      
+      - traefik.http.services.minio.loadbalancer.server.port=9000
+      - traefik.http.routers.minio-console.entrypoints=web
+      - traefik.http.routers.minio-console.service=minio-console
+      - traefik.http.routers.minio-console.rule=Host(`stash.${LOCAL_1}`, `stash.${LOCAL_2}`, `stash.${EXT_ENDPOINT1}`)      
+      - traefik.http.services.minio-console.loadbalancer.server.port=9090
 
   traefik-proxy:
     container_name: traefik-proxy

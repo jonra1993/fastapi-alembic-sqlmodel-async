@@ -132,6 +132,7 @@ dmypy.json
 
 db_docker
 pgadmin
+minio
 
 .sonarqube/*
 sonarqube
