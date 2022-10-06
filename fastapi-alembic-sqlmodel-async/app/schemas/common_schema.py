@@ -9,7 +9,7 @@ DataType = TypeVar("DataType")
 
 class IResponseBase(GenericModel, Generic[DataType]):
     message: str = ""
-    meta: dict = {}
+    meta: Dict = {}
     data: Union[DataType, Page] = None
 
 class IGetResponseBase(IResponseBase[DataType], Generic[DataType]):
@@ -29,7 +29,7 @@ class IDeleteResponseBase(IResponseBase[DataType], Generic[DataType]):
 
 
 def create_response(
-    data: Union[DataType, Page], message: Optional[str] = None, meta: Optional[dict] = None
+    data: Union[DataType, Page], message: Optional[str] = None, meta: Optional[Dict] = None
 ) -> Dict[str, DataType]:
     new_data = dict(data) if isinstance(data, Page) else data
     body_response = {"data": new_data, "message": message, "meta": meta}
