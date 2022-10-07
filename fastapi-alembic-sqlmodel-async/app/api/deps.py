@@ -15,32 +15,60 @@ from app.db.session import SessionLocal
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.common_schema import IMetaGeneral
 from app.utils.minio_client import MinioClient
+import aioredis
+from aioredis import Redis
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
 )
 
+
+async def get_redis_client() -> Redis:
+    redis = aioredis.from_url(
+        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
+        max_connections=10,
+        encoding="utf8",
+        decode_responses=True,
+    )
+    return redis
+
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
         yield session
+
 
 async def get_general_meta() -> IMetaGeneral:
     current_roles = await crud.role.get_multi(skip=0, limit=100)
     return IMetaGeneral(roles=current_roles)
 
+
 def get_current_user(required_roles: List[str] = None) -> User:
-    async def current_user(token: str = Depends(reusable_oauth2)) -> User:        
+    async def current_user(
+        token: str = Depends(reusable_oauth2),
+        redis_client: Redis = Depends(get_redis_client),
+    ) -> User:
         try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[security.ALGORITHM])
+            payload = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+            )
         except (jwt.JWTError, ValidationError):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Could not validate credentials",
             )
-        user: User = await crud.user.get(id=payload["sub"])
+        user_id = payload["sub"]
+        access_token_key = f"user:{user_id}:access_token"
+        valid_access_tokens = await redis_client.smembers(access_token_key)
+        if valid_access_tokens and token not in valid_access_tokens:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Could not validate credentials",
+            )
+        user: User = await crud.user.get(id=user_id)
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
-        
+
         if not user.is_active:
             raise HTTPException(status_code=400, detail="Inactive user")
 
@@ -49,26 +77,27 @@ def get_current_user(required_roles: List[str] = None) -> User:
             for role in required_roles:
                 if role == user.role.name:
                     is_valid_role = True
-                    
+
             if is_valid_role == False:
                 raise HTTPException(
                     status_code=403,
                     detail=f'Role "{required_roles}" is required to perform this action',
                 )
-        
-        
+
         return user
 
     return current_user
+
 
 def minio_auth() -> MinioClient:
     minio_client = MinioClient(
         access_key=settings.MINIO_ROOT_USER,
         secret_key=settings.MINIO_ROOT_PASSWORD,
         bucket_name=settings.MINIO_BUCKET,
-        minio_url=settings.MINIO_URL
+        minio_url=settings.MINIO_URL,
     )
     return minio_client
+
 
 async def user_exists(new_user: IUserCreate) -> IUserCreate:
     user = await crud.user.get_by_email(email=new_user.email)
@@ -78,10 +107,10 @@ async def user_exists(new_user: IUserCreate) -> IUserCreate:
         )
     return new_user
 
+
 async def is_valid_user(user_id: UUID) -> IUserRead:
     user = await crud.user.get(id=user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User no found")
-        
-    return user
 
+    return user

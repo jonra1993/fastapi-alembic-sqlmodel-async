@@ -114,6 +114,7 @@ docker compose up --build
 - [x] Refactor tablename to Pascal case
 - [x] Add one to one relationship sample
 - [x] Add sample to upload images and store them using minio
+- [x] Invalidate access and refresh tokens when the password is changed using Redis
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample

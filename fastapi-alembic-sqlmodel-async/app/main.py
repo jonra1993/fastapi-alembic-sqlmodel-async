@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
+from app.api.deps import get_redis_client
 from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router as api_router_v1
@@ -8,7 +9,6 @@ from sqlmodel import text
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_async_sqlalchemy import SQLAlchemyMiddleware
-import aioredis
 
 # Core Application Instance
 app = FastAPI(
@@ -64,12 +64,8 @@ async def root():
 @app.on_event("startup")
 async def on_startup():
     await add_postgresql_extension()
-    redis = aioredis.from_url(
-        f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
-        encoding="utf8",
-        decode_responses=True,
-    )
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+    redis_client = await get_redis_client()
+    FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
     print("startup fastapi")
 
 

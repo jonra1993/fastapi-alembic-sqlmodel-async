@@ -36,24 +36,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         await db_session.refresh(db_obj)
         return db_obj
 
-    def update(
-        self,
-        *,
-        db_obj: User,
-        obj_in: Union[IUserUpdate, Dict[str, Any]]
-    ) -> User:
-        if isinstance(obj_in, dict):
-            update_data = obj_in
-        else:
-            update_data = obj_in.dict(exclude_unset=True)
-
-        update_data["updated_at"] = datetime.utcnow()
-        update_data["first_name"] = obj_in.first_name
-        update_data["last_name"] = obj_in.last_name
-
-        response = super().update(db.session, db_obj=db_obj, obj_in=update_data)
-        return response
-
+    
     async def update_is_active(
         self,
         *,
