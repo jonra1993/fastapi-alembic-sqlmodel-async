@@ -1,6 +1,7 @@
 from datetime import timedelta
-from typing import Any
+from typing import Any, Optional
 from fastapi import APIRouter, Body, Depends, HTTPException
+from app.schemas.common_schema import TokenType
 from app.core.security import get_password_hash
 from app.core.security import verify_password
 from app.models.user_model import User
@@ -21,19 +22,17 @@ from enum import Enum
 router = APIRouter()
 
 
-class TokenType(str, Enum):
-    ACCESS = "access_token"
-    REFRESH = "refresh_token"
-
-
 async def add_token_to_redis(
-    redis_client: Redis, user: User, token: str, token_type: TokenType, expire_time: int
+    redis_client: Redis,
+    user: User,
+    token: str,
+    token_type: TokenType,
+    expire_time: Optional[int] = None,
 ):
     token_key = f"user:{user.id}:{token_type}"
-    print("token_key", token_key)
     await redis_client.sadd(token_key, token)
-    await redis_client.expire(token_key, expire_time)
-    print("done")
+    if expire_time:
+        await redis_client.expire(token_key, expire_time)
 
 
 async def delete_tokens(redis_client: Redis, user: User, token_type: TokenType):
@@ -160,8 +159,14 @@ async def get_refresh_token(
         raise HTTPException(status_code=403, detail="Refresh token invalid")
 
     if payload["type"] == "refresh":
+        user_id = payload["sub"]
+        refresh_token_key = f"user:{user_id}:{TokenType.REFRESH}"
+        valid_refresh_tokens = await redis_client.smembers(refresh_token_key)
+        if valid_refresh_tokens and body.refresh_token not in valid_refresh_tokens:
+            raise HTTPException(status_code=403, detail="Refresh token invalid")
+
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        user = await crud.user.get(id=payload["sub"])
+        user = await crud.user.get(id=user_id)
         if user.is_active:
             access_token = security.create_access_token(
                 payload["sub"], expires_delta=access_token_expires

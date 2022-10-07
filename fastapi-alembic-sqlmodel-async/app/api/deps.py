@@ -17,6 +17,7 @@ from app.schemas.common_schema import IMetaGeneral
 from app.utils.minio_client import MinioClient
 import aioredis
 from aioredis import Redis
+from app.schemas.common_schema import TokenType
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
@@ -58,7 +59,7 @@ def get_current_user(required_roles: List[str] = None) -> User:
                 detail="Could not validate credentials",
             )
         user_id = payload["sub"]
-        access_token_key = f"user:{user_id}:access_token"
+        access_token_key = f"user:{user_id}:{TokenType.ACCESS}"
         valid_access_tokens = await redis_client.smembers(access_token_key)
         if valid_access_tokens and token not in valid_access_tokens:
             raise HTTPException(
