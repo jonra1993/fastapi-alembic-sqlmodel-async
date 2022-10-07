@@ -37,7 +37,9 @@ async def add_token_to_redis(
 
 async def delete_tokens(redis_client: Redis, user: User, token_type: TokenType):
     token_key = f"user:{user.id}:{token_type}"
-    await redis_client.delete(token_key)
+    valid_tokens = await redis_client.smembers(token_key)
+    if valid_tokens is not None:
+        await redis_client.delete(token_key)
 
 
 @router.post("", response_model=IPostResponseBase[Token])
