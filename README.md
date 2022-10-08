@@ -121,7 +121,7 @@ docker compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade hea
 
 *Using Makefile command*
 ```sh
-make init-db
+make add-dev-migration
 ```
 
 ## Production Deployment
