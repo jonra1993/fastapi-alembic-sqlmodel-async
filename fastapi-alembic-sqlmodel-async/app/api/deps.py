@@ -1,6 +1,7 @@
 from typing import AsyncGenerator, List
 from uuid import UUID
 from fastapi import Depends, HTTPException, status
+from app.utils.token import get_valid_tokens
 from app.schemas.user_schema import IUserRead
 from app.utils.minio_client import MinioClient
 from app.schemas.user_schema import IUserCreate
@@ -59,8 +60,7 @@ def get_current_user(required_roles: List[str] = None) -> User:
                 detail="Could not validate credentials",
             )
         user_id = payload["sub"]
-        access_token_key = f"user:{user_id}:{TokenType.ACCESS}"
-        valid_access_tokens = await redis_client.smembers(access_token_key)
+        valid_access_tokens = await get_valid_tokens(redis_client, user_id, TokenType.ACCESS)
         if valid_access_tokens and token not in valid_access_tokens:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
