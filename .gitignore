@@ -131,7 +131,6 @@ dmypy.json
 .pyre/
 
 db_docker
-pgadmin
 minio
 
 .sonarqube/*

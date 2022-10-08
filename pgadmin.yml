@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:4.16
+    restart: always
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json      
+      - pgadmin_data:/var/lib/pgadmin:rw      
+    ports:
+      - 15432:15432
+    env_file: ".env"
+    environment:
+      PGADMIN_CONFIG_SERVER_MODE: 0
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 0
+      # Default user for desktop mode (SERVER_MODE = False)
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      # Default password for desktop mode (SERVER_MODE = False)
+      PGADMIN_DEFAULT_PASSWORD: password      
+      PGADMIN_LISTEN_ADDRESS: 0.0.0.0
+      PGADMIN_LISTEN_PORT: 15432    
+    entrypoint:
+      - "/bin/sh"
+      - "-c"
+      - "/bin/echo '${DATABASE_HOST}:5432:*:${DATABASE_USER}:${DATABASE_PASSWORD}' > /tmp/pgpassfile && /entrypoint.sh"
+
+
+volumes:
+  pgadmin_data:
+    
+  

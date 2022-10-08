@@ -1,0 +1,14 @@
+{
+	"Servers": {
+		"1": {
+			"Name": "fastapi-alembic",
+			"Group": "Servers",
+			"Host": "database",
+			"Port": 5432,
+			"MaintenanceDB": "postgres",
+			"Username": "postgres",
+			"SSLMode": "prefer",
+			"PassFile": "/tmp/pgpassfile"
+		}
+	}
+}
