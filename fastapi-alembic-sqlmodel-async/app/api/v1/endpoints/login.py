@@ -65,7 +65,7 @@ async def login(
             settings.ACCESS_TOKEN_EXPIRE_MINUTES,
         )
     valid_refresh_tokens = await get_valid_tokens(
-        redis_client, user.id, TokenType.ACCESS
+        redis_client, user.id, TokenType.REFRESH
     )
     if valid_refresh_tokens:
         await add_token_to_redis(
