@@ -5,11 +5,11 @@ from uuid import UUID
 class IRoleCreate(RoleBase):
     pass
 
-class IRoleRead(RoleBase):    
-    id: UUID
-
 class IRoleUpdate(RoleBase):
     pass
+
+class IRoleRead(RoleBase):    
+    id: UUID
 
 class IRoleEnum(str, Enum):
     admin = 'admin'

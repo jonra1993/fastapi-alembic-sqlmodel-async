@@ -7,6 +7,11 @@ from app import api
 from typing import Any, Optional, Union
 from uuid import UUID
 
+class IMediaCreate(MediaBase):
+    pass
+
+class IMediaUpdate(MediaBase):
+    pass
 
 class IMediaRead(MediaBase):
     id: Union[UUID, str]
@@ -24,23 +29,12 @@ class IMediaRead(MediaBase):
         )
         return url
 
-
-class IMediaCreate(MediaBase):
-    pass
-
-
-class IMediaUpdate(IMediaRead):
-    id: Union[UUID, str]
-
-
 # Image Media
-class IImageMediaRead(ImageMediaBase):
-    media: Optional[IMediaRead]
-
-
 class IImageMediaCreate(ImageMediaBase):
     pass
 
-
 class IImageMediaUpdate(ImageMediaBase):
     pass
+
+class IImageMediaRead(ImageMediaBase):
+    media: Optional[IMediaRead]

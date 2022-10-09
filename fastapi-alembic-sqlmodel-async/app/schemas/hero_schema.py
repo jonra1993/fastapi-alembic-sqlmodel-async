@@ -6,14 +6,14 @@ from uuid import UUID
 class IHeroCreate(HeroBase):
     pass
 
-class IHeroRead(HeroBase):
-    id: UUID
-
 class IHeroUpdate(HeroBase):
     name: Optional[str] = None
     secret_name: Optional[str] = None
     age: Optional[int] = None
     team_id: Optional[UUID] = None
+
+class IHeroRead(HeroBase):
+    id: UUID
 
 class IHeroReadWithTeam(IHeroRead):
     team: TeamBase
