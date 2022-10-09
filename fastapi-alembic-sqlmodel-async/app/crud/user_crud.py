@@ -21,16 +21,8 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
 
     async def create_with_role(self, *, obj_in: IUserCreate, db_session: Optional[AsyncSession] = None) -> User:
         db_session = db_session or db.session
-        db_obj = User(
-            first_name=obj_in.first_name,
-            last_name=obj_in.last_name,
-            email=obj_in.email,
-            is_superuser=obj_in.is_superuser,
-            hashed_password=get_password_hash(obj_in.password),
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
-            role_id=obj_in.role_id
-        )
+        db_obj = User.from_orm(obj_in)
+        db_obj.hashed_password = get_password_hash(obj_in.password)
         db_session.add(db_obj)
         await db_session.commit()
         await db_session.refresh(db_obj)

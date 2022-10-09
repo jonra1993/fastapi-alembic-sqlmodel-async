@@ -21,7 +21,7 @@ class UserBase(SQLModel):
     address: Optional[str]    
 
 class User(BaseUUIDModel, UserBase, table=True):    
-    hashed_password: str = Field(
+    hashed_password: Optional[str] = Field(
         nullable=False, index=True
     )    
     role: Optional["Role"] = Relationship(back_populates="users", sa_relationship_kwargs={"lazy": "selectin"})

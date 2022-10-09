@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from app.models.group_model import GroupBase
 from .user_schema import IUserReadWithoutGroups
 from uuid import UUID
@@ -11,7 +11,7 @@ class IGroupRead(GroupBase):
 
 class IGroupReadWithUsers(GroupBase):
     id: UUID
-    users: List[IUserReadWithoutGroups]
+    users: Optional[List[IUserReadWithoutGroups]] = []
 
 class IGroupUpdate(GroupBase):
     pass

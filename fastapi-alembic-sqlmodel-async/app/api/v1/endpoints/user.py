@@ -135,6 +135,7 @@ async def create_user(
     Creates a new user
     """
     user = await crud.user.create_with_role(obj_in=new_user)
+
     return create_response(data=user)
 
 
