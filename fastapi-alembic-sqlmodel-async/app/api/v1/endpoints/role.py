@@ -5,7 +5,7 @@ from app.schemas.common_schema import (
     IPutResponseBase,
     create_response,
 )
-from fastapi_pagination import Page, Params
+from fastapi_pagination import Params
 from app.schemas.role_schema import IRoleCreate, IRoleRead, IRoleUpdate
 from fastapi import APIRouter, Depends, HTTPException
 from app.api import deps
@@ -16,7 +16,7 @@ from app.schemas.role_schema import IRoleEnum
 router = APIRouter()
 
 
-@router.get("", response_model=IGetResponseBase[Page[IRoleRead]])
+@router.get("", response_model=IGetResponseBase[IRoleRead])
 async def get_roles(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),

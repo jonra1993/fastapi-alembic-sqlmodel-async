@@ -1,6 +1,4 @@
-from typing import Optional, cast
-
-from app.schemas.common_schema import IResponseBase
+from typing import Optional
 from app.models.user_model import User
 from app.models.hero_model import Hero
 from app.schemas.common_schema import (
@@ -10,7 +8,7 @@ from app.schemas.common_schema import (
     IPutResponseBase,
     create_response,
 )
-from fastapi_pagination import Page, Params
+from fastapi_pagination import Params
 from app.schemas.hero_schema import (
     IHeroCreate,
     IHeroRead,
@@ -28,7 +26,7 @@ from app.schemas.common_schema import IOrderEnum
 router = APIRouter()
 
 
-@router.get("", response_model=IGetResponseBase[Page[IHeroReadWithTeam]])
+@router.get("", response_model=IGetResponseBase[IHeroReadWithTeam])
 async def get_hero_list(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
@@ -40,7 +38,7 @@ async def get_hero_list(
     return create_response(data=heroes)
 
 
-@router.get("/by_created_at", response_model=IResponseBase[Page[IHeroReadWithTeam]])
+@router.get("/by_created_at", response_model=IGetResponseBase[IHeroReadWithTeam])
 async def get_hero_list_order_by_created_at(
     order: Optional[IOrderEnum] = Query(
         default=IOrderEnum.ascendent, description="It is optional. Default is ascendent"

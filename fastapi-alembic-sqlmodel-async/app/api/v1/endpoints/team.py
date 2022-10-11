@@ -5,7 +5,7 @@ from app.schemas.common_schema import (
     IPostResponseBase,
     create_response,
 )
-from fastapi_pagination import Page, Params
+from fastapi_pagination import Params
 from app.schemas.team_schema import (
     ITeamCreate,
     ITeamRead,
@@ -21,7 +21,7 @@ from app.schemas.role_schema import IRoleEnum
 router = APIRouter()
 
 
-@router.get("", response_model=IGetResponseBase[Page[ITeamRead]])
+@router.get("", response_model=IGetResponseBase[ITeamRead])
 async def get_teams_list(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),

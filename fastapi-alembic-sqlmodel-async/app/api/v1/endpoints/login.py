@@ -171,7 +171,6 @@ async def get_refresh_token(
                 redis_client, user.id, TokenType.ACCESS
             )
             if valid_access_get_valid_tokens:
-                print("her")
                 await add_token_to_redis(
                     redis_client,
                     user,
