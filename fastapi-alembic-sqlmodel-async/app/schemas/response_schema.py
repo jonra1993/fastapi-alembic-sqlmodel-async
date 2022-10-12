@@ -1,3 +1,4 @@
+import math
 from typing import Any, Dict, Generic, Sequence, Union, Optional, TypeVar
 from fastapi_pagination import Params, Page
 from fastapi_pagination.bases import AbstractPage, AbstractParams
@@ -6,10 +7,16 @@ DataType = TypeVar("DataType")
 T = TypeVar("T")
 
 
+class PageBase(Page[T], Generic[T]):
+    pages: int
+    next_page: Optional[int]
+    previous_page: Optional[int]
+
+
 class IResponseBase(AbstractPage[T], Generic[T]):
     message: str = ""
     meta: Dict = {}
-    data: Union[Page[T], T]
+    data: Union[PageBase[T], T]
 
     __params_type__ = Params  # Set params related to Page
 
@@ -19,11 +26,20 @@ class IResponseBase(AbstractPage[T], Generic[T]):
         items: Sequence[T],
         total: int,
         params: AbstractParams,
-    ) -> Union[Page[T], None]:
+    ) -> Union[PageBase[T], None]:
         if not items:
             return
+        pages = math.ceil(total / params.size)
         return cls(
-            data=Page(items=items, page=params.page, size=params.size, total=total)
+            data=PageBase(
+                items=items,
+                page=params.page,
+                size=params.size,
+                total=total,
+                pages=pages,
+                next_page=params.page + 1 if params.page < pages else None,
+                previous_page=params.page - 1 if params.page > 1 else None,
+            )
         )
 
 
@@ -44,13 +60,14 @@ class IDeleteResponseBase(IResponseBase[DataType], Generic[DataType]):
 
 
 def create_response(
-    data: Optional[DataType], message: Optional[str] = "", meta: Optional[Union[Dict, Any]] = {}
+    data: Optional[DataType],
+    message: Optional[str] = "",
+    meta: Optional[Union[Dict, Any]] = {},
 ) -> Union[Dict[str, DataType], DataType]:
     if isinstance(data, IResponseBase):
         data.message = "Data paginated correctly" if not message else message
         data.meta = meta
         return data
     body_response = {"data": data, "message": message, "meta": meta}
-    #It returns a dictionary to avoid doble validation https://github.com/tiangolo/fastapi/issues/3021
+    # It returns a dictionary to avoid doble validation https://github.com/tiangolo/fastapi/issues/3021
     return dict((k, v) for k, v in body_response.items() if v is not None)
-

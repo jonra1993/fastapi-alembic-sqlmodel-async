@@ -61,7 +61,7 @@ class CustomException(Exception):
 
 
 @app.get("/")
-async def root():    
+async def root():
     return {"message": "Hello World"}
 
 
