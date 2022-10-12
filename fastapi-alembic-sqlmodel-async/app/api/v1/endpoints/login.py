@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from app.utils.token import get_valid_tokens
 from app.utils.token import delete_tokens
 from app.utils.token import add_token_to_redis
-from app.schemas.common_schema import TokenType
+from app.schemas.common_schema import TokenType, IMetaGeneral
 from app.core.security import get_password_hash
 from app.core.security import verify_password
 from app.models.user_model import User
@@ -18,7 +18,7 @@ from app.api import deps
 from app.core import security
 from app.core.config import settings
 from app.schemas.token_schema import TokenRead, Token, RefreshToken
-from app.schemas.common_schema import IMetaGeneral, IPostResponseBase, create_response
+from app.schemas.response_schema import IPostResponseBase, create_response
 from aioredis import Redis
 
 router = APIRouter()

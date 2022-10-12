@@ -1,6 +1,6 @@
 from typing import Optional
 from app.schemas.media_schema import IMediaCreate
-from app.schemas.common_schema import (
+from app.schemas.response_schema import (
     IDeleteResponseBase,
     IGetResponseBase,
     IPostResponseBase,

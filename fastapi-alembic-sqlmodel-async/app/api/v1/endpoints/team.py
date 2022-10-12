@@ -1,5 +1,5 @@
 from app.models.user_model import User
-from app.schemas.common_schema import (
+from app.schemas.response_schema import (
     IDeleteResponseBase,
     IGetResponseBase,
     IPostResponseBase,

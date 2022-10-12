@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Union
 from fastapi import APIRouter
-from app.schemas.common_schema import IGetResponseBase, create_response
+from app.schemas.response_schema import IGetResponseBase, create_response
 from fastapi_cache.decorator import cache
 
 router = APIRouter()

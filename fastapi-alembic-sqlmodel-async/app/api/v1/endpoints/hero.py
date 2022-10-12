@@ -1,7 +1,7 @@
 from typing import Optional
 from app.models.user_model import User
 from app.models.hero_model import Hero
-from app.schemas.common_schema import (
+from app.schemas.response_schema import (
     IDeleteResponseBase,
     IGetResponseBase,
     IPostResponseBase,

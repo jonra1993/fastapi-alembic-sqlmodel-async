@@ -14,11 +14,11 @@ from app.core import security
 from app.core.config import settings
 from app.db.session import SessionLocal
 from sqlmodel.ext.asyncio.session import AsyncSession
-from app.schemas.common_schema import IMetaGeneral
+from app.schemas.common_schema import IMetaGeneral, TokenType
 from app.utils.minio_client import MinioClient
 import aioredis
 from aioredis import Redis
-from app.schemas.common_schema import TokenType
+
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
@@ -60,7 +60,9 @@ def get_current_user(required_roles: List[str] = None) -> User:
                 detail="Could not validate credentials",
             )
         user_id = payload["sub"]
-        valid_access_tokens = await get_valid_tokens(redis_client, user_id, TokenType.ACCESS)
+        valid_access_tokens = await get_valid_tokens(
+            redis_client, user_id, TokenType.ACCESS
+        )
         if valid_access_tokens and token not in valid_access_tokens:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
