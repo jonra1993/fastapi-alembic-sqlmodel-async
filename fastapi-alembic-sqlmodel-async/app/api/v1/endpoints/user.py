@@ -4,6 +4,7 @@ from app.schemas.response_schema import (
     IDeleteResponseBase,
     IGetResponseBase,
     IPostResponseBase,
+    IGetResponsePaginated,
     create_response,
 )
 from fastapi_pagination import Params
@@ -37,7 +38,7 @@ from app.utils.resize_image import modify_image
 router = APIRouter()
 
 
-@router.get("/list", response_model=IGetResponseBase[IUserReadWithoutGroups])
+@router.get("/list", response_model=IGetResponsePaginated[IUserReadWithoutGroups])
 async def read_users_list(
     params: Params = Depends(),
     current_user: User = Depends(
@@ -53,7 +54,7 @@ async def read_users_list(
 
 @router.get(
     "/list/by_role_name",
-    response_model=IGetResponseBase[IUserReadWithoutGroups],
+    response_model=IGetResponsePaginated[IUserReadWithoutGroups],
 )
 async def read_users_list_by_role_name(
     status: Optional[IUserStatus] = Query(
@@ -84,7 +85,7 @@ async def read_users_list_by_role_name(
 
 @router.get(
     "/order_by_created_at",
-    response_model=IGetResponseBase[IUserReadWithoutGroups],
+    response_model=IGetResponsePaginated[IUserReadWithoutGroups],
 )
 async def get_hero_list_order_by_created_at(
     params: Params = Depends(),

@@ -3,6 +3,7 @@ from app.schemas.response_schema import (
     IGetResponseBase,
     IPostResponseBase,
     IPutResponseBase,
+    IGetResponsePaginated,
     create_response,
 )
 from fastapi_pagination import Params
@@ -22,7 +23,7 @@ from app.schemas.role_schema import IRoleEnum
 router = APIRouter()
 
 
-@router.get("", response_model=IGetResponseBase[IGroupRead])
+@router.get("", response_model=IGetResponsePaginated[IGroupRead])
 async def get_groups(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),

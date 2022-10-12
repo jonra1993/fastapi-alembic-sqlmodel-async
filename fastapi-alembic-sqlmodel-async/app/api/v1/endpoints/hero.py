@@ -6,6 +6,7 @@ from app.schemas.response_schema import (
     IGetResponseBase,
     IPostResponseBase,
     IPutResponseBase,
+    IGetResponsePaginated,
     create_response,
 )
 from fastapi_pagination import Params
@@ -26,7 +27,7 @@ from app.schemas.common_schema import IOrderEnum
 router = APIRouter()
 
 
-@router.get("", response_model=IGetResponseBase[IHeroReadWithTeam])
+@router.get("", response_model=IGetResponsePaginated[IHeroReadWithTeam])
 async def get_hero_list(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
@@ -38,7 +39,7 @@ async def get_hero_list(
     return create_response(data=heroes)
 
 
-@router.get("/by_created_at", response_model=IGetResponseBase[IHeroReadWithTeam])
+@router.get("/by_created_at", response_model=IGetResponsePaginated[IHeroReadWithTeam])
 async def get_hero_list_order_by_created_at(
     order: Optional[IOrderEnum] = Query(
         default=IOrderEnum.ascendent, description="It is optional. Default is ascendent"
