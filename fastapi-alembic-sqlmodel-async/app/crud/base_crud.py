@@ -91,14 +91,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ) -> Page[ModelType]:
         db_session = db_session or db.session
         
-        if ordered_by not in self.model.__table__.columns or ordered_by == None:
-            ordered_by = self.model.id
+        columns = self.model.__table__.columns
+
+        if order_by not in columns or order_by == None:
+            order_by = self.model.id
         
         if query == None:
             if order == IOrderEnum.ascendent:
-                query = select(self.model).order_by(self.model.__table__.columns[order_by.value].asc())
+                query = select(self.model).order_by(columns[order_by.value].asc())
             else:
-                query = select(self.model).order_by(self.model.__table__.columns[order_by.value].desc())
+                query = select(self.model).order_by(columns[order_by.value].desc())
 
         return await paginate(db_session, query, params)
 
@@ -112,16 +114,20 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session: Optional[AsyncSession] = None
     ) -> List[ModelType]:
         db_session = db_session or db.session
-        if ordered_by not in self.model.__table__.columns or ordered_by == None:
-            ordered_by = self.model.id
+
+        columns = self.model.__table__.columns
+
+        if order_by not in columns or order_by == None:
+            order_by = self.model.id
         
         if order == IOrderEnum.ascendent:
-            query = select(self.model).offset(skip).limit(limit).order_by(self.model.__table__.columns[order_by.value].asc())
+            query = select(self.model).offset(skip).limit(limit).order_by(columns[order_by.value].asc())
         else:
-            query = select(self.model).offset(skip).limit(limit).order_by(self.model.__table__.columns[order_by.value].desc())
+            query = select(self.model).offset(skip).limit(limit).order_by(columns[order_by.value].desc())
 
         response = await db_session.execute(query)
         return response.scalars().all()
+    
     
     async def create(
         self,
