@@ -7,10 +7,8 @@ class IHeroCreate(HeroBase):
     pass
 
 class IHeroUpdate(HeroBase):
-    name: Optional[str] = None
-    secret_name: Optional[str] = None
-    age: Optional[int] = None
-    team_id: Optional[UUID] = None
+    name: Optional[str] = None  #This field is overrided
+    secret_name: Optional[str] = None #This field is overrided
 
 class IHeroRead(HeroBase):
     id: UUID

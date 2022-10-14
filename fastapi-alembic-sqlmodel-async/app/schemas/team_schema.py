@@ -7,7 +7,7 @@ from uuid import UUID
 class ITeamCreate(TeamBase):
     pass
 
-class ITeamUpdate(BaseModel):
+class ITeamUpdate(TeamBase):
     name: Optional[str] = None
     headquarters: Optional[str] = None
 
