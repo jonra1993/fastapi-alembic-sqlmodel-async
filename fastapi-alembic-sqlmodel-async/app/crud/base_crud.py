@@ -80,6 +80,55 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             query = select(self.model)
         return await paginate(db_session, query, params)
 
+    async def get_multi_paginated_ordered(
+        self,
+        *,
+        params: Optional[Params] = Params(),
+        order_by: Optional[str] = None,
+        order: Optional[IOrderEnum] = IOrderEnum.ascendent,
+        query: Optional[Union[T, Select[T]]] = None,
+        db_session: Optional[AsyncSession] = None
+    ) -> Page[ModelType]:
+        db_session = db_session or db.session
+        
+        columns = self.model.__table__.columns
+
+        if order_by not in columns or order_by == None:
+            order_by = self.model.id
+        
+        if query == None:
+            if order == IOrderEnum.ascendent:
+                query = select(self.model).order_by(columns[order_by.value].asc())
+            else:
+                query = select(self.model).order_by(columns[order_by.value].desc())
+
+        return await paginate(db_session, query, params)
+
+    async def get_multi_ordered(
+        self,
+        *,
+        order_by: Optional[str] = None,
+        order: Optional[IOrderEnum] = IOrderEnum.ascendent,
+        skip: int = 0,
+        limit: int = 100,
+        db_session: Optional[AsyncSession] = None
+    ) -> List[ModelType]:
+        db_session = db_session or db.session
+
+        columns = self.model.__table__.columns
+
+        if order_by not in columns or order_by == None:
+            order_by = self.model.id
+        
+        if order == IOrderEnum.ascendent:
+            query = select(self.model).offset(skip).limit(limit).order_by(columns[order_by.value].asc())
+        else:
+            query = select(self.model).offset(skip).limit(limit).order_by(columns[order_by.value].desc())
+
+        response = await db_session.execute(query)
+        return response.scalars().all()
+    
+    
     async def create(
         self,
         *,
