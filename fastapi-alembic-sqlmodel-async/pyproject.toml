@@ -8,7 +8,7 @@ authors = ["jonra1993 <jon_ra@hotmail.es>"]
 python = "^3.8"
 alembic = "^1.7.6"
 asyncpg = "^0.25.0"
-fastapi = {extras = ["all"], version = "^0.81.0"}
+fastapi = {extras = ["all"], version = "^0.85.1"}
 sqlmodel = "^0.0.8"
 python-jose = "^3.3.0"
 cryptography = "^36.0.1"
@@ -16,7 +16,7 @@ passlib = "^1.7.4"
 SQLAlchemy-Utils = "^0.38.2"
 black = "^22.1.0"
 SQLAlchemy = "^1.4.40"
-fastapi-pagination = {extras = ["sqlalchemy"], version = "^0.9.3"}
+fastapi-pagination = {extras = ["sqlalchemy"], version = "^0.10.0"}
 fastapi-cache2 = {extras = ["redis"], version = "^0.1.8"}
 fastapi-async-sqlalchemy = "^0.3.12"
 aioredis = "^2.0.1"
