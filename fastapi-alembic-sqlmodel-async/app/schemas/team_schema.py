@@ -1,15 +1,16 @@
 from app.models.hero_model import HeroBase
 from typing import List, Optional
 from app.models.team_model import TeamBase
-from pydantic import BaseModel
+from app.utils.partial import optional
 from uuid import UUID
 
 class ITeamCreate(TeamBase):
     pass
 
+#All this fields are optional
+@optional
 class ITeamUpdate(TeamBase):
-    name: Optional[str] = None
-    headquarters: Optional[str] = None
+    pass
 
 class ITeamRead(TeamBase):
     id: UUID

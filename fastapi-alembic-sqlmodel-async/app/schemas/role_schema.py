@@ -1,10 +1,13 @@
 from enum import Enum
 from app.models.role_model import RoleBase
+from app.utils.partial import optional
 from uuid import UUID
 
 class IRoleCreate(RoleBase):
     pass
 
+#All this fields are optional
+@optional
 class IRoleUpdate(RoleBase):
     pass
 

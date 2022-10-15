@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ValidationError, root_validator
+from app.utils.partial import optional
 from app.models.user_model import UserBase
 from app.models.group_model import GroupBase
 from .media_schema import IImageMediaRead
@@ -13,6 +13,8 @@ class IUserCreate(UserBase):
     class Config:
         hashed_password = 'Main'
 
+#All this fields are optional
+@optional
 class IUserUpdate(UserBase):
     pass
 
