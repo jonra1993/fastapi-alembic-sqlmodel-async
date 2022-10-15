@@ -1,10 +1,8 @@
 # https://github.com/pydantic/pydantic/issues/1223
 # https://github.com/pydantic/pydantic/pull/3179
-
+# Todo migrate to pydanticv2 partial 
 import inspect
 from pydantic import BaseModel
-from pydantic.utils import lenient_issubclass
-from typing import FrozenSet
 
 def optional(*fields):
     def dec(_cls):
