@@ -13,7 +13,7 @@ class IUserCreate(UserBase):
     class Config:
         hashed_password = 'Main'
 
-#All this fields are optional
+#All these fields are optional
 @optional
 class IUserUpdate(UserBase):
     pass

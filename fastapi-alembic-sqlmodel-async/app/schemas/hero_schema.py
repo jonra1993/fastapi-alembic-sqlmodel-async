@@ -7,7 +7,7 @@ from uuid import UUID
 class IHeroCreate(HeroBase):
     pass
 
-#All this fields are optional
+#All these fields are optional
 @optional
 class IHeroUpdate(HeroBase):
     pass

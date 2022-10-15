@@ -11,7 +11,7 @@ from uuid import UUID
 class IMediaCreate(MediaBase):
     pass
 
-#All this fields are optional
+#All these fields are optional
 @optional
 class IMediaUpdate(MediaBase):
     pass
@@ -36,7 +36,7 @@ class IMediaRead(MediaBase):
 class IImageMediaCreate(ImageMediaBase):
     pass
 
-#All this fields are optional
+#All these fields are optional
 @optional
 class IImageMediaUpdate(ImageMediaBase):
     pass

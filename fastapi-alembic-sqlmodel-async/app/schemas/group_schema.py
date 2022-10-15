@@ -14,7 +14,7 @@ class IGroupReadWithUsers(GroupBase):
     id: UUID
     users: Optional[List[IUserReadWithoutGroups]] = []
 
-#All this fields are optional
+#All these fields are optional
 @optional
 class IGroupUpdate(GroupBase):
     pass

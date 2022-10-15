@@ -6,7 +6,7 @@ from uuid import UUID
 class IRoleCreate(RoleBase):
     pass
 
-#All this fields are optional
+#All these fields are optional
 @optional
 class IRoleUpdate(RoleBase):
     pass

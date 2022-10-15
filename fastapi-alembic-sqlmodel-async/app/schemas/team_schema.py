@@ -7,7 +7,7 @@ from uuid import UUID
 class ITeamCreate(TeamBase):
     pass
 
-#All this fields are optional
+#All these fields are optional
 @optional
 class ITeamUpdate(TeamBase):
     pass
