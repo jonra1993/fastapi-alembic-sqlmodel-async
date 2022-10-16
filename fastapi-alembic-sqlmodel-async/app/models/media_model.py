@@ -1,4 +1,5 @@
-from app.models.base_uuid_model import BaseUUIDModel, uuid_pkg
+from app.models.base_uuid_model import BaseUUIDModel
+from uuid import UUID
 from sqlmodel import Field, SQLModel, Relationship
 from typing import Optional
 
@@ -20,7 +21,7 @@ class ImageMediaBase(SQLModel):
 
 
 class ImageMedia(BaseUUIDModel, ImageMediaBase, table=True):
-    media_id: Optional[uuid_pkg.UUID] = Field(default=None, foreign_key="Media.id")
+    media_id: Optional[UUID] = Field(default=None, foreign_key="Media.id")
     media: Media = Relationship(
         sa_relationship_kwargs={
             "lazy": "selectin",

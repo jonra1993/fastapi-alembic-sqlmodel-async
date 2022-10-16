@@ -1,6 +1,6 @@
 # https://github.com/Longdh57/fastapi-minio
 
-import uuid
+from uuid6 import uuid7
 from datetime import timedelta
 from minio import Minio
 from pydantic import BaseModel
@@ -50,7 +50,7 @@ class MinioClient:
 
     def put_object(self, file_data, file_name, content_type):
         try:
-            object_name = f"{uuid.uuid4()}{file_name}"
+            object_name = f"{uuid7()}{file_name}"
             self.client.put_object(
                 bucket_name=self.bucket_name,
                 object_name=object_name,
