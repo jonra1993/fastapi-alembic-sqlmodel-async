@@ -1,5 +1,5 @@
 from typing import Optional
-from uuid6 import uuid7, UUID
+from app.utils.uuid6 import uuid7, UUID
 from sqlmodel import SQLModel as _SQLModel, Field
 from sqlalchemy.orm import declared_attr
 from datetime import datetime

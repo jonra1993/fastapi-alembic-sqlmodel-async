@@ -1,6 +1,6 @@
 # https://github.com/Longdh57/fastapi-minio
 
-from uuid6 import uuid7
+from app.utils.uuid6 import uuid7
 from datetime import timedelta
 from minio import Minio
 from pydantic import BaseModel

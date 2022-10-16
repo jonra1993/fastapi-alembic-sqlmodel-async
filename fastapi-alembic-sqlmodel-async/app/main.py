@@ -7,7 +7,7 @@ from app.api.v1.api import api_router as api_router_v1
 from app.core.config import settings
 from fastapi_async_sqlalchemy import db
 from app.utils.uuid7 import uuid7 as _uuid7, uuid8
-from uuid6 import uuid7
+from app.utils.uuid6 import uuid7
 from sqlmodel import text
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
