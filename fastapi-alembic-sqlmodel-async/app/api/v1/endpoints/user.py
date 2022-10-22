@@ -24,6 +24,7 @@ from fastapi import (
     UploadFile,
     File,
     Response,
+    status
 )
 from app.api import deps
 from app import crud
@@ -57,7 +58,7 @@ async def read_users_list(
     response_model=IGetResponsePaginated[IUserReadWithoutGroups],
 )
 async def read_users_list_by_role_name(
-    status: Optional[IUserStatus] = Query(
+    user_status: Optional[IUserStatus] = Query(
         default=IUserStatus.active,
         description="User status, It is optional. Default is active",
     ),
@@ -72,7 +73,10 @@ async def read_users_list_by_role_name(
     """
     Retrieve users by role name and status. Requires admin role
     """
-    user_status = True if status == IUserStatus.active else False
+    user_status = True if user_status == IUserStatus.active else False
+    role = await crud.role.get_role_by_name(name=role_name)
+    if not role:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role name is invalid")
     query = (
         select(User)
         .join(Role, User.role_id == Role.id)
@@ -112,7 +116,10 @@ async def get_user_by_id(
     Gets a user by his/her id
     """
     user = await crud.user.get(id=user_id)
-    return create_response(data=user)
+    if user:
+        return create_response(data=user)
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User id is invalid")
 
 
 @router.get("", response_model=IGetResponseBase[IUserRead])
@@ -125,7 +132,7 @@ async def get_my_data(
     return create_response(data=current_user)
 
 
-@router.post("", response_model=IPostResponseBase[IUserRead])
+@router.post("", response_model=IPostResponseBase[IUserRead], status_code=status.HTTP_201_CREATED)
 async def create_user(
     new_user: IUserCreate = Depends(deps.user_exists),
     current_user: User = Depends(
@@ -135,8 +142,12 @@ async def create_user(
     """
     Creates a new user
     """
-    user = await crud.user.create_with_role(obj_in=new_user)
 
+    role = await crud.role.get(id=new_user.role_id)
+    if not role:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role id is invalid")
+
+    user = await crud.user.create_with_role(obj_in=new_user)
     return create_response(data=user)
 
 
