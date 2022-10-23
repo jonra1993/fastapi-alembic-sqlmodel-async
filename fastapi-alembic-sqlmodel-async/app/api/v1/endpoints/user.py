@@ -1,40 +1,43 @@
+from io import BytesIO
 from typing import Optional
+from uuid import UUID
+
+from app import crud
+from app.api import deps
+from app.models import User, UserFollow
+from app.models.role_model import Role
 from app.schemas.media_schema import IMediaCreate
 from app.schemas.response_schema import (
     IDeleteResponseBase,
     IGetResponseBase,
-    IPostResponseBase,
     IGetResponsePaginated,
+    IPostResponseBase,
+    IPutResponseBase,
     create_response,
 )
-from fastapi_pagination import Params
+from app.schemas.role_schema import IRoleEnum
+from app.schemas.user_follow_schema import IUserFollowRead
 from app.schemas.user_schema import (
     IUserCreate,
     IUserRead,
     IUserReadWithoutGroups,
     IUserStatus,
 )
-from io import BytesIO
-from fastapi import (
-    APIRouter,
-    Depends,
-    HTTPException,
-    Query,
-    Body,
-    UploadFile,
-    File,
-    Response,
-    status
-)
-from app.api import deps
-from app import crud
-from app.models import User
-from sqlmodel import select, and_
-from uuid import UUID
-from app.schemas.role_schema import IRoleEnum
-from app.models.role_model import Role
 from app.utils.minio_client import MinioClient
 from app.utils.resize_image import modify_image
+from fastapi import (
+    APIRouter,
+    Body,
+    Depends,
+    File,
+    HTTPException,
+    Query,
+    Response,
+    UploadFile,
+    status,
+)
+from fastapi_pagination import Params
+from sqlmodel import and_, select
 
 router = APIRouter()
 
@@ -103,6 +106,95 @@ async def get_hero_list_order_by_created_at(
     query = select(User).order_by(User.created_at)
     users = await crud.user.get_multi_paginated(query=query, params=params)
     return create_response(data=users)
+
+
+@router.get("/following", response_model=IGetResponsePaginated[IUserReadWithoutGroups])
+async def get_following(
+    params: Params = Depends(),
+    current_user: User = Depends(deps.get_current_user()),
+):
+    """
+    Lists the people who the authenticated user follows.
+    """
+    query = (
+        select(User)
+        .join(UserFollow, User.id == UserFollow.target_user_id)
+        .where(UserFollow.user_id == current_user.id)
+    )
+    users = await crud.user.get_multi_paginated(query=query, params=params)
+    return create_response(data=users)
+
+
+@router.get("/followers", response_model=IGetResponsePaginated[IUserReadWithoutGroups])
+async def get_followers(
+    params: Params = Depends(),
+    current_user: User = Depends(deps.get_current_user()),
+):
+    """
+    Lists the people following the authenticated user.
+    """
+    query = (
+        select(User)
+        .join(UserFollow, User.id == UserFollow.user_id)
+        .where(UserFollow.target_user_id == current_user.id)
+    )
+    users = await crud.user.get_multi_paginated(query=query, params=params)
+    return create_response(data=users)
+
+
+@router.put("/following/{target_user_id}", response_model=IPutResponseBase[IUserFollowRead])
+async def follow_a_user_by_id(
+    target_user_id: UUID,
+    current_user: User = Depends(deps.get_current_user()),
+):
+    """
+    Following a user
+    """
+    target_user = await crud.user.get(id=target_user_id)
+    if not target_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User id is invalid")
+
+    current_follow_user = (
+        await crud.user_follow.get_follow_by_user_id_and_target_user_id(
+            user_id=current_user.id, target_user_id=target_user_id
+        )
+    )
+    if current_follow_user:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="This user has been followed"
+        )
+
+    new_user_follow = await crud.user_follow.follow_a_user_by_target_user_id(
+        user=current_user, target_user=target_user
+    )
+    return create_response(data=new_user_follow)
+
+
+@router.delete("/following/{target_user_id}", response_model=IDeleteResponseBase[IUserFollowRead])
+async def unfollowing_a_user_by_id(
+    target_user_id: UUID,
+    current_user: User = Depends(deps.get_current_user()),
+):
+    """
+    Unfollowing a user
+    """
+    target_user = await crud.user.get(id=target_user_id)
+    if not target_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User id is invalid")
+
+    current_follow_user = await crud.user_follow.get_follow_by_target_user_id(
+        user_id=current_user.id, target_user_id=target_user_id
+    )
+
+    if not current_follow_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="This user has not been followed")
+
+    user_follow = await crud.user_follow.unfollow_a_user_by_id(
+        user_follow_id=current_follow_user.id,
+        user=current_user,
+        target_user=target_user,
+    )
+    return create_response(data=user_follow)
 
 
 @router.get("/{user_id}", response_model=IGetResponseBase[IUserRead])

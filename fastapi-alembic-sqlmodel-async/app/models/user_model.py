@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlmodel import Field, SQLModel, Relationship, Column, DateTime
+from sqlmodel import BigInteger, Field, SQLModel, Relationship, Column, DateTime
 from app.models.links_model import LinkGroupUser
 from app.models.media_model import ImageMedia
 from typing import List, Optional
@@ -18,7 +18,8 @@ class UserBase(SQLModel):
     phone: Optional[str]
     state: Optional[str]
     country: Optional[str]
-    address: Optional[str]    
+    address: Optional[str]
+
 
 class User(BaseUUIDModel, UserBase, table=True):    
     hashed_password: Optional[str] = Field(
@@ -28,3 +29,5 @@ class User(BaseUUIDModel, UserBase, table=True):
     groups: List["Group"] = Relationship(back_populates="users", link_model=LinkGroupUser, sa_relationship_kwargs={"lazy": "selectin"})
     image_id: Optional[UUID] = Field(default=None, foreign_key="ImageMedia.id")
     image: ImageMedia = Relationship(sa_relationship_kwargs={"lazy":"selectin", "primaryjoin":"User.image_id==ImageMedia.id"})
+    follower_count: Optional[int] = Field(sa_column=Column(BigInteger(), server_default='0'))
+    following_count: Optional[int] = Field(sa_column=Column(BigInteger(), server_default='0'))
