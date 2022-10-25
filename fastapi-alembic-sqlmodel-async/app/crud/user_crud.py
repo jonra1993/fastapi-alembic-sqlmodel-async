@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Optional, Union
 from app.schemas.media_schema import IMediaCreate
 from pydantic.networks import EmailStr
 from app.crud.base_crud import CRUDBase
+from app.crud.user_follow_crud import user_follow as UserFollowCRUD
 from fastapi_async_sqlalchemy import db
 from sqlmodel import select
 from app.schemas.user_schema import IUserCreate, IUserUpdate
@@ -28,7 +29,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         await db_session.refresh(db_obj)
         return db_obj
 
-    
+
     async def update_is_active(
         self,
         *,
@@ -61,6 +62,37 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         await db.session.commit()
         await db.session.refresh(user)
         return user
+    
+    async def remove(
+        self, *, id: Union[UUID, str], db_session: Optional[AsyncSession] = None
+    ) -> User:
+        db_session = db_session or db.session
+        response = await db_session.execute(
+            select(self.model).where(self.model.id == id)
+        )
+        obj = response.scalar_one()
+
+        followings = await UserFollowCRUD.get_follow_by_user_id(user_id=obj.id)
+        if followings:
+            for following in followings:
+                user = await self.get(id=following.target_user_id)
+                user.follower_count -= 1
+                user.updated_at = datetime.utcnow()
+                db_session.add(user)
+                await db_session.delete(following)
+                    
+        followeds = await UserFollowCRUD.get_follow_by_target_user_id(target_user_id=obj.id)
+        if followeds:
+            for followed in followeds:
+                user = await self.get(id=followed.user_id)
+                user.following_count -= 1
+                user.updated_at = datetime.utcnow()
+                db_session.add(user)
+                await db_session.delete(followed)
+
+        await db_session.delete(obj)
+        await db_session.commit()
+        return obj
 
 
 user = CRUDUser(User)

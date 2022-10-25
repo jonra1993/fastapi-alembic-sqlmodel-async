@@ -106,7 +106,7 @@ async def user_exists(new_user: IUserCreate) -> IUserCreate:
     user = await crud.user.get_by_email(email=new_user.email)
     if user:
         raise HTTPException(
-            status_code=404, detail="There is already a user with same email"
+            status_code=status.HTTP_409_CONFLICT, detail="There is already a user with same email"
         )
     return new_user
 

@@ -27,11 +27,15 @@ class IUserRead(UserBase):
     role: Optional[IRoleRead] = None
     groups: Optional[List[IGroupReadBasic]] = []
     image: Optional[IImageMediaRead]
+    follower_count: Optional[int] = 0
+    following_count: Optional[int] = 0
 
 class IUserReadWithoutGroups(UserBase):
     id: UUID
     role: Optional[IRoleRead] = None
     image: Optional[IImageMediaRead]
+    follower_count: Optional[int] = 0
+    following_count: Optional[int] = 0
 
 class IUserStatus(str, Enum):
     active = "active"

@@ -14,7 +14,7 @@ from app.schemas.group_schema import (
     IGroupUpdate,
     IGroupReadWithUsers,
 )
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from app.api import deps
 from app import crud
 from uuid import UUID
@@ -44,10 +44,12 @@ async def get_group_by_id(
     Gets a group by its id
     """
     group = await crud.group.get(id=group_id)
-    return create_response(data=group)
+    if group:
+        return create_response(data=group)
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group id is invalid")
 
-
-@router.post("", response_model=IPostResponseBase[IGroupRead])
+@router.post("", response_model=IPostResponseBase[IGroupRead], status_code=status.HTTP_201_CREATED)
 async def create_group(
     group: IGroupCreate,
     current_user: User = Depends(
@@ -57,6 +59,9 @@ async def create_group(
     """
     Creates a new group
     """
+    group_current = await crud.group.get_group_by_name(name=group.name)
+    if group_current:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Group name already exists")
     new_group = await crud.group.create(obj_in=group, created_by_id=current_user.id)
     return create_response(data=new_group)
 
@@ -74,7 +79,10 @@ async def update_group(
     """
     group_current = await crud.group.get(id=group_id)
     if not group_current:
-        raise HTTPException(status_code=404, detail="Group not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group not found")
+    
+    if group_current.name == group.name and group_current.description == group.description:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The content has not changed")
 
     group_updated = await crud.group.update(obj_current=group_current, obj_new=group)
     return create_response(data=group_updated)
@@ -95,7 +103,11 @@ async def add_user_into_a_group(
     """
     user = await crud.user.get(id=user_id)
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    group = await crud.group.get(id=group_id)
+    if not group:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group not found")
 
     group = await crud.group.add_user_to_group(user=user, group_id=group_id)
     return create_response(message="User added to group", data=group)
