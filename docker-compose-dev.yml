@@ -69,6 +69,7 @@ services:
 
   minio_server:
     image: minio/minio:latest
+    restart: always
     container_name: minio_server
     volumes:
       - ./minio/data:/data
