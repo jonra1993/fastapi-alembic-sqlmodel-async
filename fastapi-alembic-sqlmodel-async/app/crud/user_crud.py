@@ -6,7 +6,6 @@ from app.crud.user_follow_crud import user_follow as UserFollowCRUD
 from fastapi_async_sqlalchemy import db
 from sqlmodel import select
 from app.schemas.user_schema import IUserCreate, IUserUpdate
-from app.schemas.media_schema import IImageMediaCreate
 from app.models.user_model import User
 from app.models.media_model import ImageMedia, Media
 from app.core.security import verify_password, get_password_hash

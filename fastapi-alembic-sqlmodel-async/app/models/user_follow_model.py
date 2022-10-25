@@ -2,7 +2,7 @@ from uuid import UUID
 from typing import Optional
 
 from app.models.base_uuid_model import BaseUUIDModel, SQLModel
-from sqlmodel import BigInteger, Column, Field, Boolean
+from sqlmodel import Column, Field, Boolean
 
 
 class UserFollowBase(SQLModel):
@@ -11,4 +11,4 @@ class UserFollowBase(SQLModel):
 
 
 class UserFollow(BaseUUIDModel, UserFollowBase, table=True):
-    is_mutual: Optional[bool] = Field(sa_column=Column(Boolean(), server_default='0'))
+    is_mutual: Optional[bool] = Field(sa_column=Column(Boolean(), server_default="0"))
