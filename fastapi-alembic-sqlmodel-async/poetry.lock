@@ -924,7 +924,7 @@ test = ["flake8 (>=3.9.2,<3.10.0)", "psutil", "pycodestyle (>=2.7.0,<2.8.0)", "p
 
 [[package]]
 name = "watchfiles"
-version = "0.17.0"
+version = "0.18.0"
 description = "Simple, modern and high performance file watching and code reload in python."
 category = "main"
 optional = false
