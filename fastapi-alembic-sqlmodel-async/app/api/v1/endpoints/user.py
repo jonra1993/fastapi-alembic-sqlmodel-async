@@ -23,6 +23,9 @@ from app.schemas.user_schema import (
     IUserReadWithoutGroups,
     IUserStatus,
 )
+from app.schemas.user_follow_schema import (
+    IUserFollowReadCommon,
+)
 from app.utils.minio_client import MinioClient
 from app.utils.resize_image import modify_image
 from fastapi import (
@@ -108,7 +111,7 @@ async def get_hero_list_order_by_created_at(
     return create_response(data=users)
 
 
-@router.get("/following", response_model=IGetResponsePaginated[IUserReadWithoutGroups])
+@router.get("/following", response_model=IGetResponsePaginated[IUserFollowReadCommon])
 async def get_following(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
@@ -117,7 +120,14 @@ async def get_following(
     Lists the people who the authenticated user follows.
     """
     query = (
-        select(User)
+        select(
+            User.id, 
+            User.first_name, 
+            User.last_name, 
+            User.follower_count, 
+            User.following_count, 
+            UserFollow.is_mutual
+        )
         .join(UserFollow, User.id == UserFollow.target_user_id)
         .where(UserFollow.user_id == current_user.id)
     )
@@ -125,7 +135,7 @@ async def get_following(
     return create_response(data=users)
 
 
-@router.get("/followers", response_model=IGetResponsePaginated[IUserReadWithoutGroups])
+@router.get("/followers", response_model=IGetResponsePaginated[IUserFollowReadCommon])
 async def get_followers(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
@@ -134,7 +144,14 @@ async def get_followers(
     Lists the people following the authenticated user.
     """
     query = (
-        select(User)
+        select(
+            User.id, 
+            User.first_name, 
+            User.last_name, 
+            User.follower_count, 
+            User.following_count, 
+            UserFollow.is_mutual
+        )
         .join(UserFollow, User.id == UserFollow.user_id)
         .where(UserFollow.target_user_id == current_user.id)
     )
