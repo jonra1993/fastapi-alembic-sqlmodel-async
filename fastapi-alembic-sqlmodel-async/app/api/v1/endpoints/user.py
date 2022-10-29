@@ -23,6 +23,9 @@ from app.schemas.user_schema import (
     IUserReadWithoutGroups,
     IUserStatus,
 )
+from app.schemas.user_follow_schema import (
+    IUserFollowReadCommon,
+)
 from app.utils.minio_client import MinioClient
 from app.utils.resize_image import modify_image
 from fastapi import (
@@ -108,7 +111,7 @@ async def get_hero_list_order_by_created_at(
     return create_response(data=users)
 
 
-@router.get("/following", response_model=IGetResponsePaginated[IUserReadWithoutGroups])
+@router.get("/following", response_model=IGetResponsePaginated[IUserFollowReadCommon])
 async def get_following(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
@@ -117,7 +120,14 @@ async def get_following(
     Lists the people who the authenticated user follows.
     """
     query = (
-        select(User)
+        select(
+            User.id, 
+            User.first_name, 
+            User.last_name, 
+            User.follower_count, 
+            User.following_count, 
+            UserFollow.is_mutual
+        )
         .join(UserFollow, User.id == UserFollow.target_user_id)
         .where(UserFollow.user_id == current_user.id)
     )
@@ -125,7 +135,23 @@ async def get_following(
     return create_response(data=users)
 
 
-@router.get("/followers", response_model=IGetResponsePaginated[IUserReadWithoutGroups])
+@router.get("/following/{user_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+async def check_is_followed_by_user_id(
+    user_id: UUID,
+    current_user: User = Depends(deps.get_current_user()),
+):
+    """
+    Check if a person is followed by the authenticated user
+    """
+    user = await crud.user.get(id = user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User Not found!")
+    result = await crud.user_follow.get_follow_by_user_id_and_target_user_id(user_id=user_id, target_user_id=current_user.id)
+    if not result:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Followed!")
+
+
+@router.get("/followers", response_model=IGetResponsePaginated[IUserFollowReadCommon])
 async def get_followers(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
@@ -134,12 +160,99 @@ async def get_followers(
     Lists the people following the authenticated user.
     """
     query = (
-        select(User)
+        select(
+            User.id, 
+            User.first_name, 
+            User.last_name, 
+            User.follower_count, 
+            User.following_count, 
+            UserFollow.is_mutual
+        )
         .join(UserFollow, User.id == UserFollow.user_id)
         .where(UserFollow.target_user_id == current_user.id)
     )
+    users = await crud.user.get_multi_paginated(params=params, query=query)
+    return create_response(data=users)
+
+
+@router.get("/{user_id}/followers", response_model=IGetResponsePaginated[IUserFollowReadCommon])
+async def get_user_followed_by_user_id(
+    user_id: UUID,
+    params: Params = Depends(),
+    current_user: User = Depends(deps.get_current_user()),
+):
+    """
+    Lists the people following the specified user.
+    """
+    user = await crud.user.get(id = user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User Not found!")
+    query = (
+        select(
+            User.id, 
+            User.first_name, 
+            User.last_name, 
+            User.follower_count, 
+            User.following_count, 
+            UserFollow.is_mutual
+        )
+        .join(UserFollow, User.id == UserFollow.user_id)
+        .where(UserFollow.target_user_id == user_id)
+    )
+    users = await crud.user.get_multi_paginated(params=params, query=query)
+    return create_response(data=users)
+
+
+@router.get("/{user_id}/following", response_model=IGetResponsePaginated[IUserFollowReadCommon])
+async def get_user_following_by_user_id(
+    user_id: UUID,
+    params: Params = Depends(),
+    current_user: User = Depends(deps.get_current_user()),
+):
+    """
+    Lists the people who the specified user follows.
+    """
+    user = await crud.user.get(id = user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User Not found!")
+    query = (
+        select(
+            User.id, 
+            User.first_name, 
+            User.last_name, 
+            User.follower_count, 
+            User.following_count, 
+            UserFollow.is_mutual
+        )
+        .join(UserFollow, User.id == UserFollow.target_user_id)
+        .where(UserFollow.user_id == user_id)
+    )
     users = await crud.user.get_multi_paginated(query=query, params=params)
     return create_response(data=users)
+
+@router.get("/{user_id}/following/{target_user_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+async def check_a_user_is_followed_another_user_by_id(
+    user_id: UUID,
+    target_user_id: UUID,
+    current_user: User = Depends(deps.get_current_user()),
+):
+    """
+    Check if a user follows another user
+    """
+    if user_id == target_user_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The two IDs are the same.")
+
+    user = await crud.user.get(id = user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User Not found!")
+
+    target_user = await crud.user.get(id = target_user_id)
+    if not target_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Target user Not found!")
+
+    result = await crud.user_follow.get_follow_by_user_id_and_target_user_id(user_id=user_id, target_user_id=target_user_id)
+    if not result:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Followed!")
 
 
 @router.put("/following/{target_user_id}", response_model=IPutResponseBase[IUserFollowRead])
@@ -150,6 +263,8 @@ async def follow_a_user_by_id(
     """
     Following a user
     """
+    if target_user_id == current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Following self not allowed!")
     target_user = await crud.user.get(id=target_user_id)
     if not target_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User id is invalid")
@@ -178,6 +293,8 @@ async def unfollowing_a_user_by_id(
     """
     Unfollowing a user
     """
+    if target_user_id == current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unfollowing self not allowed!")
     target_user = await crud.user.get(id=target_user_id)
     if not target_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User id is invalid")
