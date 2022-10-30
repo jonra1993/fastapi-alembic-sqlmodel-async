@@ -1,3 +1,4 @@
+from lib2to3.pgen2 import driver
 from app.models.user_model import User
 from app.schemas.response_schema import (
     IGetResponseBase,
@@ -5,6 +6,11 @@ from app.schemas.response_schema import (
     IPutResponseBase,
     IGetResponsePaginated,
     create_response,
+)
+from app.utils.exceptions import (
+    RoleNameExistException,
+    RoleIdNotFoundException,
+    ContentNoChangeException,
 )
 from fastapi_pagination import Params
 from app.schemas.role_schema import IRoleCreate, IRoleRead, IRoleUpdate
@@ -41,7 +47,7 @@ async def get_role_by_id(
     if role:
         return create_response(data=role)
     else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Role id is invalid")
+        raise RoleIdNotFoundException(role_id)
 
 
 @router.post("", response_model=IPostResponseBase[IRoleRead], status_code=status.HTTP_201_CREATED)
@@ -59,7 +65,7 @@ async def create_role(
         new_permission = await crud.role.create(obj_in=role)
         return create_response(data=new_permission)
     else:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Role name already exists") 
+        raise RoleNameExistException(role_name=role_current.name)
 
 
 @router.put("/{role_id}", response_model=IPutResponseBase[IRoleRead])
@@ -75,14 +81,14 @@ async def update_permission(
     """
     current_role = await crud.role.get(id=role_id)
     if not current_role:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Permission not found")
+        raise RoleIdNotFoundException(role_id)
 
     if current_role.name == role.name and current_role.description == role.description:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The content has not changed")
+        raise ContentNoChangeException()
 
     exist_role = await crud.role.get_role_by_name(name=role.name)
     if exist_role:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Role name already exists")
+        return RoleNameExistException(role_name=role.name)
     
     updated_role = await crud.role.update(obj_current=current_role, obj_new=role)
     return create_response(data=updated_role)

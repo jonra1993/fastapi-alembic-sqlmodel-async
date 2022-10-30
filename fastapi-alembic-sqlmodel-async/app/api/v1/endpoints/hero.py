@@ -1,4 +1,7 @@
 from typing import Optional
+
+from fastapi
+from app.utils.exceptions import HeroIdNotFoundException
 from app.models.user_model import User
 from app.models.hero_model import Hero
 from app.schemas.response_schema import (
@@ -9,6 +12,11 @@ from app.schemas.response_schema import (
     IGetResponsePaginated,
     create_response,
 )
+from app.utils.exceptions import (
+    HeroIdNotFoundException,
+    HeroNameExistException,
+    HeroNameNotFoundException,
+)
 from fastapi_pagination import Params
 from app.schemas.hero_schema import (
     IHeroCreate,
@@ -16,7 +24,7 @@ from app.schemas.hero_schema import (
     IHeroReadWithTeam,
     IHeroUpdate,
 )
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from app.api import deps
 from sqlmodel import select
 from app import crud
@@ -69,7 +77,7 @@ async def get_hero_by_id(
     """
     hero = await crud.hero.get(id=hero_id)
     if not hero:
-        raise HTTPException(status_code=404, detail="Hero not found")
+        raise HeroIdNotFoundException(hero_id)
     return create_response(data=hero)
 
 
@@ -100,7 +108,7 @@ async def update_hero(
     """
     current_hero = await crud.hero.get(id=hero_id)
     if not current_hero:
-        raise HTTPException(status_code=404, detail="Hero not found")
+        raise HeroIdNotFoundException(hero_id=hero_id)
     heroe_updated = await crud.hero.update(obj_new=hero, obj_current=current_hero)
     return create_response(data=heroe_updated)
 
@@ -117,6 +125,6 @@ async def remove_hero(
     """
     current_hero = await crud.hero.get(id=hero_id)
     if not current_hero:
-        raise HTTPException(status_code=404, detail="Hero not found")
+        raise HeroIdNotFoundException(hero_id)
     heroe = await crud.hero.remove(id=hero_id)
     return create_response(data=heroe)
