@@ -6,6 +6,11 @@ from app.schemas.response_schema import (
     IGetResponsePaginated,
     create_response,
 )
+from app.utils.exceptions import (
+    TeamIdNotFoundException,
+    TeamNameExistException,
+    ContentNoChangeException,
+)
 from fastapi_pagination import Params
 from app.schemas.team_schema import (
     ITeamCreate,
@@ -44,7 +49,7 @@ async def get_team_by_id(
     """
     team = await crud.team.get(id=team_id)
     if not team:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Team id is invalid")
+        raise TeamIdNotFoundException(team_id)
     return create_response(data=team)
 
 
@@ -60,7 +65,7 @@ async def create_team(
     """
     team_current = await crud.team.get_team_by_name(name=team.name)
     if team_current:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Team name already exists") 
+        raise TeamNameExistException(team_name=team_current.name)
     team = await crud.team.create(obj_in=team, created_by_id=current_user.id)
     return create_response(data=team)
 
@@ -78,14 +83,14 @@ async def update_team(
     """
     current_team = await crud.team.get(id=team_id)
     if not current_team:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Team not found")
+        raise TeamIdNotFoundException(team_id)
     
     if current_team.name == new_team.name and current_team.headquarters == new_team.headquarters:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The content has not changed")
+        raise ContentNoChangeException(detail="The content has not changed")
     
     exist_team = await crud.team.get_team_by_name(name=new_team.name)
     if exist_team:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Team name already exists")
+        raise TeamNameExistException(team_name=exist_team.name)
 
     heroe_updated = await crud.team.update(obj_current=current_team, obj_new=new_team)
     return create_response(data=heroe_updated)
@@ -103,6 +108,6 @@ async def remove_team(
     """
     current_team = await crud.team.get(id=team_id)
     if not current_team:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Team not found")
+        raise TeamIdNotFoundException(team_id)
     team = await crud.team.remove(id=team_id)
     return create_response(data=team)
