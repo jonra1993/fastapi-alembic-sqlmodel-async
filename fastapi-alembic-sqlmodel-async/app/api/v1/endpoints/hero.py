@@ -1,36 +1,30 @@
 from typing import Optional
+from uuid import UUID
 
-from fastapi
-from app.utils.exceptions import HeroIdNotFoundException
-from app.models.user_model import User
+from app import crud
+from app.api import deps
 from app.models.hero_model import Hero
-from app.schemas.response_schema import (
-    IDeleteResponseBase,
-    IGetResponseBase,
-    IPostResponseBase,
-    IPutResponseBase,
-    IGetResponsePaginated,
-    create_response,
-)
-from app.utils.exceptions import (
-    HeroIdNotFoundException,
-    HeroNameExistException,
-    HeroNameNotFoundException,
-)
-from fastapi_pagination import Params
+from app.models.user_model import User
+from app.schemas.common_schema import IOrderEnum
 from app.schemas.hero_schema import (
     IHeroCreate,
     IHeroRead,
     IHeroReadWithTeam,
     IHeroUpdate,
 )
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from app.api import deps
-from sqlmodel import select
-from app import crud
-from uuid import UUID
+from app.schemas.response_schema import (
+    IDeleteResponseBase,
+    IGetResponseBase,
+    IGetResponsePaginated,
+    IPostResponseBase,
+    IPutResponseBase,
+    create_response,
+)
 from app.schemas.role_schema import IRoleEnum
-from app.schemas.common_schema import IOrderEnum
+from app.utils.exceptions import IdNotFoundException
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi_pagination import Params
+from sqlmodel import select
 
 router = APIRouter()
 
@@ -77,7 +71,7 @@ async def get_hero_by_id(
     """
     hero = await crud.hero.get(id=hero_id)
     if not hero:
-        raise HeroIdNotFoundException(hero_id)
+        raise IdNotFoundException(Hero, hero_id)
     return create_response(data=hero)
 
 
@@ -108,7 +102,7 @@ async def update_hero(
     """
     current_hero = await crud.hero.get(id=hero_id)
     if not current_hero:
-        raise HeroIdNotFoundException(hero_id=hero_id)
+        raise IdNotFoundException(Hero, hero_id)
     heroe_updated = await crud.hero.update(obj_new=hero, obj_current=current_hero)
     return create_response(data=heroe_updated)
 
@@ -125,6 +119,6 @@ async def remove_hero(
     """
     current_hero = await crud.hero.get(id=hero_id)
     if not current_hero:
-        raise HeroIdNotFoundException(hero_id)
+        raise IdNotFoundException(Hero, hero_id)
     heroe = await crud.hero.remove(id=hero_id)
     return create_response(data=heroe)

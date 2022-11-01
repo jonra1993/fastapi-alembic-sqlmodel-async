@@ -1,28 +1,30 @@
+from uuid import UUID
+
+from app import crud
+from app.api import deps
+from app.models.team_model import Team
 from app.models.user_model import User
 from app.schemas.response_schema import (
     IDeleteResponseBase,
     IGetResponseBase,
-    IPostResponseBase,
     IGetResponsePaginated,
+    IPostResponseBase,
     create_response,
 )
-from app.utils.exceptions import (
-    TeamIdNotFoundException,
-    TeamNameExistException,
-    ContentNoChangeException,
-)
-from fastapi_pagination import Params
+from app.schemas.role_schema import IRoleEnum
 from app.schemas.team_schema import (
     ITeamCreate,
     ITeamRead,
     ITeamReadWithHeroes,
     ITeamUpdate,
 )
+from app.utils.exceptions import (
+    ContentNoChangeException,
+    IdNotFoundException,
+    NameExistException,
+)
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.api import deps
-from app import crud
-from uuid import UUID
-from app.schemas.role_schema import IRoleEnum
+from fastapi_pagination import Params
 
 router = APIRouter()
 
@@ -49,7 +51,7 @@ async def get_team_by_id(
     """
     team = await crud.team.get(id=team_id)
     if not team:
-        raise TeamIdNotFoundException(team_id)
+        raise IdNotFoundException(Team, id=team_id)
     return create_response(data=team)
 
 
@@ -65,7 +67,7 @@ async def create_team(
     """
     team_current = await crud.team.get_team_by_name(name=team.name)
     if team_current:
-        raise TeamNameExistException(team_name=team_current.name)
+        raise NameExistException(Team, name=team_current.name)
     team = await crud.team.create(obj_in=team, created_by_id=current_user.id)
     return create_response(data=team)
 
@@ -83,14 +85,14 @@ async def update_team(
     """
     current_team = await crud.team.get(id=team_id)
     if not current_team:
-        raise TeamIdNotFoundException(team_id)
-    
+        raise IdNotFoundException(Team, id=team_id)
+
     if current_team.name == new_team.name and current_team.headquarters == new_team.headquarters:
         raise ContentNoChangeException(detail="The content has not changed")
-    
+
     exist_team = await crud.team.get_team_by_name(name=new_team.name)
     if exist_team:
-        raise TeamNameExistException(team_name=exist_team.name)
+        raise NameExistException(Team, name=exist_team.name)
 
     heroe_updated = await crud.team.update(obj_current=current_team, obj_new=new_team)
     return create_response(data=heroe_updated)
@@ -108,6 +110,6 @@ async def remove_team(
     """
     current_team = await crud.team.get(id=team_id)
     if not current_team:
-        raise TeamIdNotFoundException(team_id)
+        raise IdNotFoundException(Team, id=team_id)
     team = await crud.team.remove(id=team_id)
     return create_response(data=team)

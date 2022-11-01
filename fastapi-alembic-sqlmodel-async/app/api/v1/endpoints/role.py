@@ -1,24 +1,24 @@
-from lib2to3.pgen2 import driver
+from uuid import UUID
+
+from app import crud
+from app.api import deps
+from app.models.role_model import Role
 from app.models.user_model import User
 from app.schemas.response_schema import (
     IGetResponseBase,
+    IGetResponsePaginated,
     IPostResponseBase,
     IPutResponseBase,
-    IGetResponsePaginated,
     create_response,
 )
+from app.schemas.role_schema import IRoleCreate, IRoleEnum, IRoleRead, IRoleUpdate
 from app.utils.exceptions import (
-    RoleNameExistException,
-    RoleIdNotFoundException,
     ContentNoChangeException,
+    IdNotFoundException,
+    NameExistException,
 )
-from fastapi_pagination import Params
-from app.schemas.role_schema import IRoleCreate, IRoleRead, IRoleUpdate
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.api import deps
-from app import crud
-from uuid import UUID
-from app.schemas.role_schema import IRoleEnum
+from fastapi_pagination import Params
 
 router = APIRouter()
 
@@ -47,7 +47,7 @@ async def get_role_by_id(
     if role:
         return create_response(data=role)
     else:
-        raise RoleIdNotFoundException(role_id)
+        raise IdNotFoundException(Role, id=role_id)
 
 
 @router.post("", response_model=IPostResponseBase[IRoleRead], status_code=status.HTTP_201_CREATED)
@@ -65,7 +65,7 @@ async def create_role(
         new_permission = await crud.role.create(obj_in=role)
         return create_response(data=new_permission)
     else:
-        raise RoleNameExistException(role_name=role_current.name)
+        raise NameExistException(Role, name=role_current.name)
 
 
 @router.put("/{role_id}", response_model=IPutResponseBase[IRoleRead])
@@ -81,14 +81,14 @@ async def update_permission(
     """
     current_role = await crud.role.get(id=role_id)
     if not current_role:
-        raise RoleIdNotFoundException(role_id)
+        raise IdNotFoundException(Role, id=role_id)
 
     if current_role.name == role.name and current_role.description == role.description:
         raise ContentNoChangeException()
 
     exist_role = await crud.role.get_role_by_name(name=role.name)
     if exist_role:
-        return RoleNameExistException(role_name=role.name)
-    
+        raise NameExistException(Role, name=role.name)
+
     updated_role = await crud.role.update(obj_current=current_role, obj_new=role)
     return create_response(data=updated_role)

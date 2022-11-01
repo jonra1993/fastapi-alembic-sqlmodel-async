@@ -3,11 +3,10 @@ from typing import Optional
 from uuid import UUID
 
 from app.utils.exceptions import (
-    RoleIdNotFoundException,
-    RoleNameNotFoundException,
+    IdNotFoundException,
+    NameNotFoundException,
     SelfFollowedException,
     UserFollowedException,
-    UserIdNotFoundException,
     UserNotFollowedException,
     UserSelfDeleteException,
 )
@@ -92,7 +91,7 @@ async def read_users_list_by_role_name(
     user_status = True if user_status == IUserStatus.active else False
     role = await crud.role.get_role_by_name(name=role_name)
     if not role:
-        raise RoleNameNotFoundException(role_name)
+        raise NameNotFoundException(Role, name=role_name)
     query = (
         select(User)
         .join(Role, User.role_id == Role.id)
@@ -155,7 +154,7 @@ async def check_is_followed_by_user_id(
     """
     user = await crud.user.get(id=user_id)
     if not user:
-        raise UserIdNotFoundException(user_id)
+        raise IdNotFoundException(User, id=user_id)
     result = await crud.user_follow.get_follow_by_user_id_and_target_user_id(
         user_id=user_id, target_user_id=current_user.id
     )
@@ -200,7 +199,7 @@ async def get_user_followed_by_user_id(
     """
     user = await crud.user.get(id=user_id)
     if not user:
-        raise UserIdNotFoundException(user_id)
+        raise IdNotFoundException(User, id=user_id)
     query = (
         select(
             User.id,
@@ -230,7 +229,7 @@ async def get_user_following_by_user_id(
     """
     user = await crud.user.get(id=user_id)
     if not user:
-        raise UserIdNotFoundException(user_id)
+        raise IdNotFoundException(User, id=user_id)
     query = (
         select(
             User.id,
@@ -265,11 +264,11 @@ async def check_a_user_is_followed_another_user_by_id(
 
     user = await crud.user.get(id=user_id)
     if not user:
-        raise UserIdNotFoundException(user_id)
+        raise IdNotFoundException(User, id=user_id)
 
     target_user = await crud.user.get(id=target_user_id)
     if not target_user:
-        raise UserIdNotFoundException(user_id=target_user_id)
+        raise IdNotFoundException(User, id=target_user_id)
 
     result = await crud.user_follow.get_follow_by_user_id_and_target_user_id(
         user_id=user_id, target_user_id=target_user_id
@@ -294,7 +293,7 @@ async def follow_a_user_by_id(
         raise SelfFollowedException()
     target_user = await crud.user.get(id=target_user_id)
     if not target_user:
-        raise UserIdNotFoundException(user_id=target_user_id)
+        raise IdNotFoundException(User, id=target_user_id)
 
     current_follow_user = (
         await crud.user_follow.get_follow_by_user_id_and_target_user_id(
@@ -324,7 +323,7 @@ async def unfollowing_a_user_by_id(
         raise SelfFollowedException()
     target_user = await crud.user.get(id=target_user_id)
     if not target_user:
-        raise UserIdNotFoundException(user_id=target_user_id)
+        raise IdNotFoundException(User, id=target_user_id)
 
     current_follow_user = await crud.user_follow.get_follow_by_target_user_id(
         user_id=current_user.id, target_user_id=target_user_id
@@ -354,7 +353,7 @@ async def get_user_by_id(
     if user := await crud.user.get(id=user_id):
         return create_response(data=user)
     else:
-        raise UserIdNotFoundException(user_id)
+        raise IdNotFoundException(User, id=user_id)
 
 
 @router.get("", response_model=IGetResponseBase[IUserRead])
@@ -382,7 +381,7 @@ async def create_user(
 
     role = await crud.role.get(id=new_user.role_id)
     if not role:
-        raise RoleIdNotFoundException(role_id=new_user.role_id)
+        raise IdNotFoundException(Role, id=new_user.role_id)
 
     user = await crud.user.create_with_role(obj_in=new_user)
     return create_response(data=user)
