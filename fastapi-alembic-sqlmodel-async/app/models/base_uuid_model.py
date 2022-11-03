@@ -17,13 +17,5 @@ class BaseUUIDModel(SQLModel):
         index=True,
         nullable=False,
     )
-    updated_at: Optional[datetime] = datetime.utcnow()
-    created_at: Optional[datetime] = datetime.utcnow()
-
-class BaseJoinUUIDModel(SQLModel):
-    id: UUID = Field(
-        default_factory=uuid7,
-        primary_key=True,
-        index=True,
-        nullable=False,
-    )
+    updated_at: Optional[datetime] = Field(default=datetime.now())
+    created_at: Optional[datetime] = Field(default=datetime.now())

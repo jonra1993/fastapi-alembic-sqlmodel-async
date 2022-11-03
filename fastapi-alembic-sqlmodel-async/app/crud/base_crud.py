@@ -66,9 +66,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session: Optional[AsyncSession] = None,
     ) -> List[ModelType]:
         db_session = db_session or db.session
-        query = query or select(self.model).offset(skip).limit(limit).order_by(
-            self.model.id
-        )
+        if query == None:
+            query = select(self.model).offset(skip).limit(limit).order_by(
+                self.model.id
+            )
         response = await db_session.execute(query)
         return response.scalars().all()
 
