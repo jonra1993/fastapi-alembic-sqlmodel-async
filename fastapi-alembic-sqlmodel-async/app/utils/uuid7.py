@@ -109,13 +109,13 @@ def uuid8() -> UUID:
     nanoseconds = time.time_ns()
     if _last_v8_nano_timestamp is not None and nanoseconds <= _last_v8_nano_timestamp:
         nanoseconds = _last_v8_nano_timestamp + 1
-    _last_v7_nano_timestamp = nanoseconds
+    _last_v8_nano_timestamp = nanoseconds
 
     timestamp_ms, timestamp_ns = divmod(nanoseconds, 10**6)
     rand = secrets.randbits(62)
     uuid_int = (timestamp_ms & 0xFFFFFFFFFFFF) << 80         #custom_a 48 bits. Creates a 128bits variable y move the 48 bits MSB to the left 80 positions
     uuid_int |= (8 & 0B1111) << 76                           #ver 4 bits. UUID version 4 bits
-    uuid_int |= (os.getpid() & 0B111111111111) << 64  #custom_b 12bits
+    uuid_int |= (os.getpid() & 0B111111111111) << 64         #custom_b 12bits
     uuid_int |= (4 & 0B11) << 62                             #variant 2 bits
     uuid_int |= rand                                         #custom_c 62 bits
     return UUID(int=uuid_int, version=8)
