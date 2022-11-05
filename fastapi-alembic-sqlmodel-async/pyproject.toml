@@ -8,7 +8,7 @@ authors = ["jonra1993 <jon_ra@hotmail.es>"]
 python = "^3.8"
 alembic = "^1.7.6"
 asyncpg = "^0.25.0"
-fastapi = {extras = ["all"], version = "^0.85.1"}
+fastapi = {extras = ["all"], version = "^0.86.0"}
 sqlmodel = "^0.0.8"
 python-jose = "^3.3.0"
 cryptography = "^36.0.1"
