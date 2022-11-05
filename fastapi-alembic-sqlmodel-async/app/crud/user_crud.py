@@ -28,7 +28,6 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         await db_session.refresh(db_obj)
         return db_obj
 
-
     async def update_is_active(
         self,
         *,

@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     MINIO_URL: str
     MINIO_BUCKET: str
     
+    WHEATER_URL: AnyHttpUrl
+    
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ENCRYPT_KEY = secrets.token_urlsafe(32)
     BACKEND_CORS_ORIGINS: Union[List[str], List[AnyHttpUrl]]

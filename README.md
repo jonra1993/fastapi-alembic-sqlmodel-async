@@ -142,6 +142,7 @@ Generating and using unique IDs is a really important desicion when starting a n
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
 - [fastapi-sqlmodel-alembic](https://github.com/testdrivenio/fastapi-sqlmodel-alembic).
 - [sqlmodel-tutorial](https://sqlmodel.tiangolo.com/tutorial/fastapi/).
+- [asyncer-tutorial](https://asyncer.tiangolo.com/tutorial/).
 - [fastapi-pagination](https://github.com/uriyyo/fastapi-pagination).
 - [fastapi-cache](https://github.com/long2ice/fastapi-cache).
 - [fastapi-keycloak](https://github.com/code-specialist/fastapi-keycloak).
@@ -169,6 +170,7 @@ Generating and using unique IDs is a really important desicion when starting a n
 - [x] Add sample to upload images and store them using minio
 - [x] Invalidate access and refresh tokens when the password is changed using Redis
 - [x] Add shortcuts using a Makefile
+- [x] Add sample async, sync and concurrent functions using asyncer
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
