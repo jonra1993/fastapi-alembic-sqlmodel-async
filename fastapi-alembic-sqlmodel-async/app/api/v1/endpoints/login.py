@@ -56,7 +56,7 @@ async def login(
     valid_access_tokens = await get_valid_tokens(
         redis_client, user.id, TokenType.ACCESS
     )
-    if valid_access_tokens:
+    if not valid_access_tokens:
         await add_token_to_redis(
             redis_client,
             user,
@@ -67,7 +67,7 @@ async def login(
     valid_refresh_tokens = await get_valid_tokens(
         redis_client, user.id, TokenType.REFRESH
     )
-    if valid_refresh_tokens:
+    if not valid_refresh_tokens:
         await add_token_to_redis(
             redis_client,
             user,
@@ -170,7 +170,7 @@ async def get_refresh_token(
             valid_access_get_valid_tokens = await get_valid_tokens(
                 redis_client, user.id, TokenType.ACCESS
             )
-            if valid_access_get_valid_tokens:
+            if not valid_access_get_valid_tokens:
                 await add_token_to_redis(
                     redis_client,
                     user,
@@ -210,7 +210,7 @@ async def login_access_token(
     valid_access_tokens = await get_valid_tokens(
         redis_client, user.id, TokenType.ACCESS
     )
-    if valid_access_tokens:
+    if not valid_access_tokens:
         await add_token_to_redis(
             redis_client,
             user,
