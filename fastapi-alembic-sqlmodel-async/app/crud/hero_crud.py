@@ -21,7 +21,7 @@ class CRUDHero(CRUDBase[Hero, IHeroCreate, IHeroUpdate]):
         *,
         start_time: datetime,
         end_time: datetime,
-        db_session: Optional[AsyncSession] = None
+        db_session: Optional[AsyncSession] = None,
     ) -> int:
         db_session = db_session or db.session
         subquery = (
@@ -35,7 +35,7 @@ class CRUDHero(CRUDBase[Hero, IHeroCreate, IHeroUpdate]):
             .subquery()
         )
         query = select(func.count()).select_from(subquery)
-        count = await db_session.execute(query)        
+        count = await db_session.execute(query)
         value = count.scalar_one_or_none()
         return value
 

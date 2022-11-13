@@ -1,19 +1,14 @@
 from fastapi import FastAPI
 from app.api.deps import get_redis_client
-from uuid import uuid4
 from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router as api_router_v1
 from app.core.config import settings
 from fastapi_async_sqlalchemy import db
-from app.utils.uuid7 import uuid7 as _uuid7, uuid8
-from app.utils.uuid6 import uuid7
 from sqlmodel import text
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_async_sqlalchemy import SQLAlchemyMiddleware
-import timeit
-from app.utils import snowflake
 
 # Core Application Instance
 app = FastAPI(
@@ -63,34 +58,6 @@ class CustomException(Exception):
 
 @app.get("/")
 async def root():
-    # define the code statement to test and
-    # calculate the execution time
-
-    # exec_uuid4_time = timeit.repeat(lambda:uuid4(), number = 10000, repeat=5)
-    # for index, exec_time in enumerate(exec_uuid4_time, 1):
-    #     m_secs = round(exec_time * 10 ** 2, 2)
-    #     print(f"Case {index}: Time uuid4 Taken: {m_secs}µs")
-
-    # print("#"*10)
-    # exec_uuid7_time = timeit.repeat(lambda:uuid7(), number = 10000, repeat=5)
-    # for index, exec_time in enumerate(exec_uuid7_time, 1):
-    #     m_secs = round(exec_time * 10 ** 2, 2)
-    #     print(f"Case {index}: Time uuid7 Taken: {m_secs}µs")
-    
-    # print("#"*10)
-    # exec_uuid8_time = timeit.repeat(lambda:uuid8(), number = 10000, repeat=5)
-    # for index, exec_time in enumerate(exec_uuid8_time, 1):
-    #     m_secs = round(exec_time * 10 ** 2, 2)
-    #     print(f"Case {index}: Time uuid8 Taken: {m_secs}µs")
-
-    # print("#"*10)
-    # exec_snowflake_time = timeit.repeat(lambda:snowflake.generator(), number = 10000, repeat=5)
-    # # printing the execution time
-    # for index, exec_time in enumerate(exec_snowflake_time, 1):
-    #     # printing execution time of code in microseconds
-    #     m_secs = round(exec_time * 10 ** 2, 2)
-    #     print(f"Case {index}: Time snowflake Taken: {m_secs}µs")
-    
     return {"message": "Hello World"}
 
 

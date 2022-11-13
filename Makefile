@@ -40,6 +40,10 @@ help:
 	@echo "        Load server on pgadmin4."
 	@echo "    clean-pgadmin"
 	@echo "        Clean pgadmin4 data."
+	@echo "    formatter"
+	@echo "        Apply black formatting to code."
+	@echo "    lint"
+	@echo "        Lint code with flake8, and check if black formatter should be applied."	
 
 install:
 	cd fastapi-alembic-sqlmodel-async && \
@@ -57,6 +61,14 @@ stop-dev:
 
 init-db:
 	docker compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py
+
+formatter:
+	cd fastapi-alembic-sqlmodel-async && \
+	poetry run black app
+
+lint:
+	cd fastapi-alembic-sqlmodel-async && \
+	poetry run flake8 app --extend-ignore D && poetry run black --check app
 
 add-dev-migration:
 	docker compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate && \

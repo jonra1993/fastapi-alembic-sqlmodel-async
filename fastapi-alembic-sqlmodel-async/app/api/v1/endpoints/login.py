@@ -94,7 +94,10 @@ async def change_password(
         raise HTTPException(status_code=400, detail="Invalid Current Password")
 
     if verify_password(new_password, current_user.hashed_password):
-        raise HTTPException(status_code=400, detail="New Password should be different that the current one")
+        raise HTTPException(
+            status_code=400,
+            detail="New Password should be different that the current one",
+        )
 
     new_hashed_password = get_password_hash(new_password)
     await crud.user.update(

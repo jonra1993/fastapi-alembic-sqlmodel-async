@@ -23,7 +23,7 @@ from app.utils.exceptions import (
     IdNotFoundException,
     NameExistException,
 )
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from fastapi_pagination import Params
 
 router = APIRouter()
@@ -55,7 +55,9 @@ async def get_team_by_id(
     return create_response(data=team)
 
 
-@router.post("", response_model=IPostResponseBase[ITeamRead], status_code=status.HTTP_201_CREATED)
+@router.post(
+    "", response_model=IPostResponseBase[ITeamRead], status_code=status.HTTP_201_CREATED
+)
 async def create_team(
     team: ITeamCreate,
     current_user: User = Depends(
@@ -87,7 +89,10 @@ async def update_team(
     if not current_team:
         raise IdNotFoundException(Team, id=team_id)
 
-    if current_team.name == new_team.name and current_team.headquarters == new_team.headquarters:
+    if (
+        current_team.name == new_team.name
+        and current_team.headquarters == new_team.headquarters
+    ):
         raise ContentNoChangeException(detail="The content has not changed")
 
     exist_team = await crud.team.get_team_by_name(name=new_team.name)

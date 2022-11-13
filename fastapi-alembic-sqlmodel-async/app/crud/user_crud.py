@@ -13,13 +13,18 @@ from datetime import datetime
 from uuid import UUID
 from sqlmodel.ext.asyncio.session import AsyncSession
 
+
 class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
-    async def get_by_email(self, *, email: str, db_session: Optional[AsyncSession] = None) -> Optional[User]:
+    async def get_by_email(
+        self, *, email: str, db_session: Optional[AsyncSession] = None
+    ) -> Optional[User]:
         db_session = db_session or db.session
-        users =  await db_session.execute(select(User).where(User.email == email))
+        users = await db_session.execute(select(User).where(User.email == email))
         return users.scalar_one_or_none()
 
-    async def create_with_role(self, *, obj_in: IUserCreate, db_session: Optional[AsyncSession] = None) -> User:
+    async def create_with_role(
+        self, *, obj_in: IUserCreate, db_session: Optional[AsyncSession] = None
+    ) -> User:
         db_session = db_session or db.session
         db_obj = User.from_orm(obj_in)
         db_obj.hashed_password = get_password_hash(obj_in.password)
@@ -29,10 +34,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         return db_obj
 
     async def update_is_active(
-        self,
-        *,
-        db_obj: List[User],
-        obj_in: Union[int, str, Dict[str, Any]]
+        self, *, db_obj: List[User], obj_in: Union[int, str, Dict[str, Any]]
     ) -> Union[User, None]:
         response = None
         for x in db_obj:
@@ -44,23 +46,34 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
             response.append(x)
         return response
 
-    async def authenticate(
-        self, *, email: EmailStr, password: str
-    ) -> Optional[User]:
-        user = await self.get_by_email(email=email)        
+    async def authenticate(self, *, email: EmailStr, password: str) -> Optional[User]:
+        user = await self.get_by_email(email=email)
         if not user:
             return None
         if not verify_password(password, user.hashed_password):
             return None
         return user
 
-    async def update_photo(self, *, user: User, image: IMediaCreate, heigth: int, width: int, file_format: str) -> User:
-        user.image = ImageMedia(media=Media.from_orm(image), height=heigth, width=width, file_format=file_format )
+    async def update_photo(
+        self,
+        *,
+        user: User,
+        image: IMediaCreate,
+        heigth: int,
+        width: int,
+        file_format: str,
+    ) -> User:
+        user.image = ImageMedia(
+            media=Media.from_orm(image),
+            height=heigth,
+            width=width,
+            file_format=file_format,
+        )
         db.session.add(user)
         await db.session.commit()
         await db.session.refresh(user)
         return user
-    
+
     async def remove(
         self, *, id: Union[UUID, str], db_session: Optional[AsyncSession] = None
     ) -> User:
@@ -78,8 +91,10 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
                 user.updated_at = datetime.utcnow()
                 db_session.add(user)
                 await db_session.delete(following)
-                    
-        followeds = await UserFollowCRUD.get_follow_by_target_user_id(target_user_id=obj.id)
+
+        followeds = await UserFollowCRUD.get_follow_by_target_user_id(
+            target_user_id=obj.id
+        )
         if followeds:
             for followed in followeds:
                 user = await self.get(id=followed.user_id)

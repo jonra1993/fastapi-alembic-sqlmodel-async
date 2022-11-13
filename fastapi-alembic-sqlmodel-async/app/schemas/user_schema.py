@@ -8,19 +8,23 @@ from uuid import UUID
 from enum import Enum
 
 
-class IUserCreate(UserBase):    
+class IUserCreate(UserBase):
     password: Optional[str]
-    class Config:
-        hashed_password = 'Main'
 
-#All these fields are optional
+    class Config:
+        hashed_password = "Main"
+
+
+# All these fields are optional
 @optional
 class IUserUpdate(UserBase):
     pass
 
+
 # This schema is used to avoid circular import
 class IGroupReadBasic(GroupBase):
     id: UUID
+
 
 class IUserRead(UserBase):
     id: UUID
@@ -30,12 +34,14 @@ class IUserRead(UserBase):
     follower_count: Optional[int] = 0
     following_count: Optional[int] = 0
 
+
 class IUserReadWithoutGroups(UserBase):
     id: UUID
     role: Optional[IRoleRead] = None
     image: Optional[IImageMediaRead]
     follower_count: Optional[int] = 0
     following_count: Optional[int] = 0
+
 
 class IUserStatus(str, Enum):
     active = "active"

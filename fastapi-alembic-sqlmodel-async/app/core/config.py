@@ -3,8 +3,9 @@ from pydantic import BaseSettings, PostgresDsn, validator, EmailStr, AnyHttpUrl
 from typing import Optional, Dict, Any, Union, List
 import secrets
 
+
 class Settings(BaseSettings):
-    API_VERSION: str = "v1" 
+    API_VERSION: str = "v1"
     API_V1_STR: str = f"/api/{API_VERSION}"
     PROJECT_NAME: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
@@ -41,12 +42,13 @@ class Settings(BaseSettings):
     MINIO_ROOT_PASSWORD: str
     MINIO_URL: str
     MINIO_BUCKET: str
-    
+
     WHEATER_URL: AnyHttpUrl
-    
+
     SECRET_KEY: str = secrets.token_urlsafe(32)
     ENCRYPT_KEY = secrets.token_urlsafe(32)
     BACKEND_CORS_ORIGINS: Union[List[str], List[AnyHttpUrl]]
+
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> Union[List[str], str]:
         if isinstance(v, str) and not v.startswith("["):
@@ -54,9 +56,10 @@ class Settings(BaseSettings):
         elif isinstance(v, (list, str)):
             return v
         raise ValueError(v)
-    
+
     class Config:
         case_sensitive = True
         env_file = os.path.expanduser("~/.env")
+
 
 settings = Settings()

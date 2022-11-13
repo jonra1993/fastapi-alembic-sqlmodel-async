@@ -137,6 +137,21 @@ docker compose up --build
 Generating and using unique IDs is a really important desicion when starting a new project and its most common use is as primary keys for database tables. This project uses a custom [UUID7 Draft04 implementation](https://github.com/oittaa/uuid6-python) to make it simple to use and take advantage of UUID type of PostgreSQL. UUID7 combines timestamp with random data in order to help to convert data into time-stamped sequencially. If you are looking for another alternatives for tables IDs like [Snowflakes](https://betterprogramming.pub/uuid-generation-snowflake-identifiers-unique-2aed8b1771bc), [ULID](https://github.com/ulid/spec), [KSUID](https://github.com/segmentio/ksuid), [pushID](https://firebase.blog/posts/2015/02/the-2120-ways-to-ensure-unique_68#how-push-ids-are-generated), [xid](https://github.com/rs/xid) among others you can check [these references](https://github.com/jonra1993/fastapi-alembic-sqlmodel-async/issues/12#issuecomment-1272425109).
 
 
+## Code Style
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+To ensure a standardized code style this project uses [black](https://github.com/ambv/black) and [flake8](https://github.com/PyCQA/flake8). If you want to change the config rules you can edit flake8 rules in the file *setup.cfg* or black in the file *pyproject.toml*.
+
+To reformat files execute the following command
+```sh
+make formatter
+```
+
+To run lint, you can run the following command:
+```sh
+make lint
+```
+
 ## Inspiration and References
 
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
@@ -150,6 +165,7 @@ Generating and using unique IDs is a really important desicion when starting a n
 - [fastapi-minio](https://github.com/Longdh57/fastapi-minio).
 - [fastapi-best-practices](https://github.com/zhanymkanov/fastapi-best-practices).
 - [pgadmin Makefile](https://gist.github.com/alldevic/b2a0573e5464fe91fd118024f33bcbaa).
+- [Styling and makefiles](https://github.com/RasaHQ/rasa).
 
 ## TODO List:
 
@@ -171,6 +187,9 @@ Generating and using unique IDs is a really important desicion when starting a n
 - [x] Invalidate access and refresh tokens when the password is changed using Redis
 - [x] Add shortcuts using a Makefile
 - [x] Add sample async, sync and concurrent functions using asyncer
+- [x] Add Black formatter and flake8 lint (Rasa as reference)
+- [ ] Add testing
+- [ ] Add static code analysis using SonarQube
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample

@@ -15,7 +15,6 @@ from app.core.config import settings
 from app.db.session import SessionLocal
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.common_schema import IMetaGeneral, TokenType
-from app.utils.minio_client import MinioClient
 import aioredis
 from aioredis import Redis
 
@@ -81,10 +80,10 @@ def get_current_user(required_roles: List[str] = None) -> User:
                 if role == user.role.name:
                     is_valid_role = True
 
-            if is_valid_role == False:
+            if not is_valid_role:
                 raise HTTPException(
                     status_code=403,
-                    detail=f'Role "{required_roles}" is required to perform this action',
+                    detail=f"""Role "{required_roles}" is required for this action""",
                 )
 
         return user
@@ -106,7 +105,8 @@ async def user_exists(new_user: IUserCreate) -> IUserCreate:
     user = await crud.user.get_by_email(email=new_user.email)
     if user:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT, detail="There is already a user with same email"
+            status_code=status.HTTP_409_CONFLICT,
+            detail="There is already a user with same email",
         )
     return new_user
 

@@ -17,7 +17,7 @@ from app.utils.exceptions import (
     IdNotFoundException,
     NameExistException,
 )
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from fastapi_pagination import Params
 
 router = APIRouter()
@@ -35,7 +35,11 @@ async def get_roles(
     return create_response(data=roles)
 
 
-@router.get("/{role_id}", response_model=IGetResponseBase[IRoleRead], status_code=status.HTTP_200_OK)
+@router.get(
+    "/{role_id}",
+    response_model=IGetResponseBase[IRoleRead],
+    status_code=status.HTTP_200_OK,
+)
 async def get_role_by_id(
     role_id: UUID,
     current_user: User = Depends(deps.get_current_user()),
@@ -50,7 +54,9 @@ async def get_role_by_id(
         raise IdNotFoundException(Role, id=role_id)
 
 
-@router.post("", response_model=IPostResponseBase[IRoleRead], status_code=status.HTTP_201_CREATED)
+@router.post(
+    "", response_model=IPostResponseBase[IRoleRead], status_code=status.HTTP_201_CREATED
+)
 async def create_role(
     role: IRoleCreate,
     current_user: User = Depends(

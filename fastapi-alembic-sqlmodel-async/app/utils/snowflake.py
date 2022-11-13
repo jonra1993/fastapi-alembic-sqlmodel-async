@@ -21,7 +21,11 @@ def snowflake_to_timestamp(_id):
     return _id
 
 
-def generator(worker_id: int = 1, process_id: int = os.getpid() % 31, sleep=lambda x: time.sleep(x)) -> int:
+def generator(
+    worker_id: int = 1,
+    process_id: int = os.getpid() % 31,
+    sleep=lambda x: time.sleep(x),
+) -> int:
     assert 0 <= worker_id <= max_worker_id
     assert 0 <= process_id <= max_process_id
 
@@ -46,7 +50,9 @@ def generator(worker_id: int = 1, process_id: int = os.getpid() % 31, sleep=lamb
 
         last_timestamp = timestamp
 
-        yield (((timestamp - API_EPOCH) << timestamp_left_shift) |
-               (process_id << process_id_shift) |
-               (worker_id << worker_id_shift) |
-               sequence)
+        yield (
+            ((timestamp - API_EPOCH) << timestamp_left_shift)
+            | (process_id << process_id_shift)
+            | (worker_id << worker_id_shift)
+            | sequence
+        )

@@ -22,7 +22,7 @@ from app.schemas.response_schema import (
 )
 from app.schemas.role_schema import IRoleEnum
 from app.utils.exceptions import IdNotFoundException
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, Query
 from fastapi_pagination import Params
 from sqlmodel import select
 

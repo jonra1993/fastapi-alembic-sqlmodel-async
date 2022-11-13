@@ -56,7 +56,11 @@ async def get_group_by_id(
         raise IdNotFoundException(Group, group_id)
 
 
-@router.post("", response_model=IPostResponseBase[IGroupRead], status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=IPostResponseBase[IGroupRead],
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_group(
     group: IGroupCreate,
     current_user: User = Depends(
@@ -88,7 +92,10 @@ async def update_group(
     if not group_current:
         raise IdNotFoundException(Group, group_id=group_id)
 
-    if group_current.name == group.name and group_current.description == group.description:
+    if (
+        group_current.name == group.name
+        and group_current.description == group.description
+    ):
         raise ContentNoChangeException()
 
     group_updated = await crud.group.update(obj_current=group_current, obj_new=group)

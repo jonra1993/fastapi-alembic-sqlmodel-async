@@ -1,8 +1,6 @@
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
 from uuid import UUID
-
 from fastapi import HTTPException, status
-from requests import head
 from sqlmodel import SQLModel
 
 ModelType = TypeVar("ModelType", bound=SQLModel)

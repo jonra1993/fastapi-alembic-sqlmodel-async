@@ -53,7 +53,7 @@ users: List[Dict[str, Union[str, IUserCreate]]] = [
 
 teams: List[ITeamCreate] = [
     ITeamCreate(name="Preventers", headquarters="Sharp Tower"),
-    ITeamCreate(name="Z-Force", headquarters=f"Sister Margaret's Bar"),
+    ITeamCreate(name="Z-Force", headquarters="Sister Margaret's Bar"),
 ]
 
 heroes: List[Dict[str, Union[str, IHeroCreate]]] = [
@@ -89,26 +89,36 @@ async def init_db(db_session: AsyncSession) -> None:
             await crud.user.create_with_role(obj_in=user["data"], db_session=db_session)
 
     for group in groups:
-        current_group = await crud.group.get_group_by_name(name=group.name, db_session=db_session)
+        current_group = await crud.group.get_group_by_name(
+            name=group.name, db_session=db_session
+        )
         if not current_group:
             new_group = await crud.group.create(obj_in=group, db_session=db_session)
             current_users = []
             for user in users:
                 current_users.append(
-                    await crud.user.get_by_email(email=user["data"].email, db_session=db_session)
+                    await crud.user.get_by_email(
+                        email=user["data"].email, db_session=db_session
+                    )
                 )
             await crud.group.add_users_to_group(
                 users=current_users, group_id=new_group.id, db_session=db_session
             )
 
     for team in teams:
-        current_team = await crud.team.get_team_by_name(name=team.name, db_session=db_session)
+        current_team = await crud.team.get_team_by_name(
+            name=team.name, db_session=db_session
+        )
         if not current_team:
             await crud.team.create(obj_in=team, db_session=db_session)
 
     for heroe in heroes:
-        current_heroe = await crud.hero.get_heroe_by_name(name=heroe["data"].name, db_session=db_session)
-        team = await crud.team.get_team_by_name(name=heroe["team"], db_session=db_session)
+        current_heroe = await crud.hero.get_heroe_by_name(
+            name=heroe["data"].name, db_session=db_session
+        )
+        team = await crud.team.get_team_by_name(
+            name=heroe["team"], db_session=db_session
+        )
         if not current_heroe:
             new_heroe = heroe["data"]
             new_heroe.team_id = team.id

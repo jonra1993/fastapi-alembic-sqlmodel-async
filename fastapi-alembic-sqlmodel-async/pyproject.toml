@@ -4,6 +4,11 @@ version = "0.1.0"
 description = ""
 authors = ["jonra1993 <jon_ra@hotmail.es>"]
 
+[tool.black]
+line-length = 88
+target-version = [ "py37", "py38", "py39",]
+exclude = "((.eggs | .git | .pytest_cache | build | dist))"
+
 [tool.poetry.dependencies]
 python = "^3.8"
 alembic = "^1.7.6"
@@ -14,7 +19,6 @@ python-jose = "^3.3.0"
 cryptography = "^36.0.1"
 passlib = "^1.7.4"
 SQLAlchemy-Utils = "^0.38.2"
-black = "^22.1.0"
 SQLAlchemy = "^1.4.40"
 fastapi-pagination = {extras = ["sqlalchemy"], version = "^0.10.0"}
 fastapi-cache2 = {extras = ["redis"], version = "^0.1.8"}
@@ -29,6 +33,9 @@ httpx = "^0.23.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
+black = "^22.10.0"
+flake8 = "^5.0.4"
+flake8-docstrings = "^1.6.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

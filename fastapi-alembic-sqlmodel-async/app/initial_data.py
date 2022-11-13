@@ -6,9 +6,11 @@ from app.db.session import SessionLocal
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 async def create_init_data() -> None:
     async with SessionLocal() as session:
         await init_db(session)
+
 
 async def main() -> None:
     logger.info("Creating initial data")

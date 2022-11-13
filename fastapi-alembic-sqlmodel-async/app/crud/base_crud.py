@@ -66,10 +66,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session: Optional[AsyncSession] = None,
     ) -> List[ModelType]:
         db_session = db_session or db.session
-        if query == None:
-            query = select(self.model).offset(skip).limit(limit).order_by(
-                self.model.id
-            )
+        if query is None:
+            query = select(self.model).offset(skip).limit(limit).order_by(self.model.id)
         response = await db_session.execute(query)
         return response.scalars().all()
 
@@ -81,7 +79,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session: Optional[AsyncSession] = None,
     ) -> Page[ModelType]:
         db_session = db_session or db.session
-        if query == None:
+        if query is None:
             query = select(self.model)
         return await paginate(db_session, query, params)
 
@@ -98,10 +96,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         columns = self.model.__table__.columns
 
-        if order_by not in columns or order_by == None:
+        if order_by not in columns or order_by is None:
             order_by = self.model.id
 
-        if query == None:
+        if query is None:
             if order == IOrderEnum.ascendent:
                 query = select(self.model).order_by(columns[order_by.value].asc())
             else:
@@ -122,7 +120,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         columns = self.model.__table__.columns
 
-        if order_by not in columns or order_by == None:
+        if order_by not in columns or order_by is None:
             order_by = self.model.id
 
         if order == IOrderEnum.ascendent:

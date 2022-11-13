@@ -42,7 +42,6 @@ from fastapi import (
     Body,
     Depends,
     File,
-    HTTPException,
     Query,
     Response,
     UploadFile,
@@ -144,7 +143,11 @@ async def get_following(
     return create_response(data=users)
 
 
-@router.get("/following/{user_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+@router.get(
+    "/following/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
+)
 async def check_is_followed_by_user_id(
     user_id: UUID,
     current_user: User = Depends(deps.get_current_user()),

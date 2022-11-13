@@ -17,7 +17,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         *,
         user: User,
         target_user: User,
-        db_session: Optional[AsyncSession] = None
+        db_session: Optional[AsyncSession] = None,
     ) -> UserFollowModel:
         db_session = db_session or db.session
         new_user_follow = IUserFollowCreate(
@@ -52,7 +52,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         user_follow_id: UUID,
         user: User,
         target_user: User,
-        db_session: Optional[AsyncSession] = None
+        db_session: Optional[AsyncSession] = None,
     ) -> UserFollowModel:
         db_session = db_session or db.session
 
@@ -102,7 +102,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         *,
         user_id: UUID,
         target_user_id: UUID,
-        db_session: Optional[AsyncSession] = None
+        db_session: Optional[AsyncSession] = None,
     ) -> Optional[UserFollowModel]:
         db_session = db_session or db.session
         followed_user = await db_session.execute(

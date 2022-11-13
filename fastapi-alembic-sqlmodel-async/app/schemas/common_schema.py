@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from app.schemas.role_schema import IRoleRead
 from enum import Enum
 
+
 class IMetaGeneral(BaseModel):
     roles: List[IRoleRead]
 

@@ -3,6 +3,7 @@ from typing import Any, Dict, Generic, Sequence, Union, Optional, TypeVar
 from fastapi_pagination import Params, Page
 from fastapi_pagination.bases import AbstractPage, AbstractParams
 from pydantic.generics import GenericModel
+
 DataType = TypeVar("DataType")
 T = TypeVar("T")
 
@@ -50,6 +51,7 @@ class IResponsePage(AbstractPage[T], Generic[T]):
 class IGetResponseBase(IResponseBase[DataType], Generic[DataType]):
     message: str = "Data got correctly"
 
+
 class IGetResponsePaginated(IResponsePage[DataType], Generic[DataType]):
     message: str = "Data got correctly"
 
@@ -76,5 +78,6 @@ def create_response(
         data.meta = meta
         return data
     body_response = {"data": data, "message": message, "meta": meta}
-    # It returns a dictionary to avoid doble validation https://github.com/tiangolo/fastapi/issues/3021
+    # It returns a dictionary to avoid doble
+    # validation https://github.com/tiangolo/fastapi/issues/3021
     return dict((k, v) for k, v in body_response.items() if v is not None)

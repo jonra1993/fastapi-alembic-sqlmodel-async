@@ -1,5 +1,5 @@
-#https://github.com/oittaa/uuid6-python
-#https://github.com/uuid6/prototypes
+# https://github.com/oittaa/uuid6-python
+# https://github.com/uuid6/prototypes
 r"""UUID draft version objects (universally unique identifiers).
 This module provides the functions uuid6() and uuid7() for
 generating version 6 and 7 UUIDs as specified in
@@ -10,7 +10,6 @@ import os
 import secrets
 import time
 from uuid import SafeUUID, UUID as UUID_
-import timeit
 from typing import Tuple
 
 
@@ -26,7 +25,7 @@ class UUID(UUID_):
         int: int = None,
         version: int = None,
         *,
-        is_safe=SafeUUID.unknown
+        is_safe=SafeUUID.unknown,
     ) -> None:
         r"""Create a UUID."""
 
@@ -51,7 +50,7 @@ class UUID(UUID_):
             # Set the version number.
             int &= ~(0xF000 << 64)
             int |= version << 76
-        
+
         super().__init__(int=int, is_safe=is_safe)
 
     @property
@@ -74,8 +73,10 @@ class UUID(UUID_):
 def _subsec_decode(value: int) -> int:
     return -(-value * 10**6 // 2**20)
 
+
 _last_v7_nano_timestamp = None
 _last_v8_nano_timestamp = None
+
 
 def uuid7() -> UUID:
     r"""UUID version 7 features a time-ordered value field derived from the
@@ -94,15 +95,18 @@ def uuid7() -> UUID:
     _last_v7_nano_timestamp = nanoseconds
     timestamp_ms, timestamp_ns = divmod(nanoseconds, 10**6)
     rand = secrets.randbits(62)
-    uuid_int = (timestamp_ms & 0xFFFFFFFFFFFF) << 80  #unix_ts_ms 48 bits. Creates a 128bits variable y move the 48 bits MSB to the left 80 positions
-    uuid_int |= (7 & 0B1111) << 76                    #ver 4 bits. UUID version
-    uuid_int |= (nanoseconds & 0B111111111111) << 64  #rand_a 12bits
-    uuid_int |= (4 & 0B11) << 62                      #variant 2 bits
-    uuid_int |= rand                                  #rand_b 62 bits
+    # unix_ts_ms 48 bits. Creates a 128bits variable
+    # and move the 48 bits MSB to the left 80 positions
+    uuid_int = (timestamp_ms & 0xFFFFFFFFFFFF) << 80
+    uuid_int |= (7 & 0b1111) << 76  # ver 4 bits. UUID version
+    uuid_int |= (nanoseconds & 0b111111111111) << 64  # rand_a 12bits
+    uuid_int |= (4 & 0b11) << 62  # variant 2 bits
+    uuid_int |= rand  # rand_b 62 bits
     return UUID(int=uuid_int, version=7)
 
+
 def uuid8() -> UUID:
-    r"""UUID version 8 """
+    r"""UUID version 8"""
 
     global _last_v8_nano_timestamp
 
@@ -113,9 +117,11 @@ def uuid8() -> UUID:
 
     timestamp_ms, timestamp_ns = divmod(nanoseconds, 10**6)
     rand = secrets.randbits(62)
-    uuid_int = (timestamp_ms & 0xFFFFFFFFFFFF) << 80         #custom_a 48 bits. Creates a 128bits variable y move the 48 bits MSB to the left 80 positions
-    uuid_int |= (8 & 0B1111) << 76                           #ver 4 bits. UUID version 4 bits
-    uuid_int |= (os.getpid() & 0B111111111111) << 64         #custom_b 12bits
-    uuid_int |= (4 & 0B11) << 62                             #variant 2 bits
-    uuid_int |= rand                                         #custom_c 62 bits
+    uuid_int = (timestamp_ms & 0xFFFFFFFFFFFF) << 80
+    # custom_a 48 bits. Creates a 128bits variable and
+    # move the 48 bits MSB to the left 80 positions
+    uuid_int |= (8 & 0b1111) << 76  # ver 4 bits. UUID version 4 bits
+    uuid_int |= (os.getpid() & 0b111111111111) << 64  # custom_b 12bits
+    uuid_int |= (4 & 0b11) << 62  # variant 2 bits
+    uuid_int |= rand  # custom_c 62 bits
     return UUID(int=uuid_int, version=8)

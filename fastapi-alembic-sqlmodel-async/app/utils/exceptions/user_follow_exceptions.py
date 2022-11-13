@@ -1,8 +1,5 @@
-from typing import Any, Dict, Optional, Union
-
+from typing import Any, Dict, Optional
 from fastapi import HTTPException, status
-from requests import head
-from uuid import UUID
 
 
 class UserNotFollowedException(HTTPException):
