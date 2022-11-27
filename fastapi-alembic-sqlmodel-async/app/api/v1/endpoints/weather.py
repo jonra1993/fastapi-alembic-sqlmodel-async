@@ -10,7 +10,7 @@ import httpx
 router = APIRouter()
 
 api_reference: Dict[str, str] = {
-    "api_reference": "https://github.com/robertoduessmann/weather-api"
+    "api_reference": "https://github.com/chubin/wttr.in"
 }
 
 
@@ -18,7 +18,7 @@ def get_weather_sync(city: str):
     """
     Gets weather by goweather API with sync client
     """
-    response = httpx.get(f"{settings.WHEATER_URL}/{city}")
+    response = httpx.get(f"{settings.WHEATER_URL}/{city}?format=j1")
     weather = response.json()
     weather["city"] = city
     return weather
@@ -28,8 +28,8 @@ async def get_weather_async(city: str):
     """
     Gets weather by goweather API with async client
     """
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"{settings.WHEATER_URL}/{city}")
+    async with httpx.AsyncClient() as client:        
+        response = await client.get(f"{settings.WHEATER_URL}/{city}?format=j1")        
         weather = response.json()
         weather["city"] = city
         return weather
