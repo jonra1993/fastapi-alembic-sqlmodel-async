@@ -1,5 +1,4 @@
 from uuid import UUID
-
 from app.models.user_follow_model import UserFollowBase
 from app.utils.partial import optional
 from pydantic import BaseModel

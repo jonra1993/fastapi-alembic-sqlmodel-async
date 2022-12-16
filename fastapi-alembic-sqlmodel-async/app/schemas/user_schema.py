@@ -1,18 +1,18 @@
 from app.utils.partial import optional
 from app.models.user_model import UserBase
 from app.models.group_model import GroupBase
-from .media_schema import IImageMediaRead
-from .role_schema import IRoleRead
 from typing import Optional, List
 from uuid import UUID
 from enum import Enum
+from .media_schema import IImageMediaRead
+from .role_schema import IRoleRead
 
 
 class IUserCreate(UserBase):
     password: Optional[str]
 
     class Config:
-        hashed_password = "Main"
+        hashed_password = None
 
 
 # All these fields are optional

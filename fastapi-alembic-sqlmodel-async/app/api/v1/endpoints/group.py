@@ -1,5 +1,6 @@
 from uuid import UUID
-
+from fastapi import APIRouter, Depends, status
+from fastapi_pagination import Params
 from app import crud
 from app.api import deps
 from app.models.group_model import Group
@@ -23,8 +24,6 @@ from app.utils.exceptions import (
     IdNotFoundException,
     NameExistException,
 )
-from fastapi import APIRouter, Depends, status
-from fastapi_pagination import Params
 
 router = APIRouter()
 

@@ -1,7 +1,6 @@
 from io import BytesIO
 from typing import Optional
 from uuid import UUID
-
 from app.utils.exceptions import (
     IdNotFoundException,
     NameNotFoundException,
@@ -10,11 +9,24 @@ from app.utils.exceptions import (
     UserNotFollowedException,
     UserSelfDeleteException,
 )
-
 from app import crud
 from app.api import deps
 from app.models import User, UserFollow
 from app.models.role_model import Role
+from app.utils.minio_client import MinioClient
+from app.utils.resize_image import modify_image
+from fastapi import (
+    APIRouter,
+    Body,
+    Depends,
+    File,
+    Query,
+    Response,
+    UploadFile,
+    status,
+)
+from fastapi_pagination import Params
+from sqlmodel import and_, select
 from app.schemas.media_schema import IMediaCreate
 from app.schemas.response_schema import (
     IDeleteResponseBase,
@@ -35,20 +47,6 @@ from app.schemas.user_schema import (
 from app.schemas.user_follow_schema import (
     IUserFollowReadCommon,
 )
-from app.utils.minio_client import MinioClient
-from app.utils.resize_image import modify_image
-from fastapi import (
-    APIRouter,
-    Body,
-    Depends,
-    File,
-    Query,
-    Response,
-    UploadFile,
-    status,
-)
-from fastapi_pagination import Params
-from sqlmodel import and_, select
 
 router = APIRouter()
 
@@ -114,8 +112,9 @@ async def get_hero_list_order_by_created_at(
     """
     Gets a paginated list of users ordered by created datetime
     """
-    query = select(User).order_by(User.created_at)
-    users = await crud.user.get_multi_paginated(query=query, params=params)
+    users = await crud.user.get_multi_paginated_ordered(
+        params=params, order_by="created_at"
+    )
     return create_response(data=users)
 
 

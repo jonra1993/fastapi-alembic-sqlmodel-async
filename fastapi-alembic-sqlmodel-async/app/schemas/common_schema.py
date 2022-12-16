@@ -1,7 +1,7 @@
 from typing import List
 from pydantic import BaseModel
-from app.schemas.role_schema import IRoleRead
 from enum import Enum
+from app.schemas.role_schema import IRoleRead
 
 
 class IMetaGeneral(BaseModel):

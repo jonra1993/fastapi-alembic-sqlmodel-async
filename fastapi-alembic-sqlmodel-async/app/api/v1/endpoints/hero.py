@@ -1,6 +1,8 @@
 from typing import Optional
 from uuid import UUID
-
+from app.utils.exceptions import IdNotFoundException
+from fastapi import APIRouter, Depends, Query
+from fastapi_pagination import Params
 from app import crud
 from app.api import deps
 from app.models.hero_model import Hero
@@ -21,10 +23,6 @@ from app.schemas.response_schema import (
     create_response,
 )
 from app.schemas.role_schema import IRoleEnum
-from app.utils.exceptions import IdNotFoundException
-from fastapi import APIRouter, Depends, Query
-from fastapi_pagination import Params
-from sqlmodel import select
 
 router = APIRouter()
 
@@ -52,12 +50,9 @@ async def get_hero_list_order_by_created_at(
     """
     Gets a paginated list of heroes ordered by created at datetime
     """
-    if order == IOrderEnum.descendent:
-        query = select(Hero).order_by(Hero.created_at.desc())
-    else:
-        query = select(Hero).order_by(Hero.created_at.asc())
-
-    heroes = await crud.hero.get_multi_paginated(query=query, params=params)
+    heroes = await crud.hero.get_multi_paginated_ordered(
+        params=params, order_by="created_at", order=order
+    )
     return create_response(data=heroes)
 
 

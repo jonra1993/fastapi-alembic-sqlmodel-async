@@ -1,17 +1,15 @@
 from typing import List
 from fastapi import APIRouter, Query
-from app.schemas.response_schema import IGetResponseBase, create_response
 from fastapi_cache.decorator import cache
 from typing import Dict
 from asyncer import asyncify, create_task_group, syncify
 from app.core.config import settings
 import httpx
+from app.schemas.response_schema import IGetResponseBase, create_response
 
 router = APIRouter()
 
-api_reference: Dict[str, str] = {
-    "api_reference": "https://github.com/chubin/wttr.in"
-}
+api_reference: Dict[str, str] = {"api_reference": "https://github.com/chubin/wttr.in"}
 
 
 def get_weather_sync(city: str):
@@ -28,8 +26,8 @@ async def get_weather_async(city: str):
     """
     Gets weather by goweather API with async client
     """
-    async with httpx.AsyncClient() as client:        
-        response = await client.get(f"{settings.WHEATER_URL}/{city}?format=j1")        
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{settings.WHEATER_URL}/{city}?format=j1")
         weather = response.json()
         weather["city"] = city
         return weather

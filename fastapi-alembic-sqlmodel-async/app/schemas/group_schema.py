@@ -1,8 +1,8 @@
 from typing import List, Optional
 from app.models.group_model import GroupBase
 from app.utils.partial import optional
-from .user_schema import IUserReadWithoutGroups
 from uuid import UUID
+from .user_schema import IUserReadWithoutGroups
 
 
 class IGroupCreate(GroupBase):

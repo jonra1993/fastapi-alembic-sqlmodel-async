@@ -1,10 +1,10 @@
 from datetime import timedelta
 from typing import Any
 from fastapi import APIRouter, Body, Depends, HTTPException
+from aioredis import Redis
 from app.utils.token import get_valid_tokens
 from app.utils.token import delete_tokens
 from app.utils.token import add_token_to_redis
-from app.schemas.common_schema import TokenType, IMetaGeneral
 from app.core.security import get_password_hash
 from app.core.security import verify_password
 from app.models.user_model import User
@@ -17,9 +17,9 @@ from app import crud
 from app.api import deps
 from app.core import security
 from app.core.config import settings
+from app.schemas.common_schema import TokenType, IMetaGeneral
 from app.schemas.token_schema import TokenRead, Token, RefreshToken
 from app.schemas.response_schema import IPostResponseBase, create_response
-from aioredis import Redis
 
 router = APIRouter()
 

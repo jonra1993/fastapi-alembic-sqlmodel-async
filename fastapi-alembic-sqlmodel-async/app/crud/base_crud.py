@@ -101,9 +101,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         if query is None:
             if order == IOrderEnum.ascendent:
-                query = select(self.model).order_by(columns[order_by.value].asc())
+                query = select(self.model).order_by(columns[order_by].asc())
             else:
-                query = select(self.model).order_by(columns[order_by.value].desc())
+                query = select(self.model).order_by(columns[order_by].desc())
 
         return await paginate(db_session, query, params)
 

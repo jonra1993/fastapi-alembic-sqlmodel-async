@@ -1,5 +1,11 @@
 from uuid import UUID
-
+from app.utils.exceptions import (
+    ContentNoChangeException,
+    IdNotFoundException,
+    NameExistException,
+)
+from fastapi import APIRouter, Depends, status
+from fastapi_pagination import Params
 from app import crud
 from app.api import deps
 from app.models.team_model import Team
@@ -18,13 +24,7 @@ from app.schemas.team_schema import (
     ITeamReadWithHeroes,
     ITeamUpdate,
 )
-from app.utils.exceptions import (
-    ContentNoChangeException,
-    IdNotFoundException,
-    NameExistException,
-)
-from fastapi import APIRouter, Depends, status
-from fastapi_pagination import Params
+
 
 router = APIRouter()
 
