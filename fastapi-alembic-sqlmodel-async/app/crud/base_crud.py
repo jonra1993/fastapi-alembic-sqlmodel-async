@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from sqlmodel import SQLModel, select, func
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel.sql.expression import Select
+from sqlalchemy import exc
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -155,8 +156,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         if created_by_id:
             db_obj.created_by_id = created_by_id
 
-        db_session.add(db_obj)
-        await db_session.commit()
+        try:
+            db_session.add(db_obj)
+            await db_session.commit()
+        except exc.IntegrityError:
+            db_session.rollback()
+            raise HTTPException(
+                status_code=409,
+                detail="Resource already exists",
+            )
         await db_session.refresh(db_obj)
         return db_obj
 
