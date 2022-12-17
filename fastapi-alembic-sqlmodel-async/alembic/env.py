@@ -22,8 +22,6 @@ config = context.config
 fileConfig(config.config_file_name)
 
 
-# from app.db.base import Base  # noqa
-# target_metadata = Base.metadata
 target_metadata = SQLModel.metadata
 
 # other values from the config, defined by the needs of env.py,

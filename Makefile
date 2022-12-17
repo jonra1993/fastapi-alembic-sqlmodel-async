@@ -46,6 +46,8 @@ help:
 	@echo "        Lint code with flake8, and check if black formatter should be applied."
 	@echo "    run-sonarqube"
 	@echo "        Starts Sonarqube container."
+	@echo "    run-sonar-scanner"
+	@echo "        Starts Sonarqube container."	
 	@echo "    stop-sonarqube"
 	@echo "        Stops Sonarqube container."
 
@@ -74,8 +76,11 @@ lint:
 	cd fastapi-alembic-sqlmodel-async && \
 	poetry run flake8 app --extend-ignore D && poetry run black --check app
 
-start-sonarqube:
+run-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml up
+
+run-sonar-scanner:
+	docker run --rm -v "${PWD}/fastapi-alembic-sqlmodel-async:/usr/src" sonarsource/sonar-scanner-cli
 
 stop-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml down

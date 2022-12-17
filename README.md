@@ -152,6 +152,21 @@ To run lint, you can run the following command:
 make lint
 ```
 
+## Sonarqube static analisys
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+To ensure a standardized code style this project uses [black](https://github.com/ambv/black) and [flake8](https://github.com/PyCQA/flake8). If you want to change the config rules you can edit flake8 rules in the file *setup.cfg* or black in the file *pyproject.toml*.
+
+To reformat files execute the following command
+```sh
+make formatter
+```
+
+To run lint, you can run the following command:
+```sh
+make lint
+```
+
 ## Inspiration and References
 
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
@@ -188,8 +203,8 @@ make lint
 - [x] Add shortcuts using a Makefile
 - [x] Add sample async, sync and concurrent functions using asyncer
 - [x] Add Black formatter and flake8 lint (Rasa as reference)
+- [x] Add static code analysis using SonarQube
 - [ ] Add testing
-- [ ] Add static code analysis using SonarQube
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
@@ -206,6 +221,3 @@ PR are welcome ❤️
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
 - This project is licensed under the terms of the **[MIT license](LICENSE)**
-
-
-docker run --rm -v "fastapi-alembic-sqlmodel-async/app:/usr/src" sonarsource/sonar-scanner-cli

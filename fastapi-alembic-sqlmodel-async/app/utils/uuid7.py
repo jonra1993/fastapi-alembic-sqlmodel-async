@@ -30,7 +30,7 @@ class UUID(UUID_):
         r"""Create a UUID."""
 
         if int is None or [hex, bytes, bytes_le, fields].count(None) != 4:
-            return super().__init__(
+            super().__init__(
                 hex=hex,
                 bytes=bytes,
                 bytes_le=bytes_le,

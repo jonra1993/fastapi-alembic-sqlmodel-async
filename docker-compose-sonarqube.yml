@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  sonarqube:
+    container_name: "sonarqube"
+    image: "sonarqube:8.9.10-community"
+    volumes:
+      - ./sonarqube/extensions:/opt/sonarqube/extensions
+      - ./sonarqube/logs:/opt/sonarqube/logs
+      - ./sonarqube/data:/opt/sonarqube/data
+    expose:
+      - "9000"
+    ports:
+      - "9000:9000"
