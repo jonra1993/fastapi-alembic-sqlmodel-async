@@ -206,3 +206,6 @@ PR are welcome ❤️
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
 - This project is licensed under the terms of the **[MIT license](LICENSE)**
+
+
+docker run --rm -v "fastapi-alembic-sqlmodel-async/app:/usr/src" sonarsource/sonar-scanner-cli
