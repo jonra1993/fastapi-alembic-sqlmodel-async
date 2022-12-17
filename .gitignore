@@ -134,4 +134,8 @@ db_docker
 minio
 
 .sonarqube/*
+.scannerwork
 sonarqube
+sonarqube/extensions
+sonarqube/data
+sonarqube/logs

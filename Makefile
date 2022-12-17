@@ -43,7 +43,11 @@ help:
 	@echo "    formatter"
 	@echo "        Apply black formatting to code."
 	@echo "    lint"
-	@echo "        Lint code with flake8, and check if black formatter should be applied."	
+	@echo "        Lint code with flake8, and check if black formatter should be applied."
+	@echo "    run-sonarqube"
+	@echo "        Starts Sonarqube container."
+	@echo "    stop-sonarqube"
+	@echo "        Stops Sonarqube container."
 
 install:
 	cd fastapi-alembic-sqlmodel-async && \
@@ -69,6 +73,12 @@ formatter:
 lint:
 	cd fastapi-alembic-sqlmodel-async && \
 	poetry run flake8 app --extend-ignore D && poetry run black --check app
+
+start-sonarqube:
+	docker compose -f docker-compose-sonarqube.yml up
+
+stop-sonarqube:
+	docker compose -f docker-compose-sonarqube.yml down
 
 add-dev-migration:
 	docker compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate && \
