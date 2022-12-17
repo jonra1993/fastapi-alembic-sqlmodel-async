@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import timedelta
 from uuid import UUID
 from aioredis import Redis
 from app.models.user_model import User
@@ -16,7 +17,7 @@ async def add_token_to_redis(
     valid_tokens = await get_valid_tokens(redis_client, user.id, token_type)
     await redis_client.sadd(token_key, token)
     if not valid_tokens:
-        await redis_client.expire(token_key, expire_time)
+        await redis_client.expire(token_key, timedelta(minutes=expire_time))
 
 
 async def get_valid_tokens(redis_client: Redis, user_id: UUID, token_type: TokenType):
