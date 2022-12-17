@@ -140,14 +140,14 @@ async def change_password(
 
 
 @router.post(
-    "/refresh_token", response_model=IPostResponseBase[TokenRead], status_code=201
+    "/new_access_token", response_model=IPostResponseBase[TokenRead], status_code=201
 )
-async def get_refresh_token(
+async def get_new_access_token(
     body: RefreshToken = Body(...),
     redis_client: Redis = Depends(get_redis_client),
 ) -> Any:
     """
-    Gets a refresh token
+    Gets a new access token using the refresh token for future requests
     """
     try:
         payload = jwt.decode(
