@@ -152,20 +152,67 @@ To run lint, you can run the following command:
 make lint
 ```
 
-## Sonarqube static analisys
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+## SonarQube static analysis
+[SonarQube](https://www.sonarqube.org/) is an automatic code review tool that detects bugs, vulnerabilities, and code smells in a project. You can read [this post](https://medium.com/jrtec/static-analysis-using-sonarqube-in-a-react-webapp-dd4b335d6062) in order to have a better understanding about what SonarQube can do.
 
-To ensure a standardized code style this project uses [black](https://github.com/ambv/black) and [flake8](https://github.com/PyCQA/flake8). If you want to change the config rules you can edit flake8 rules in the file *setup.cfg* or black in the file *pyproject.toml*.
+The following steps can help you to run a local static code analysis
 
-To reformat files execute the following command
+1. Start SonarQube container
 ```sh
-make formatter
+make run-sonarqube
 ```
 
-To run lint, you can run the following command:
+You can login using this **credentials ->** *username:* admin and *password:* admin, after that it should requiere you change your password.
+
+2. Add new project
+<p align="center">
+  <img src="static/sonarqube1.png" align="center"/>
+</p>
+
+<p align="center">
+  <img src="static/sonarqube2.png" align="center"/>
+</p>
+
+<p align="center">
+  <img src="static/sonarqube4.png" align="center"/>
+</p>
+
+5. Copy **projectKey** and **login** and replace on *fastapi-alembic-sqlmodel-async/sonar-project.properties* file.
+<p align="center">
+  <img src="static/sonarqube5.png" align="center"/>
+</p>
+
+*fastapi-alembic-sqlmodel-async/sonar-project.properties* file
 ```sh
-make lint
+# Organization and project keys are displayed in the right sidebar of the project homepage
+sonar.organization=my_organization
+sonar.projectKey=fastapi-alembic-sqlmodel-async
+sonar.host.url=http://host.docker.internal:9000
+sonar.login=157cc42f5b2702f470af3466610eebf38551fdd7
+
+# --- optional properties ---
+
+# defaults to project key
+sonar.projectName=fastapi-alembic-sqlmodel-async
+# defaults to 'not provided'
+sonar.projectVersion=1.0
+
+# Path is relative to the sonar-project.properties file. Defaults to .
+sonar.sources=app
+
+# Encoding of the source code. Default is default system encoding
+sonar.sourceEncoding=UTF-8
 ```
+
+6. Run the following command to execute a new code scan
+```sh
+make run-sonar-scanner
+```
+<p align="center">
+  <img src="static/sonarqube6.png" align="center"/>
+</p>
+
+When the build is successful, you can see the SonarQube screen automatically refreshed with the analysis. If you want to export a report, you can check this [this post](https://medium.com/jrtec/static-analysis-using-sonarqube-in-a-react-webapp-dd4b335d6062).
 
 ## Inspiration and References
 
