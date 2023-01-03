@@ -31,14 +31,11 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         if reverse_follow:
             db_obj.is_mutual = True
             reverse_follow.is_mutual = True
-            reverse_follow.updated_at = datetime.utcnow()
             db_session.add(reverse_follow)
         db_session.add(db_obj)
 
         user.following_count += 1
-        user.updated_at = datetime.utcnow()
         target_user.follower_count += 1
-        target_user.updated_at = datetime.utcnow()
 
         db_session.add(user)
         db_session.add(target_user)
@@ -64,13 +61,10 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         )
         if reverse_follow:
             reverse_follow.is_mutual = False
-            reverse_follow.updated_at = datetime.utcnow()
             db_session.add(reverse_follow)
 
         user.following_count -= 1
-        user.updated_at = datetime.utcnow()
         target_user.follower_count -= 1
-        target_user.updated_at = datetime.utcnow()
 
         db_session.add(user)
         db_session.add(target_user)
