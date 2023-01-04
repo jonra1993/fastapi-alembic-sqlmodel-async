@@ -39,7 +39,6 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         response = None
         for x in db_obj:
             setattr(x, "is_active", obj_in.is_active)
-            setattr(x, "updated_at", datetime.utcnow())
             db.session.add(x)
             await db.session.commit()
             await db.session.refresh(x)
@@ -88,7 +87,6 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
             for following in followings:
                 user = await self.get(id=following.target_user_id)
                 user.follower_count -= 1
-                user.updated_at = datetime.utcnow()
                 db_session.add(user)
                 await db_session.delete(following)
 
@@ -99,7 +97,6 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
             for followed in followeds:
                 user = await self.get(id=followed.user_id)
                 user.following_count -= 1
-                user.updated_at = datetime.utcnow()
                 db_session.add(user)
                 await db_session.delete(followed)
 
