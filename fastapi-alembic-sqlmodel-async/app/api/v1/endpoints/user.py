@@ -51,13 +51,13 @@ from app.schemas.user_follow_schema import (
 router = APIRouter()
 
 
-@router.get("/list", response_model=IGetResponsePaginated[IUserReadWithoutGroups])
+@router.get("/list")
 async def read_users_list(
     params: Params = Depends(),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
-):
+) -> IGetResponsePaginated[IUserReadWithoutGroups]:
     """
     Retrieve users. Requires admin or manager role
     """
@@ -65,10 +65,7 @@ async def read_users_list(
     return create_response(data=users)
 
 
-@router.get(
-    "/list/by_role_name",
-    response_model=IGetResponsePaginated[IUserReadWithoutGroups],
-)
+@router.get("/list/by_role_name")
 async def read_users_list_by_role_name(
     user_status: Optional[IUserStatus] = Query(
         default=IUserStatus.active,
@@ -81,7 +78,7 @@ async def read_users_list_by_role_name(
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
-):
+) -> IGetResponsePaginated[IUserReadWithoutGroups]:
     """
     Retrieve users by role name and status. Requires admin role
     """
@@ -99,16 +96,13 @@ async def read_users_list_by_role_name(
     return create_response(data=users)
 
 
-@router.get(
-    "/order_by_created_at",
-    response_model=IGetResponsePaginated[IUserReadWithoutGroups],
-)
+@router.get("/order_by_created_at")
 async def get_hero_list_order_by_created_at(
     params: Params = Depends(),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
-):
+) -> IGetResponsePaginated[IUserReadWithoutGroups]:
     """
     Gets a paginated list of users ordered by created datetime
     """
@@ -118,11 +112,11 @@ async def get_hero_list_order_by_created_at(
     return create_response(data=users)
 
 
-@router.get("/following", response_model=IGetResponsePaginated[IUserFollowReadCommon])
+@router.get("/following")
 async def get_following(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponsePaginated[IUserFollowReadCommon]:
     """
     Lists the people who the authenticated user follows.
     """
@@ -164,11 +158,11 @@ async def check_is_followed_by_user_id(
         raise UserNotFollowedException(user_name=user.last_name)
 
 
-@router.get("/followers", response_model=IGetResponsePaginated[IUserFollowReadCommon])
+@router.get("/followers")
 async def get_followers(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponsePaginated[IUserFollowReadCommon]:
     """
     Lists the people following the authenticated user.
     """
@@ -188,14 +182,12 @@ async def get_followers(
     return create_response(data=users)
 
 
-@router.get(
-    "/{user_id}/followers", response_model=IGetResponsePaginated[IUserFollowReadCommon]
-)
+@router.get("/{user_id}/followers")
 async def get_user_followed_by_user_id(
     user_id: UUID,
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponsePaginated[IUserFollowReadCommon]:
     """
     Lists the people following the specified user.
     """
@@ -218,14 +210,12 @@ async def get_user_followed_by_user_id(
     return create_response(data=users)
 
 
-@router.get(
-    "/{user_id}/following", response_model=IGetResponsePaginated[IUserFollowReadCommon]
-)
+@router.get("/{user_id}/following")
 async def get_user_following_by_user_id(
     user_id: UUID,
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponsePaginated[IUserFollowReadCommon]:
     """
     Lists the people who the specified user follows.
     """
@@ -281,13 +271,11 @@ async def check_a_user_is_followed_another_user_by_id(
         )
 
 
-@router.put(
-    "/following/{target_user_id}", response_model=IPutResponseBase[IUserFollowRead]
-)
+@router.put("/following/{target_user_id}")
 async def follow_a_user_by_id(
     target_user_id: UUID,
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IPutResponseBase[IUserFollowRead]:
     """
     Following a user
     """
@@ -311,13 +299,11 @@ async def follow_a_user_by_id(
     return create_response(data=new_user_follow)
 
 
-@router.delete(
-    "/following/{target_user_id}", response_model=IDeleteResponseBase[IUserFollowRead]
-)
+@router.delete("/following/{target_user_id}")
 async def unfollowing_a_user_by_id(
     target_user_id: UUID,
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IDeleteResponseBase[IUserFollowRead]:
     """
     Unfollowing a user
     """
@@ -342,13 +328,13 @@ async def unfollowing_a_user_by_id(
     return create_response(data=user_follow)
 
 
-@router.get("/{user_id}", response_model=IGetResponseBase[IUserRead])
+@router.get("/{user_id}")
 async def get_user_by_id(
     user_id: UUID,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
-):
+) -> IGetResponseBase[IUserRead]:
     """
     Gets a user by his/her id
     """
@@ -358,25 +344,23 @@ async def get_user_by_id(
         raise IdNotFoundException(User, id=user_id)
 
 
-@router.get("", response_model=IGetResponseBase[IUserRead])
+@router.get("")
 async def get_my_data(
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponseBase[IUserRead]:
     """
     Gets my user profile information
     """
     return create_response(data=current_user)
 
 
-@router.post(
-    "", response_model=IPostResponseBase[IUserRead], status_code=status.HTTP_201_CREATED
-)
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_user(
     new_user: IUserCreate = Depends(deps.user_exists),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
-):
+) -> IPostResponseBase[IUserRead]:
     """
     Creates a new user
     """
@@ -389,13 +373,13 @@ async def create_user(
     return create_response(data=user)
 
 
-@router.delete("/{user_id}", response_model=IDeleteResponseBase[IUserRead])
+@router.delete("/{user_id}")
 async def remove_user(
     user: User = Depends(deps.is_valid_user),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
-):
+) -> IDeleteResponseBase[IUserRead]:
     """
     Deletes a user by his/her id
     """
@@ -406,14 +390,14 @@ async def remove_user(
     return create_response(data=user)
 
 
-@router.post("/image", response_model=IPostResponseBase[IUserRead])
+@router.post("/image")
 async def upload_my_image(
     title: Optional[str] = Body(None),
     description: Optional[str] = Body(None),
     image_file: UploadFile = File(...),
     current_user: User = Depends(deps.get_current_user()),
     minio_client: MinioClient = Depends(deps.minio_auth),
-):
+) -> IPostResponseBase[IUserRead]:
     """
     Uploads a user image
     """
@@ -440,7 +424,7 @@ async def upload_my_image(
         return Response("Internal server error", status_code=500)
 
 
-@router.post("/{user_id}/image", response_model=IPostResponseBase[IUserRead])
+@router.post("/{user_id}/image")
 async def upload_user_image(
     user: User = Depends(deps.is_valid_user),
     title: Optional[str] = Body(None),
@@ -450,7 +434,7 @@ async def upload_user_image(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
     minio_client: MinioClient = Depends(deps.minio_auth),
-):
+) -> IPostResponseBase[IUserRead]:
     """
     Uploads a user image by his/her id
     """

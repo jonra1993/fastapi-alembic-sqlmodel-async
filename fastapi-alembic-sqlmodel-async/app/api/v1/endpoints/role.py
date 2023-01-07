@@ -22,11 +22,11 @@ from app.schemas.role_schema import IRoleCreate, IRoleEnum, IRoleRead, IRoleUpda
 router = APIRouter()
 
 
-@router.get("", response_model=IGetResponsePaginated[IRoleRead])
+@router.get("")
 async def get_roles(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponsePaginated[IRoleRead]:
     """
     Gets a paginated list of roles
     """
@@ -36,13 +36,12 @@ async def get_roles(
 
 @router.get(
     "/{role_id}",
-    response_model=IGetResponseBase[IRoleRead],
     status_code=status.HTTP_200_OK,
 )
 async def get_role_by_id(
     role_id: UUID,
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponseBase[IRoleRead]:
     """
     Gets a role by its id
     """
@@ -53,15 +52,13 @@ async def get_role_by_id(
         raise IdNotFoundException(Role, id=role_id)
 
 
-@router.post(
-    "", response_model=IPostResponseBase[IRoleRead], status_code=status.HTTP_201_CREATED
-)
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_role(
     role: IRoleCreate,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
-):
+) -> IPostResponseBase[IRoleRead]:
     """
     Create a new role
     """
@@ -73,14 +70,14 @@ async def create_role(
         raise NameExistException(Role, name=role_current.name)
 
 
-@router.put("/{role_id}", response_model=IPutResponseBase[IRoleRead])
+@router.put("/{role_id}")
 async def update_permission(
     role_id: UUID,
     role: IRoleUpdate,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
-):
+) -> IPutResponseBase[IRoleRead]:
     """
     Updates the permission of a role by its id
     """

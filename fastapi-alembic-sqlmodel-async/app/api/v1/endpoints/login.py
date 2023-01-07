@@ -24,13 +24,13 @@ from app.schemas.response_schema import IPostResponseBase, create_response
 router = APIRouter()
 
 
-@router.post("", response_model=IPostResponseBase[Token])
+@router.post("")
 async def login(
     email: EmailStr = Body(...),
     password: str = Body(...),
     meta_data: IMetaGeneral = Depends(deps.get_general_meta),
     redis_client: Redis = Depends(get_redis_client),
-) -> Any:
+) -> IPostResponseBase[Token]:
     """
     Login for all users
     """
@@ -79,13 +79,13 @@ async def login(
     return create_response(meta=meta_data, data=data, message="Login correctly")
 
 
-@router.post("/change_password", response_model=IPostResponseBase[Token])
+@router.post("/change_password")
 async def change_password(
     current_password: str = Body(...),
     new_password: str = Body(...),
     current_user: User = Depends(deps.get_current_user()),
     redis_client: Redis = Depends(get_redis_client),
-) -> Any:
+) -> IPostResponseBase[Token]:
     """
     Change password
     """
@@ -139,13 +139,11 @@ async def change_password(
     return create_response(data=data, message="New password generated")
 
 
-@router.post(
-    "/new_access_token", response_model=IPostResponseBase[TokenRead], status_code=201
-)
+@router.post("/new_access_token", status_code=201)
 async def get_new_access_token(
     body: RefreshToken = Body(...),
     redis_client: Redis = Depends(get_redis_client),
-) -> Any:
+) -> IPostResponseBase[TokenRead]:
     """
     Gets a new access token using the refresh token for future requests
     """
@@ -191,11 +189,11 @@ async def get_new_access_token(
         raise HTTPException(status_code=404, detail="Incorrect token")
 
 
-@router.post("/access-token", response_model=TokenRead)
+@router.post("/access-token")
 async def login_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     redis_client: Redis = Depends(get_redis_client),
-) -> Any:
+) -> TokenRead:
     """
     OAuth2 compatible token login, get an access token for future requests
     """

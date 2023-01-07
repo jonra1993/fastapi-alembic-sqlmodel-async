@@ -27,11 +27,11 @@ from app.schemas.role_schema import IRoleEnum
 router = APIRouter()
 
 
-@router.get("", response_model=IGetResponsePaginated[IHeroReadWithTeam])
+@router.get("")
 async def get_hero_list(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponsePaginated[IHeroReadWithTeam]:
     """
     Gets a paginated list of heroes
     """
@@ -39,14 +39,14 @@ async def get_hero_list(
     return create_response(data=heroes)
 
 
-@router.get("/by_created_at", response_model=IGetResponsePaginated[IHeroReadWithTeam])
+@router.get("/by_created_at")
 async def get_hero_list_order_by_created_at(
     order: Optional[IOrderEnum] = Query(
         default=IOrderEnum.ascendent, description="It is optional. Default is ascendent"
     ),
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponsePaginated[IHeroReadWithTeam]:
     """
     Gets a paginated list of heroes ordered by created at datetime
     """
@@ -56,11 +56,11 @@ async def get_hero_list_order_by_created_at(
     return create_response(data=heroes)
 
 
-@router.get("/{hero_id}", response_model=IGetResponseBase[IHeroReadWithTeam])
+@router.get("/{hero_id}")
 async def get_hero_by_id(
     hero_id: UUID,
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponseBase[IHeroReadWithTeam]:
     """
     Gets a hero by its id
     """
@@ -70,13 +70,13 @@ async def get_hero_by_id(
     return create_response(data=hero)
 
 
-@router.post("", response_model=IPostResponseBase[IHeroRead])
+@router.post("")
 async def create_hero(
     hero: IHeroCreate,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
-):
+) -> IPostResponseBase[IHeroRead]:
     """
     Creates a new hero
     """
@@ -84,14 +84,14 @@ async def create_hero(
     return create_response(data=heroe)
 
 
-@router.put("/{hero_id}", response_model=IPutResponseBase[IHeroRead])
+@router.put("/{hero_id}")
 async def update_hero(
     hero_id: UUID,
     hero: IHeroUpdate,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
-):
+) -> IPutResponseBase[IHeroRead]:
     """
     Updates a hero by its id
     """
@@ -102,13 +102,13 @@ async def update_hero(
     return create_response(data=heroe_updated)
 
 
-@router.delete("/{hero_id}", response_model=IDeleteResponseBase[IHeroRead])
+@router.delete("/{hero_id}")
 async def remove_hero(
     hero_id: UUID,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
-):
+) -> IDeleteResponseBase[IHeroRead]:
     """
     Deletes a hero by its id
     """

@@ -13,7 +13,7 @@ exclude = "((.eggs | .git | .pytest_cache | build | dist))"
 python = "^3.8"
 alembic = "^1.8.1"
 asyncpg = "^0.27.0"
-fastapi = {extras = ["all"], version = "^0.88.0"}
+fastapi = {extras = ["all"], version = "^0.89.0"}
 sqlmodel = "^0.0.8"
 python-jose = "^3.3.0"
 cryptography = "^38.0.3"
@@ -35,6 +35,7 @@ pytest = "^5.2"
 black = "^22.10.0"
 flake8 = "^5.0.4"
 flake8-docstrings = "^1.6.0"
+ruff = "^0.0.214"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

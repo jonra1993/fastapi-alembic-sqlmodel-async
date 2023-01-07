@@ -42,11 +42,11 @@ def do_sync_work(city: str):
     return weather
 
 
-@router.get("/weather_sync/sync1", response_model=IGetResponseBase)
+@router.get("/weather_sync/sync1")
 @cache(expire=10)
 async def get_weather_sync_work_by_city(
     city: str = Query(default="Quito"),
-):
+) -> IGetResponseBase:
     """
     Gets Weather by city using sync work
     """
@@ -56,11 +56,11 @@ async def get_weather_sync_work_by_city(
     )
 
 
-@router.get("/weather_sync/sync2", response_model=IGetResponseBase)
+@router.get("/weather_sync/sync2")
 @cache(expire=10)
 async def get_weather_sync_client_by_city(
     city: str = Query(default="Quito"),
-):
+) -> IGetResponseBase:
     """
     Gets Weather by city using sync client
     """
@@ -70,11 +70,11 @@ async def get_weather_sync_client_by_city(
     )
 
 
-@router.get("/weather_async", response_model=IGetResponseBase)
+@router.get("/weather_async")
 @cache(expire=10)
 async def get_weather_async_client_by_city(
     city: str = Query(default="Quito"),
-):
+) -> IGetResponseBase:
     """
     Gets Weather by city using async client
     """
@@ -84,11 +84,11 @@ async def get_weather_async_client_by_city(
     )
 
 
-@router.get("/weather_async_list/sequencial", response_model=IGetResponseBase)
+@router.get("/weather_async_list/sequencial")
 @cache(expire=10)
 async def get_weather_async_sequencial_by_cities(
     cities: List[str] = Query(default=["Quito", "Miami", "Barcelona"]),
-):
+) -> IGetResponseBase:
     """
     Gets Weather by list of cities
     It does sequencial requests
@@ -103,11 +103,11 @@ async def get_weather_async_sequencial_by_cities(
     )
 
 
-@router.get("/weather_async_list/concurrent", response_model=IGetResponseBase)
+@router.get("/weather_async_list/concurrent")
 @cache(expire=10)
 async def get_weather_async_concurrent_by_cities(
     cities: List[str] = Query(default=["Quito", "Miami", "Barcelona"]),
-):
+) -> IGetResponseBase:
     """
     Gets Weather by list of cities
     It it optimized to do concurrent requests (It is faster than sequencial endpoint)

@@ -251,6 +251,8 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Add sample async, sync and concurrent functions using asyncer
 - [x] Add Black formatter and flake8 lint (Rasa as reference)
 - [x] Add static code analysis using SonarQube
+- [x] Function return type annotations to declare the response_model (fastapi > 0.89.0)
+- [ ] Upgrade typing (Compatible just with python > 3.10)
 - [ ] Add testing
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column

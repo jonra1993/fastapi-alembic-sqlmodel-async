@@ -28,11 +28,11 @@ from app.utils.exceptions import (
 router = APIRouter()
 
 
-@router.get("", response_model=IGetResponsePaginated[IGroupRead])
+@router.get("")
 async def get_groups(
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponsePaginated[IGroupRead]:
     """
     Gets a paginated list of groups
     """
@@ -40,11 +40,11 @@ async def get_groups(
     return create_response(data=groups)
 
 
-@router.get("/{group_id}", response_model=IGetResponseBase[IGroupReadWithUsers])
+@router.get("/{group_id}")
 async def get_group_by_id(
     group_id: UUID,
     current_user: User = Depends(deps.get_current_user()),
-):
+) -> IGetResponseBase[IGroupReadWithUsers]:
     """
     Gets a group by its id
     """
@@ -57,7 +57,6 @@ async def get_group_by_id(
 
 @router.post(
     "",
-    response_model=IPostResponseBase[IGroupRead],
     status_code=status.HTTP_201_CREATED,
 )
 async def create_group(
@@ -65,7 +64,7 @@ async def create_group(
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
-):
+) -> IPostResponseBase[IGroupRead]:
     """
     Creates a new group
     """
@@ -76,14 +75,14 @@ async def create_group(
     return create_response(data=new_group)
 
 
-@router.put("/{group_id}", response_model=IPutResponseBase[IGroupRead])
+@router.put("/{group_id}")
 async def update_group(
     group_id: UUID,
     group: IGroupUpdate,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
-):
+) -> IPutResponseBase[IGroupRead]:
     """
     Updates a group by its id
     """
@@ -101,16 +100,14 @@ async def update_group(
     return create_response(data=group_updated)
 
 
-@router.post(
-    "/add_user/{user_id}/{group_id}", response_model=IPostResponseBase[IGroupRead]
-)
+@router.post("/add_user/{user_id}/{group_id}")
 async def add_user_into_a_group(
     user_id: UUID,
     group_id: UUID,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
-):
+) -> IPostResponseBase[IGroupRead]:
     """
     Adds a user into a group
     """

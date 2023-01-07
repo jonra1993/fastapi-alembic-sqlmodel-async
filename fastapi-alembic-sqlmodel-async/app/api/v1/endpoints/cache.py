@@ -8,29 +8,29 @@ from app.schemas.response_schema import IGetResponseBase, create_response
 router = APIRouter()
 
 
-@router.get("/cached", response_model=IGetResponseBase[Union[str, datetime]])
+@router.get("/cached")
 @cache(expire=10)
-async def get_a_cached_response():
+async def get_a_cached_response() -> IGetResponseBase[Union[str, datetime]]:
     """
     Gets a cached datetime
     """
     return create_response(data=datetime.now())
 
 
-@router.get("/no_cached", response_model=IGetResponseBase[Union[str, datetime]])
-async def get_a_normal_response():
+@router.get("/no_cached")
+async def get_a_normal_response() -> IGetResponseBase[Union[str, datetime]]:
     """
     Gets a real-time datetime
     """
     return create_response(data=datetime.now())
 
 
-@router.get("/heroe_count/cached", response_model=IGetResponseBase[int])
+@router.get("/heroe_count/cached")
 @cache(expire=20)
 async def get_count_of_heroes_created_cached(
     start_date: date = Query(default=(datetime.now() - timedelta(days=7)).date()),
     end_date: date = Query(default=datetime.now().date()),
-):
+) -> IGetResponseBase[int]:
     """
     Gets count of heroes created on a base time (Cached response)
     """
@@ -41,11 +41,11 @@ async def get_count_of_heroes_created_cached(
     return create_response(message="message", data=count)
 
 
-@router.get("/heroe_count/no_cached", response_model=IGetResponseBase[int])
+@router.get("/heroe_count/no_cached")
 async def get_count_of_heroes_created_no_cached(
     start_date: date = Query(default=(datetime.now() - timedelta(days=7)).date()),
     end_date: date = Query(default=datetime.now().date()),
-):
+) -> IGetResponseBase[int]:
     """
     Gets count of heroes created on a base time (No Cached response)
     """
