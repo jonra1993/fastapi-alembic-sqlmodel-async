@@ -1,14 +1,12 @@
-from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
-
+from fastapi_async_sqlalchemy import db
+from sqlmodel import and_, select
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.crud.base_crud import CRUDBase
 from app.models.user_follow_model import UserFollow as UserFollowModel
 from app.models.user_model import User
 from app.schemas.user_follow_schema import IUserFollowCreate, IUserFollowUpdate
-from fastapi_async_sqlalchemy import db
-from sqlmodel import and_, select
-from sqlmodel.ext.asyncio.session import AsyncSession
 
 
 class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpdate]):

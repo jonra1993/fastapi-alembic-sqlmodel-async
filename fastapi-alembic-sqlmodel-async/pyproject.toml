@@ -9,6 +9,29 @@ line-length = 88
 target-version = [ "py37", "py38", "py39",]
 exclude = "((.eggs | .git | .pytest_cache | build | dist))"
 
+[tool.ruff]
+line-length = 88
+exclude = [".git", "__pycache__", ".mypy_cache", ".pytest_cache"]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    # "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = [    
+    "B006",
+    "B010",
+    "C417",
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
 [tool.poetry.dependencies]
 python = "^3.8"
 alembic = "^1.8.1"

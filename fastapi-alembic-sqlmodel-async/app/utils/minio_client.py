@@ -67,4 +67,4 @@ class MinioClient:
             )
             return data_file
         except Exception as e:
-            raise Exception(e)
+            raise e

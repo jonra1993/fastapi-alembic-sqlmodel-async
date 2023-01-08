@@ -1,5 +1,4 @@
 from datetime import timedelta
-from typing import Any
 from fastapi import APIRouter, Body, Depends, HTTPException
 from aioredis import Redis
 from app.utils.token import get_valid_tokens

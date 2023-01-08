@@ -74,7 +74,7 @@ formatter:
 
 lint:
 	cd fastapi-alembic-sqlmodel-async && \
-	poetry run flake8 app --extend-ignore D && poetry run black --check app
+	poetry run ruff app && poetry run black --check app
 
 run-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml up

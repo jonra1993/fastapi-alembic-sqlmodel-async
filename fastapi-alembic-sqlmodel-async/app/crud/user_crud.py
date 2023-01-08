@@ -9,7 +9,6 @@ from app.schemas.user_schema import IUserCreate, IUserUpdate
 from app.models.user_model import User
 from app.models.media_model import ImageMedia, Media
 from app.core.security import verify_password, get_password_hash
-from datetime import datetime
 from uuid import UUID
 from sqlmodel.ext.asyncio.session import AsyncSession
 
