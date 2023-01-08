@@ -81,4 +81,3 @@ def create_response(
     # It returns a dictionary to avoid doble
     # validation https://github.com/tiangolo/fastapi/issues/3021
     return {k: v for k, v in body_response.items() if v is not None}
-

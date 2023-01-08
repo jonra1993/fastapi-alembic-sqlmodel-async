@@ -20,10 +20,9 @@ select = [
     "C",  # flake8-comprehensions
     "B",  # flake8-bugbear
 ]
-ignore = [    
-    "B006",
-    "B010",
-    "C417",
+ignore = [
+    "B904",
+    "B006",    
     "E501",  # line too long, handled by black
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
@@ -56,8 +55,6 @@ httpx = "^0.23.1"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 black = "^22.10.0"
-flake8 = "^5.0.4"
-flake8-docstrings = "^1.6.0"
 ruff = "^0.0.214"
 
 [build-system]

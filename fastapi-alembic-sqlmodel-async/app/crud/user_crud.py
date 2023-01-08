@@ -37,7 +37,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
     ) -> Union[User, None]:
         response = None
         for x in db_obj:
-            setattr(x, "is_active", obj_in.is_active)
+            x.is_active = obj_in.is_active
             db.session.add(x)
             await db.session.commit()
             await db.session.refresh(x)

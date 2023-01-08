@@ -43,7 +43,11 @@ help:
 	@echo "    formatter"
 	@echo "        Apply black formatting to code."
 	@echo "    lint"
-	@echo "        Lint code with flake8, and check if black formatter should be applied."
+	@echo "        Lint code with ruff, and check if black formatter should be applied."
+	@echo "    lint-watch"
+	@echo "        Lint code with ruff in watch mode."
+	@echo "    lint-fix"
+	@echo "        Lint code with ruff and try to fix."	
 	@echo "    run-sonarqube"
 	@echo "        Starts Sonarqube container."
 	@echo "    run-sonar-scanner"
@@ -75,6 +79,14 @@ formatter:
 lint:
 	cd fastapi-alembic-sqlmodel-async && \
 	poetry run ruff app && poetry run black --check app
+
+lint-watch:
+	cd fastapi-alembic-sqlmodel-async && \
+	poetry run ruff app --watch
+
+lint-fix:
+	cd fastapi-alembic-sqlmodel-async && \
+	poetry run ruff app --fix
 
 run-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml up

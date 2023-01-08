@@ -117,7 +117,7 @@ async def get_weather_async_concurrent_by_cities(
         for index, city in enumerate(cities):
             weather_list[index] = task_group.soonify(get_weather_async)(city=city)
 
-    weather_list = list(map(lambda weather: weather.value, weather_list))
+    weather_list = [weather.value for weather in weather_list]
     return create_response(
         message=f"Weather in {', '.join(cities)}", data=weather_list, meta=api_reference
     )

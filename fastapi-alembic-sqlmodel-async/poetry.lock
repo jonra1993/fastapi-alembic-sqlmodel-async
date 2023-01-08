@@ -315,31 +315,6 @@ beanie = ["beanie (>=1.11.9,<2.0.0)"]
 scylla-driver = ["scylla-driver (>=3.25.6,<4.0.0)"]
 
 [[package]]
-name = "flake8"
-version = "5.0.4"
-description = "the modular source code checker: pep8 pyflakes and co"
-category = "dev"
-optional = false
-python-versions = ">=3.6.1"
-
-[package.dependencies]
-mccabe = ">=0.7.0,<0.8.0"
-pycodestyle = ">=2.9.0,<2.10.0"
-pyflakes = ">=2.5.0,<2.6.0"
-
-[[package]]
-name = "flake8-docstrings"
-version = "1.6.0"
-description = "Extension for flake8 which uses pydocstyle to check docstrings"
-category = "dev"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-flake8 = ">=3"
-pydocstyle = ">=2.1"
-
-[[package]]
 name = "greenlet"
 version = "2.0.1"
 description = "Lightweight in-process concurrent programming"
@@ -494,14 +469,6 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
-name = "mccabe"
-version = "0.7.0"
-description = "McCabe checker, plugin for flake8"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-
-[[package]]
 name = "minio"
 version = "7.1.13"
 description = "MinIO Python SDK for Amazon S3 Compatible Cloud Storage"
@@ -631,14 +598,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "pycodestyle"
-version = "2.9.1"
-description = "Python style guide checker"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-
-[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -660,28 +619,6 @@ typing-extensions = ">=4.2.0"
 [package.extras]
 dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
-
-[[package]]
-name = "pydocstyle"
-version = "6.2.2"
-description = "Python docstring style checker"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
-
-[package.dependencies]
-snowballstemmer = ">=2.2.0"
-
-[package.extras]
-toml = ["tomli (>=1.2.3)"]
-
-[[package]]
-name = "pyflakes"
-version = "2.5.0"
-description = "passive checker of Python programs"
-category = "dev"
-optional = false
-python-versions = ">=3.6"
 
 [[package]]
 name = "pytest"
@@ -835,14 +772,6 @@ description = "Sniff out which async library your code is running under"
 category = "main"
 optional = false
 python-versions = ">=3.7"
-
-[[package]]
-name = "snowballstemmer"
-version = "2.2.0"
-description = "This package provides 29 stemmers for 28 languages generated from Snowball algorithms."
-category = "dev"
-optional = false
-python-versions = "*"
 
 [[package]]
 name = "sqlakeyset"
@@ -1067,7 +996,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "flake8 (<5)", "pytest-co
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "66f90083ae7a7d8705a01465cbb4088b3b19acc9e9fe0e24eee6444d2bcc42ac"
+content-hash = "06463ab3ea10859480ad5ed83374b54348481f1bfc34d549ce11ed1b79175868"
 
 [metadata.files]
 aioredis = []
@@ -1091,8 +1020,6 @@ fastapi = []
 fastapi-async-sqlalchemy = []
 fastapi-cache2 = []
 fastapi-pagination = []
-flake8 = []
-flake8-docstrings = []
 greenlet = []
 h11 = []
 httpcore = []
@@ -1105,7 +1032,6 @@ itsdangerous = []
 jinja2 = []
 mako = []
 markupsafe = []
-mccabe = []
 minio = []
 more-itertools = []
 mypy-extensions = []
@@ -1119,11 +1045,8 @@ platformdirs = []
 pluggy = []
 py = []
 pyasn1 = []
-pycodestyle = []
 pycparser = []
 pydantic = []
-pydocstyle = []
-pyflakes = []
 pytest = []
 python-dateutil = []
 python-dotenv = []
@@ -1137,7 +1060,6 @@ rsa = []
 ruff = []
 six = []
 sniffio = []
-snowballstemmer = []
 sqlakeyset = []
 sqlalchemy = []
 sqlalchemy-utils = []

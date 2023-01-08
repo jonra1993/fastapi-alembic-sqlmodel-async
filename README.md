@@ -140,7 +140,7 @@ Generating and using unique IDs is a really important desicion when starting a n
 ## Code Style
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-To ensure a standardized code style this project uses [black](https://github.com/ambv/black) and [flake8](https://github.com/PyCQA/flake8). If you want to change the config rules you can edit flake8 rules in the file *setup.cfg* or black in the file *pyproject.toml*.
+To ensure a standardized code style this project uses [black](https://github.com/ambv/black) and [ruff](https://github.com/charliermarsh/ruff). If you want to change the config rules you can edit both ruff and  black rules in the  *pyproject.toml* file.
 
 To reformat files execute the following command
 ```sh
@@ -150,6 +150,16 @@ make formatter
 To run lint, you can run the following command:
 ```sh
 make lint
+```
+
+To run lint in watch mode, you can run the following command:
+```sh
+make lint-watch
+```
+
+To run lint and try to fix the errors, you can run the following command:
+```sh
+make lint-fix
 ```
 
 ## SonarQube static analysis

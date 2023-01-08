@@ -8,4 +8,4 @@ ModelType = TypeVar("ModelType", bound=SQLModel)
 
 
 def map_models_schema(schema: SchemaType, models: List[ModelType]):
-    return list(map(lambda model: schema.from_orm(model), models))
+    return [schema.from_orm(model) for model in models]
