@@ -34,7 +34,7 @@ class IResponsePage(AbstractPage[T], Generic[T]):
         total: int,
         params: AbstractParams,
     ) -> Union[PageBase[T], None]:
-        if params.size is not None and params.size != 0:
+        if params.size is not None and total is not None and params.size != 0:
             pages = ceil(total / params.size)
         else:
             pages = 0
