@@ -375,7 +375,7 @@ async def create_user(
 
 @router.delete("/{user_id}")
 async def remove_user(
-    user: User = Depends(deps.is_valid_user),
+    user_id: UUID,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
@@ -383,10 +383,14 @@ async def remove_user(
     """
     Deletes a user by his/her id
     """
-    if current_user.id == user.id:
+    user = await crud.user.get(id=user_id)
+    if not user:
+        raise IdNotFoundException(User, id=user_id)
+        
+    if current_user.id == user_id:
         raise UserSelfDeleteException()
 
-    user = await crud.user.remove(id=user.id)
+    user = await crud.user.remove(id=user_id)
     return create_response(data=user)
 
 
