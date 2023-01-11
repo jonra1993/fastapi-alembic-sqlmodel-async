@@ -135,6 +135,7 @@ minio
 
 .sonarqube/*
 .scannerwork
+.ruff_cache
 sonarqube
 sonarqube/extensions
 sonarqube/data
