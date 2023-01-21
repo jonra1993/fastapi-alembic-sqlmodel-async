@@ -30,6 +30,10 @@ help:
 	@echo "        Run development docker compose."
 	@echo "    stop-dev"
 	@echo "        Stop development docker compose."
+	@echo "    run-prod"
+	@echo "        Run production docker compose."
+	@echo "    stop-prod"
+	@echo "        Run production docker compose."
 	@echo "    init-db"
 	@echo "        Init database with sample data."	
 	@echo "    add-dev-migration"
@@ -68,6 +72,12 @@ run-dev:
 
 stop-dev:
 	docker compose -f docker-compose-dev.yml down
+
+run-prod:
+	docker compose up
+
+stop-prod:
+	docker compose down
 
 init-db:
 	docker compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py
