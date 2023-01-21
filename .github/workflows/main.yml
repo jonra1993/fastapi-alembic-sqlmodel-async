@@ -1,0 +1,37 @@
+# Read more about setting it up
+# https://medium.com/@ljmocic/deploying-react-application-to-aws-s3-using-github-actions-85addacaeace
+
+name: fastapi-sqlmodel-alembic
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the master branch
+
+  push:
+    branches: [ main ]
+  #pull_request:
+  #  branches: [ main ]
+
+jobs:
+  build:
+    name: Build phase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        id: clone-repository
+        uses: actions/checkout@main
+      - name: Generate deployment package
+        id: generate-deployment-package
+        run: zip -r deploy.zip . -x '*.git*'      
+      - name: Deploy to EB
+        id: deploy2b
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: ${{ secrets.AWS_APPLICATION_NAME }}
+          environment_name: ${{ secrets.AWS_ENVIRONMENT_NAME }}
+          version_label: v0.1.${{ github.run_number }}
+          # use_existing_version_if_available: True
+          region: ${{ secrets.AWS_REGION }}
+          deployment_package: deploy.zip
+
