@@ -262,13 +262,15 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Add Black formatter and flake8 lint (Rasa as reference)
 - [x] Add static code analysis using SonarQube
 - [x] Function return type annotations to declare the response_model (fastapi > 0.89.0)
+- [x] Add production deployment orchestation using terraform + Elastic Beanstalk - AWS
+- [x] Add Github actions automation for deploy on Elastic Beanstalk - AWS
 - [ ] Upgrade typing (Compatible just with python > 3.10)
 - [ ] Add testing
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
 - [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
 - [ ] Add AuthN and AuthZ using Keycloak
-- [ ] Add instructions for production deployment using github actions and dockerhub (CI/CD)
+- [ ] Add instructions on doc for production deployment using github actions and dockerhub (CI/CD)
 - [ ] Convert repo into template using cookiecutter
 - [ ] Add Celery sample for tasks
 
