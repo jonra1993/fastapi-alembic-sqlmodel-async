@@ -19,6 +19,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.fastapi_local.entrypoints=web"
       - "traefik.http.routers.fastapi_local.rule=Host(`fastapi.${LOCAL_1}`, `fastapi.${LOCAL_2}`, `fastapi.${EXT_ENDPOINT1}`)"
+      - "traefik.http.routers.fastapi_local_base.entrypoints=web"
+      - "traefik.http.routers.fastapi_local_base.rule=Host(`${LOCAL_1}`, `${LOCAL_2}`, `${EXT_ENDPOINT1}`)"
       - traefik.http.services.fastapi_localservice.loadbalancer.server.port=8000
   
   database:
