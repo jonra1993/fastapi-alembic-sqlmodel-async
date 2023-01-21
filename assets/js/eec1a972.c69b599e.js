@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[9189],{6565:a=>{a.exports=JSON.parse('{"label":"facebook","permalink":"/fastapi-alembic-sqlmodel-async/blog/tags/facebook","allTagsPath":"/fastapi-alembic-sqlmodel-async/blog/tags","count":1}')}}]);

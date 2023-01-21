@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdocs=self.webpackChunkdocs||[]).push([[132],{5070:s=>{s.exports=JSON.parse('{"label":"docusaurus","permalink":"/fastapi-alembic-sqlmodel-async/blog/tags/docusaurus","allTagsPath":"/fastapi-alembic-sqlmodel-async/blog/tags","count":4}')}}]);
