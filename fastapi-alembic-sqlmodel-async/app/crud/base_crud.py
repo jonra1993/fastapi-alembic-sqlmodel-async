@@ -97,7 +97,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
 
         columns = self.model.__table__.columns
 
-        if order_by not in columns or order_by is None:
+        if order_by is None or order_by not in columns:
             order_by = self.model.id
 
         if query is None:
@@ -111,17 +111,17 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_multi_ordered(
         self,
         *,
-        order_by: Optional[str] = None,
-        order: Optional[IOrderEnum] = IOrderEnum.ascendent,
         skip: int = 0,
         limit: int = 100,
+        order_by: Optional[str] = None,
+        order: Optional[IOrderEnum] = IOrderEnum.ascendent,
         db_session: Optional[AsyncSession] = None,
     ) -> List[ModelType]:
         db_session = db_session or db.session
 
         columns = self.model.__table__.columns
 
-        if order_by not in columns or order_by is None:
+        if order_by is None or order_by not in columns:
             order_by = self.model.id
 
         if order == IOrderEnum.ascendent:
@@ -129,14 +129,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
                 select(self.model)
                 .offset(skip)
                 .limit(limit)
-                .order_by(columns[order_by.value].asc())
+                .order_by(columns[order_by].asc())
             )
         else:
             query = (
                 select(self.model)
                 .offset(skip)
                 .limit(limit)
-                .order_by(columns[order_by.value].desc())
+                .order_by(columns[order_by].desc())
             )
 
         response = await db_session.execute(query)

@@ -38,7 +38,7 @@ class IResponsePage(AbstractPage[T], Generic[T]):
             pages = ceil(total / params.size)
         else:
             pages = 0
-        
+
         return cls(
             data=PageBase(
                 items=items,

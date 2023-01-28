@@ -51,6 +51,8 @@ Pillow = "^9.3.0"
 watchfiles = "^0.18.1"
 asyncer = "^0.0.2"
 httpx = "^0.23.1"
+pandas = "^1.5.3"
+openpyxl = "^3.0.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

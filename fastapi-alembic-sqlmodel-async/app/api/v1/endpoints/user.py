@@ -386,7 +386,7 @@ async def remove_user(
     user = await crud.user.get(id=user_id)
     if not user:
         raise IdNotFoundException(User, id=user_id)
-        
+
     if current_user.id == user_id:
         raise UserSelfDeleteException()
 
