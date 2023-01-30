@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import timedelta
 from uuid import UUID
-from aioredis import Redis
+from redis import asyncio as Redis
 from app.models.user_model import User
 from app.schemas.common_schema import TokenType
 

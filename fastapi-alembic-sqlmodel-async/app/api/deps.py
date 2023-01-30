@@ -15,8 +15,8 @@ from app.core.config import settings
 from app.db.session import SessionLocal
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.common_schema import IMetaGeneral, TokenType
-import aioredis
-from aioredis import Redis
+import redis.asyncio as aioredis
+from redis import asyncio as Redis
 
 
 reusable_oauth2 = OAuth2PasswordBearer(
@@ -25,7 +25,7 @@ reusable_oauth2 = OAuth2PasswordBearer(
 
 
 async def get_redis_client() -> Redis:
-    redis = aioredis.from_url(
+    redis = await aioredis.from_url(
         f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
         max_connections=10,
         encoding="utf8",

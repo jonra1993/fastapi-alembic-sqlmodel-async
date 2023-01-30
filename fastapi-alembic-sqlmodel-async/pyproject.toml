@@ -45,7 +45,6 @@ SQLAlchemy = "^1.4.40"
 fastapi-pagination = {extras = ["sqlalchemy"], version = "^0.11.0"}
 fastapi-cache2 = {extras = ["redis"], version = "^0.1.9"}
 fastapi-async-sqlalchemy = "^0.3.12"
-aioredis = "^2.0.1"
 minio = "^7.1.12"
 Pillow = "^9.3.0"
 watchfiles = "^0.18.1"
@@ -53,6 +52,7 @@ asyncer = "^0.0.2"
 httpx = "^0.23.1"
 pandas = "^1.5.3"
 openpyxl = "^3.0.10"
+redis = "^4.4.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
