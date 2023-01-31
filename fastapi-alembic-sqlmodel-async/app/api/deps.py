@@ -16,7 +16,7 @@ from app.db.session import SessionLocal
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.common_schema import IMetaGeneral, TokenType
 import redis.asyncio as aioredis
-from redis import asyncio as Redis
+from redis.asyncio import Redis
 
 
 reusable_oauth2 = OAuth2PasswordBearer(

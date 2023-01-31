@@ -1,6 +1,6 @@
 from datetime import timedelta
 from fastapi import APIRouter, Body, Depends, HTTPException
-from redis import asyncio as Redis
+from redis.asyncio import Redis
 from app.utils.token import get_valid_tokens
 from app.utils.token import delete_tokens
 from app.utils.token import add_token_to_redis
