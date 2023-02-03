@@ -238,6 +238,7 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [fastapi-best-practices](https://github.com/zhanymkanov/fastapi-best-practices).
 - [pgadmin Makefile](https://gist.github.com/alldevic/b2a0573e5464fe91fd118024f33bcbaa).
 - [Styling and makefiles](https://github.com/RasaHQ/rasa).
+- [awesome-fastapi](https://github.com/mjhea0/awesome-fastapi).
 
 ## TODO List:
 
