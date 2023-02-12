@@ -60,7 +60,7 @@ help:
 	@echo "        Stops Sonarqube container."
 
 install:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry shell && \
 	poetry install
 
@@ -83,33 +83,34 @@ init-db:
 	docker compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py
 
 formatter:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry run black app
 
 lint:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry run ruff app && poetry run black --check app
 
 lint-watch:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry run ruff app --watch
 
 lint-fix:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry run ruff app --fix
 
 run-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml up
 
 run-sonar-scanner:
-	docker run --rm -v "${PWD}/fastapi-alembic-sqlmodel-async:/usr/src" sonarsource/sonar-scanner-cli
+	docker run --rm -v "${PWD}/backend/app:/usr/src" sonarsource/sonar-scanner-cli
 
 stop-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml down
 
 add-dev-migration:
 	docker compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate && \
-	docker compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head
+	docker compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head && \
+	echo "Migration added and applied." 
 
 run-pgadmin:
 	echo "$$SERVERS_JSON" > ./pgadmin/servers.json && \
