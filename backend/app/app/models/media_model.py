@@ -24,7 +24,7 @@ class ImageMedia(BaseUUIDModel, ImageMediaBase, table=True):
     media_id: Optional[UUID] = Field(default=None, foreign_key="Media.id")
     media: Media = Relationship(
         sa_relationship_kwargs={
-            "lazy": "selectin",
+            "lazy": "joined",
             "primaryjoin": "ImageMedia.media_id==Media.id",
         }
     )

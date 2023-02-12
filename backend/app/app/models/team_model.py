@@ -16,7 +16,7 @@ class Team(BaseUUIDModel, TeamBase, table=True):
     created_by_id: Optional[UUID] = Field(default=None, foreign_key="User.id")
     created_by: "User" = Relationship(  # noqa: F821
         sa_relationship_kwargs={
-            "lazy": "selectin",
+            "lazy": "joined",
             "primaryjoin": "Team.created_by_id==User.id",
         }
     )

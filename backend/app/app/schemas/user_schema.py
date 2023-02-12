@@ -1,6 +1,7 @@
 from app.utils.partial import optional
 from app.models.user_model import UserBase
 from app.models.group_model import GroupBase
+from pydantic import BaseModel
 from typing import Optional, List
 from uuid import UUID
 from enum import Enum
@@ -41,6 +42,12 @@ class IUserReadWithoutGroups(UserBase):
     image: Optional[IImageMediaRead]
     follower_count: Optional[int] = 0
     following_count: Optional[int] = 0
+
+
+class IUserBasicInfo(BaseModel):
+    id: UUID
+    first_name: str
+    last_name: str
 
 
 class IUserStatus(str, Enum):

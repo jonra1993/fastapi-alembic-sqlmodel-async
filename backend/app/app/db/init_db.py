@@ -93,7 +93,12 @@ async def init_db(db_session: AsyncSession) -> None:
             name=group.name, db_session=db_session
         )
         if not current_group:
-            new_group = await crud.group.create(obj_in=group, db_session=db_session)
+            current_user = await crud.user.get_by_email(
+                email=users[0]["data"].email, db_session=db_session
+            )
+            new_group = await crud.group.create(
+                obj_in=group, created_by_id=current_user.id, db_session=db_session
+            )
             current_users = []
             for user in users:
                 current_users.append(
@@ -110,7 +115,12 @@ async def init_db(db_session: AsyncSession) -> None:
             name=team.name, db_session=db_session
         )
         if not current_team:
-            await crud.team.create(obj_in=team, db_session=db_session)
+            current_user = await crud.user.get_by_email(
+                email=users[0]["data"].email, db_session=db_session
+            )
+            await crud.team.create(
+                obj_in=team, created_by_id=current_user.id, db_session=db_session
+            )
 
     for heroe in heroes:
         current_heroe = await crud.hero.get_heroe_by_name(
@@ -120,6 +130,11 @@ async def init_db(db_session: AsyncSession) -> None:
             name=heroe["team"], db_session=db_session
         )
         if not current_heroe:
+            current_user = await crud.user.get_by_email(
+                email=users[0]["data"].email, db_session=db_session
+            )
             new_heroe = heroe["data"]
             new_heroe.team_id = team.id
-            await crud.hero.create(obj_in=new_heroe, db_session=db_session)
+            await crud.hero.create(
+                obj_in=new_heroe, created_by_id=current_user.id, db_session=db_session
+            )

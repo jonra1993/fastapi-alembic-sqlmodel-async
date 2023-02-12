@@ -29,7 +29,7 @@ class UserBase(SQLModel):
 class User(BaseUUIDModel, UserBase, table=True):
     hashed_password: Optional[str] = Field(nullable=False, index=True)
     role: Optional["Role"] = Relationship(  # noqa: F821
-        back_populates="users", sa_relationship_kwargs={"lazy": "selectin"}
+        back_populates="users", sa_relationship_kwargs={"lazy": "joined"}
     )
     groups: List["Group"] = Relationship(  # noqa: F821
         back_populates="users",
@@ -39,7 +39,7 @@ class User(BaseUUIDModel, UserBase, table=True):
     image_id: Optional[UUID] = Field(default=None, foreign_key="ImageMedia.id")
     image: ImageMedia = Relationship(
         sa_relationship_kwargs={
-            "lazy": "selectin",
+            "lazy": "joined",
             "primaryjoin": "User.image_id==ImageMedia.id",
         }
     )

@@ -116,7 +116,7 @@ add-dev-migration:
 run-pgadmin:
 	echo "$$SERVERS_JSON" > ./pgadmin/servers.json && \
 	docker volume create pgadmin_data && \
-	docker compose -f pgadmin.yml up
+	docker compose -f pgadmin.yml up --force-recreate
 	
 load-server-pgadmin:
 	docker exec -it pgadmin python /pgadmin4/setup.py --load-servers servers.json

@@ -45,11 +45,12 @@ async def get_teams_list(
 async def get_team_by_id(
     team_id: UUID,
     current_user: User = Depends(deps.get_current_user()),
-) -> IGetResponseBase[ITeamReadWithHeroes]:
+) -> IGetResponseBase[ITeamRead]:
     """
     Gets a team by its id
     """
     team = await crud.team.get(id=team_id)
+    print("team", team)
     if not team:
         raise IdNotFoundException(Team, id=team_id)
     return create_response(data=team)

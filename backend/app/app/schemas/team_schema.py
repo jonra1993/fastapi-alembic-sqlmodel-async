@@ -1,7 +1,8 @@
 from app.models.hero_model import HeroBase
-from typing import List
 from app.models.team_model import TeamBase
+from .user_schema import IUserBasicInfo
 from app.utils.partial import optional
+from typing import List, Optional
 from uuid import UUID
 
 
@@ -17,6 +18,7 @@ class ITeamUpdate(TeamBase):
 
 class ITeamRead(TeamBase):
     id: UUID
+    created_by: Optional[IUserBasicInfo] = None
 
 
 class ITeamReadWithHeroes(ITeamRead):
