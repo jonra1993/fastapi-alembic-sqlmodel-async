@@ -34,7 +34,7 @@ async def get_redis_client() -> Redis:
     return redis
 
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
+async def get_db() -> AsyncGenerator[AsyncSession]:
     async with SessionLocal() as session:
         yield session
 

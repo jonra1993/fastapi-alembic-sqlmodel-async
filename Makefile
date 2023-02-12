@@ -80,7 +80,8 @@ stop-prod:
 	docker compose down
 
 init-db:
-	docker compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py
+	docker compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py && \
+	echo "Initial data created." 
 
 formatter:
 	cd backend/app && \
@@ -101,16 +102,16 @@ lint-fix:
 run-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml up
 
-run-sonar-scanner:
-	docker run --rm -v "${PWD}/backend/app:/usr/src" sonarsource/sonar-scanner-cli
-
 stop-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml down
+
+run-sonar-scanner:
+	docker run --rm -v "${PWD}/backend:/usr/src" sonarsource/sonar-scanner-cli -X
 
 add-dev-migration:
 	docker compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate && \
 	docker compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head && \
-	echo "Migration added and applied." 
+	echo "Migration added and applied."
 
 run-pgadmin:
 	echo "$$SERVERS_JSON" > ./pgadmin/servers.json && \

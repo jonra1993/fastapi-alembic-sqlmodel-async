@@ -172,7 +172,7 @@ The following steps can help you to run a local static code analysis
 make run-sonarqube
 ```
 
-You can login using this **credentials ->** *username:* admin and *password:* admin, after that it should requiere you change your password.
+The above code starts SonarQube at [localhost:9000](http://localhost:9000/). You can login using this **credentials ->** *username:* admin and *password:* admin, after that it should requiere you change your password.
 
 2. Add new project
 <p align="center">
@@ -187,12 +187,12 @@ You can login using this **credentials ->** *username:* admin and *password:* ad
   <img src="static/sonarqube4.png" align="center"/>
 </p>
 
-5. Copy **projectKey** and **login** and replace on *fastapi-alembic-sqlmodel-async/sonar-project.properties* file.
+5. Copy **projectKey** and **login** and replace on *backend/sonar-project.properties* file.
 <p align="center">
   <img src="static/sonarqube5.png" align="center"/>
 </p>
 
-*fastapi-alembic-sqlmodel-async/sonar-project.properties* file
+*backend/sonar-project.properties* file
 ```sh
 # Organization and project keys are displayed in the right sidebar of the project homepage
 sonar.organization=my_organization
