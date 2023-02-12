@@ -266,6 +266,7 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Add export report api in csv/xlsx files using StreamingResponse
 - [x] Add production deployment orchestation using terraform + Elastic Beanstalk - AWS
 - [x] Add Github actions automation for deploy on Elastic Beanstalk - AWS
+- [ ] Add a nextjs sample frontend
 - [ ] Upgrade typing (Compatible just with python > 3.10)
 - [ ] Add testing
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
