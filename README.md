@@ -266,6 +266,7 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Add export report api in csv/xlsx files using StreamingResponse
 - [x] Add production deployment orchestation using terraform + Elastic Beanstalk - AWS
 - [x] Add Github actions automation for deploy on Elastic Beanstalk - AWS
+- [x] Database query optimization. Many-Many use "lazy": "selectin" and One-One and One-Many "lazy": "joined" [issue](https://github.com/jonra1993/fastapi-alembic-sqlmodel-async/commit/8470af9e4a32c50ee58f1f2477f8778cc66b38a2)
 - [ ] Add a nextjs sample frontend
 - [ ] Upgrade typing (Compatible just with python > 3.10)
 - [ ] Add testing
