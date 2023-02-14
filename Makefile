@@ -11,7 +11,7 @@ define SERVERS_JSON
 			"Host": "$(DATABASE_HOST)",
 			"Port": 5432,
 			"MaintenanceDB": "postgres",
-			"Username": "$(DATABASE_PASSWORD)",
+			"Username": "$(DATABASE_USER)",
 			"SSLMode": "prefer",
 			"PassFile": "/tmp/pgpassfile"
 		}
