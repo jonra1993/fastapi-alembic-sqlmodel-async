@@ -1,6 +1,6 @@
 from typing import Optional
 from uuid import UUID
-from app.utils.exceptions import IdNotFoundException
+from app.utils.exceptions import IdNotFoundException, NameNotFoundException
 from fastapi import APIRouter, Depends, Query
 from fastapi_pagination import Params
 from app import crud
@@ -39,7 +39,7 @@ async def get_hero_list(
     return create_response(data=heroes)
 
 
-@router.get("/by_created_at")
+@router.get("/get_by_created_at")
 async def get_hero_list_order_by_created_at(
     order: Optional[IOrderEnum] = Query(
         default=IOrderEnum.ascendent, description="It is optional. Default is ascendent"
@@ -56,7 +56,7 @@ async def get_hero_list_order_by_created_at(
     return create_response(data=heroes)
 
 
-@router.get("/{hero_id}")
+@router.get("/get_by_id/{hero_id}")
 async def get_hero_by_id(
     hero_id: UUID,
     current_user: User = Depends(deps.get_current_user()),
@@ -69,6 +69,18 @@ async def get_hero_by_id(
         raise IdNotFoundException(Hero, hero_id)
     return create_response(data=hero)
 
+@router.get("/get_by_name/{hero_name}")
+async def get_hero_by_name(
+    hero_name: str,
+    current_user: User = Depends(deps.get_current_user()),
+) -> IGetResponseBase[IHeroReadWithTeam]:
+    """
+    Gets a hero by his/her name
+    """
+    hero = await crud.hero.get_heroe_by_name(name=hero_name)
+    if not hero:
+        raise NameNotFoundException(Hero, hero_name)
+    return create_response(data=hero)
 
 @router.post("")
 async def create_hero(
