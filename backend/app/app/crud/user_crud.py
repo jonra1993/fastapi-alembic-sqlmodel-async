@@ -1,14 +1,15 @@
-from typing import Any, Dict, List, Optional, Union
 from app.schemas.media_schema import IMediaCreate
+from app.schemas.user_schema import IUserCreate, IUserUpdate
+from app.models.user_model import User
+from app.models.media_model import Media
+from app.models.image_media_model import ImageMedia
+from app.core.security import verify_password, get_password_hash
 from pydantic.networks import EmailStr
+from typing import Any, Dict, List, Optional, Union
 from app.crud.base_crud import CRUDBase
 from app.crud.user_follow_crud import user_follow as UserFollowCRUD
 from fastapi_async_sqlalchemy import db
 from sqlmodel import select
-from app.schemas.user_schema import IUserCreate, IUserUpdate
-from app.models.user_model import User
-from app.models.media_model import ImageMedia, Media
-from app.core.security import verify_password, get_password_hash
 from uuid import UUID
 from sqlmodel.ext.asyncio.session import AsyncSession
 

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from uuid import UUID
 from enum import Enum
-from .media_schema import IImageMediaRead
+from .image_media_schema import IImageMediaRead
 from .role_schema import IRoleRead
 
 

@@ -1,10 +1,10 @@
+from app.models.base_uuid_model import BaseUUIDModel
+from app.models.links_model import LinkGroupUser
+from app.models.image_media_model import ImageMedia
 from datetime import datetime
 from sqlmodel import BigInteger, Field, SQLModel, Relationship, Column, DateTime
-from app.models.links_model import LinkGroupUser
-from app.models.media_model import ImageMedia
 from typing import List, Optional
 from pydantic import EmailStr
-from app.models.base_uuid_model import BaseUUIDModel
 from uuid import UUID
 
 

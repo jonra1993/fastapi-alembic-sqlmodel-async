@@ -1,6 +1,6 @@
 from app.crud.base_crud import CRUDBase
-from app.models.media_model import ImageMedia
-from app.schemas.media_schema import IImageMediaCreate, IImageMediaUpdate
+from app.models.image_media_model import ImageMedia
+from app.schemas.image_media_schema import IImageMediaCreate, IImageMediaUpdate
 
 
 class CRUDImageMedia(CRUDBase[ImageMedia, IImageMediaCreate, IImageMediaUpdate]):
