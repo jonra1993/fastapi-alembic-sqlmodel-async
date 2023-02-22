@@ -3,10 +3,17 @@ from app.models.team_model import TeamBase
 from app.utils.partial import optional
 from uuid import UUID
 from typing import Optional
+from pydantic import validator
 
 
 class IHeroCreate(HeroBase):
-    pass
+    @validator(
+        "age", pre=True, check_fields=False, always=True
+    )
+    def check_age(cls, value, values, **kwargs) -> int:
+        if value < 0:
+            raise ValueError('Invalida age')
+        return value
 
 
 # All these fields are optional
