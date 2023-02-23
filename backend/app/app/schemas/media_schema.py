@@ -1,6 +1,6 @@
 from app.utils.minio_client import MinioClient
 from app.models.media_model import MediaBase
-from pydantic import validator
+from pydantic import validator, AnyHttpUrl
 from app.core.config import settings
 from app.utils.partial import optional
 from app import api
@@ -25,7 +25,7 @@ class IMediaRead(MediaBase):
     @validator(
         "link", pre=True, check_fields=False, always=True
     )  # Always true because link does not exist in the database
-    def default_icon(cls, value: Any, values: Any) -> str:
+    def default_icon(cls, value: Any, values: Any) -> AnyHttpUrl:
         if values["path"] is None:
             return ""
         minio: MinioClient = api.deps.minio_auth()

@@ -1,10 +1,7 @@
 from typing import AsyncGenerator, List
-from uuid import UUID
 from fastapi import Depends, HTTPException, status
 from app.utils.token import get_valid_tokens
-from app.schemas.user_schema import IUserRead
 from app.utils.minio_client import MinioClient
-from app.schemas.user_schema import IUserCreate
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from app.models.user_model import User
@@ -100,20 +97,3 @@ def minio_auth() -> MinioClient:
     )
     return minio_client
 
-
-async def user_exists(new_user: IUserCreate) -> IUserCreate:
-    user = await crud.user.get_by_email(email=new_user.email)
-    if user:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="There is already a user with same email",
-        )
-    return new_user
-
-
-async def is_valid_user(user_id: UUID) -> IUserRead:
-    user = await crud.user.get(id=user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User no found")
-
-    return user

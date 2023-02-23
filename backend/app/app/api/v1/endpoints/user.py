@@ -3,7 +3,6 @@ from typing import Optional
 from uuid import UUID
 from app.utils.exceptions import (
     IdNotFoundException,
-    NameNotFoundException,
     SelfFollowedException,
     UserFollowedException,
     UserNotFollowedException,
@@ -11,6 +10,7 @@ from app.utils.exceptions import (
 )
 from app import crud
 from app.api import deps
+from app.deps import role_deps
 from app.models import User, UserFollow
 from app.models.role_model import Role
 from app.utils.minio_client import MinioClient
@@ -25,8 +25,6 @@ from fastapi import (
     UploadFile,
     status,
 )
-from fastapi_pagination import Params
-from sqlmodel import and_, select
 from app.schemas.media_schema import IMediaCreate
 from app.schemas.response_schema import (
     IDeleteResponseBase,
@@ -36,6 +34,7 @@ from app.schemas.response_schema import (
     IPutResponseBase,
     create_response,
 )
+from app.deps import role_deps, user_deps
 from app.schemas.role_schema import IRoleEnum
 from app.schemas.user_follow_schema import IUserFollowRead
 from app.schemas.user_schema import (
@@ -47,6 +46,8 @@ from app.schemas.user_schema import (
 from app.schemas.user_follow_schema import (
     IUserFollowReadCommon,
 )
+from fastapi_pagination import Params
+from sqlmodel import and_, select
 
 router = APIRouter()
 
@@ -71,9 +72,7 @@ async def read_users_list_by_role_name(
         default=IUserStatus.active,
         description="User status, It is optional. Default is active",
     ),
-    role_name: str = Query(
-        default="", description="String compare with name or last name"
-    ),
+    role_name: str = Depends(role_deps.get_user_role_by_name), #Dep to check if rol exists
     params: Params = Depends(),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
@@ -83,9 +82,6 @@ async def read_users_list_by_role_name(
     Retrieve users by role name and status. Requires admin role
     """
     user_status = True if user_status == IUserStatus.active else False
-    role = await crud.role.get_role_by_name(name=role_name)
-    if not role:
-        raise NameNotFoundException(Role, name=role_name)
     query = (
         select(User)
         .join(Role, User.role_id == Role.id)
@@ -142,20 +138,19 @@ async def get_following(
     response_class=Response,
 )
 async def check_is_followed_by_user_id(
-    user_id: UUID,
+    user: User = Depends(user_deps.is_valid_user),
     current_user: User = Depends(deps.get_current_user()),
 ):
     """
     Check if a person is followed by the authenticated user
     """
-    user = await crud.user.get(id=user_id)
-    if not user:
-        raise IdNotFoundException(User, id=user_id)
     result = await crud.user_follow.get_follow_by_user_id_and_target_user_id(
-        user_id=user_id, target_user_id=current_user.id
+        user_id=user.id, target_user_id=current_user.id
     )
     if not result:
         raise UserNotFollowedException(user_name=user.last_name)
+
+    raise UserFollowedException(target_user_name=user.last_name)
 
 
 @router.get("/followers")
@@ -184,16 +179,13 @@ async def get_followers(
 
 @router.get("/{user_id}/followers")
 async def get_user_followed_by_user_id(
-    user_id: UUID,
+    user_id: UUID = Depends(user_deps.is_valid_user_id),
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
 ) -> IGetResponsePaginated[IUserFollowReadCommon]:
     """
     Lists the people following the specified user.
     """
-    user = await crud.user.get(id=user_id)
-    if not user:
-        raise IdNotFoundException(User, id=user_id)
     query = (
         select(
             User.id,
@@ -212,16 +204,13 @@ async def get_user_followed_by_user_id(
 
 @router.get("/{user_id}/following")
 async def get_user_following_by_user_id(
-    user_id: UUID,
+    user_id: UUID = Depends(user_deps.is_valid_user_id),
     params: Params = Depends(),
     current_user: User = Depends(deps.get_current_user()),
 ) -> IGetResponsePaginated[IUserFollowReadCommon]:
     """
     Lists the people who the specified user follows.
     """
-    user = await crud.user.get(id=user_id)
-    if not user:
-        raise IdNotFoundException(User, id=user_id)
     query = (
         select(
             User.id,
@@ -330,7 +319,7 @@ async def unfollowing_a_user_by_id(
 
 @router.get("/{user_id}")
 async def get_user_by_id(
-    user_id: UUID,
+    user: User = Depends(user_deps.is_valid_user),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
@@ -338,10 +327,7 @@ async def get_user_by_id(
     """
     Gets a user by his/her id
     """
-    if user := await crud.user.get(id=user_id):
-        return create_response(data=user)
-    else:
-        raise IdNotFoundException(User, id=user_id)
+    return create_response(data=user)
 
 
 @router.get("")
@@ -356,7 +342,7 @@ async def get_my_data(
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def create_user(
-    new_user: IUserCreate = Depends(deps.user_exists),
+    new_user: IUserCreate = Depends(user_deps.user_exists),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
@@ -364,18 +350,13 @@ async def create_user(
     """
     Creates a new user
     """
-
-    role = await crud.role.get(id=new_user.role_id)
-    if not role:
-        raise IdNotFoundException(Role, id=new_user.role_id)
-
     user = await crud.user.create_with_role(obj_in=new_user)
     return create_response(data=user)
 
 
 @router.delete("/{user_id}")
 async def remove_user(
-    user_id: UUID,
+    user_id: UUID = Depends(user_deps.is_valid_user_id),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),
@@ -383,15 +364,11 @@ async def remove_user(
     """
     Deletes a user by his/her id
     """
-    user = await crud.user.get(id=user_id)
-    if not user:
-        raise IdNotFoundException(User, id=user_id)
-
     if current_user.id == user_id:
         raise UserSelfDeleteException()
 
     user = await crud.user.remove(id=user_id)
-    return create_response(data=user)
+    return create_response(data=user, message="User removed")
 
 
 @router.post("/image")
@@ -430,7 +407,7 @@ async def upload_my_image(
 
 @router.post("/{user_id}/image")
 async def upload_user_image(
-    user: User = Depends(deps.is_valid_user),
+    user: User = Depends(user_deps.is_valid_user),
     title: Optional[str] = Body(None),
     description: Optional[str] = Body(None),
     image_file: UploadFile = File(...),
