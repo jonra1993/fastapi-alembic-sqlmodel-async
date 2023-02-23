@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi_pagination import Params
 from app import crud
 from app.api import deps
+from app.deps import group_deps, user_deps
 from app.models.group_model import Group
 from app.models.user_model import User
 from app.schemas.group_schema import (
@@ -55,10 +56,7 @@ async def get_group_by_id(
         raise IdNotFoundException(Group, group_id)
 
 
-@router.post(
-    "",
-    status_code=status.HTTP_201_CREATED,
-)
+@router.post("")
 async def create_group(
     group: IGroupCreate,
     current_user: User = Depends(
@@ -77,8 +75,8 @@ async def create_group(
 
 @router.put("/{group_id}")
 async def update_group(
-    group_id: UUID,
     group: IGroupUpdate,
+    current_group: Group = Depends(group_deps.get_group_by_id),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
@@ -86,24 +84,14 @@ async def update_group(
     """
     Updates a group by its id
     """
-    group_current = await crud.group.get(id=group_id)
-    if not group_current:
-        raise IdNotFoundException(Group, group_id=group_id)
-
-    if (
-        group_current.name == group.name
-        and group_current.description == group.description
-    ):
-        raise ContentNoChangeException()
-
-    group_updated = await crud.group.update(obj_current=group_current, obj_new=group)
+    group_updated = await crud.group.update(obj_current=current_group, obj_new=group)
     return create_response(data=group_updated)
 
 
 @router.post("/add_user/{user_id}/{group_id}")
 async def add_user_into_a_group(
-    user_id: UUID,
-    group_id: UUID,
+    user: User = Depends(user_deps.is_valid_user),
+    group: Group = Depends(group_deps.get_group_by_id),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
     ),
@@ -111,13 +99,5 @@ async def add_user_into_a_group(
     """
     Adds a user into a group
     """
-    user = await crud.user.get(id=user_id)
-    if not user:
-        raise IdNotFoundException(User, id=user_id)
-
-    group = await crud.group.get(id=group_id)
-    if not group:
-        raise IdNotFoundException(Group, group_id)
-
-    group = await crud.group.add_user_to_group(user=user, group_id=group_id)
+    group = await crud.group.add_user_to_group(user=user, group_id=group.id)
     return create_response(message="User added to group", data=group)

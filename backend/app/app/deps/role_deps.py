@@ -19,7 +19,9 @@ async def get_user_role_by_name(
     return role_name
 
 
-async def get_user_role_by_id(id: UUID) -> Role:
+async def get_user_role_by_id(
+    id: UUID = Query(default="", description="The UUID id of the role")
+) -> Role:
     role = await crud.role.get(id=id)
     if not role:
         raise IdNotFoundException(Role, id=id)

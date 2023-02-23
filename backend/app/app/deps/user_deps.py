@@ -5,7 +5,7 @@ from app.schemas.user_schema import IUserCreate
 from app.schemas.user_schema import IUserRead
 from app.utils.exceptions.common_exception import IdNotFoundException
 from uuid import UUID
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Path, status
 
 
 async def user_exists(new_user: IUserCreate) -> IUserCreate:
@@ -22,14 +22,18 @@ async def user_exists(new_user: IUserCreate) -> IUserCreate:
     return new_user
 
 
-async def is_valid_user(user_id: UUID) -> IUserRead:
+async def is_valid_user(
+    user_id: UUID = Path(default="", title="The UUID id of the user")
+) -> IUserRead:
     user = await crud.user.get(id=user_id)
     if not user:
         raise IdNotFoundException(User, id=user_id)
 
     return user
 
-async def is_valid_user_id(user_id: UUID) -> IUserRead:
+async def is_valid_user_id(
+    user_id: UUID = Path(default="", title="The UUID id of the user")
+) -> IUserRead:
     user = await crud.user.get(id=user_id)
     if not user:
         raise IdNotFoundException(User, id=user_id)
