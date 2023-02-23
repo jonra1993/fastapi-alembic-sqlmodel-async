@@ -4,6 +4,7 @@ from uuid import UUID
 from sqlmodel import Field, SQLModel, Relationship
 from typing import Optional
 
+
 class ImageMediaBase(SQLModel):
     file_format: Optional[str]
     width: Optional[int]

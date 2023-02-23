@@ -20,9 +20,9 @@ async def get_user_role_by_name(
 
 
 async def get_user_role_by_id(
-    id: UUID = Query(default="", description="The UUID id of the role")
+    role_id: UUID = Query(default="", description="The UUID id of the role")
 ) -> Role:
-    role = await crud.role.get(id=id)
+    role = await crud.role.get(id=role_id)
     if not role:
-        raise IdNotFoundException(Role, id=id)
+        raise IdNotFoundException(Role, id=role_id)
     return role

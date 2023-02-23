@@ -7,12 +7,10 @@ from pydantic import validator
 
 
 class IHeroCreate(HeroBase):
-    @validator(
-        "age", pre=True, check_fields=False, always=True
-    )
+    @validator("age", pre=True, check_fields=False, always=True)
     def check_age(cls, value, values, **kwargs) -> int:
         if value < 0:
-            raise ValueError('Invalida age')
+            raise ValueError("Invalida age")
         return value
 
 

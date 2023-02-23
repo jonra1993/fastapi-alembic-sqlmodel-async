@@ -18,7 +18,7 @@ async def user_exists(new_user: IUserCreate) -> IUserCreate:
     role = await crud.role.get(id=new_user.role_id)
     if not role:
         raise IdNotFoundException(Role, id=new_user.role_id)
-    
+
     return new_user
 
 
@@ -30,6 +30,7 @@ async def is_valid_user(
         raise IdNotFoundException(User, id=user_id)
 
     return user
+
 
 async def is_valid_user_id(
     user_id: UUID = Path(default="", title="The UUID id of the user")

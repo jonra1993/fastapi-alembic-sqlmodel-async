@@ -6,6 +6,7 @@ from datetime import datetime
 
 # id: implements proposal uuid7 draft4
 
+
 class SQLModel(_SQLModel):
     @declared_attr  # type: ignore
     def __tablename__(cls) -> str:

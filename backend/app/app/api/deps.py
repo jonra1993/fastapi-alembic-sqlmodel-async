@@ -96,4 +96,3 @@ def minio_auth() -> MinioClient:
         minio_url=settings.MINIO_URL,
     )
     return minio_client
-

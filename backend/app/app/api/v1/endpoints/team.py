@@ -21,7 +21,6 @@ from app.schemas.role_schema import IRoleEnum
 from app.schemas.team_schema import (
     ITeamCreate,
     ITeamRead,
-    ITeamReadWithHeroes,
     ITeamUpdate,
 )
 

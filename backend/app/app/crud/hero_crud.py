@@ -13,7 +13,9 @@ class CRUDHero(CRUDBase[Hero, IHeroCreate, IHeroUpdate]):
         self, *, name: str, db_session: Optional[AsyncSession] = None
     ) -> Hero:
         db_session = db_session or db.session
-        heroe = await db_session.execute(select(Hero).where(Hero.name == name)) #TODO add pg_trgm to better search
+        heroe = await db_session.execute(
+            select(Hero).where(Hero.name == name)
+        )  # TODO add pg_trgm to better search
         return heroe.scalar_one_or_none()
 
     async def get_count_of_heroes(

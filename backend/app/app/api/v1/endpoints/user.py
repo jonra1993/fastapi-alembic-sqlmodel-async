@@ -10,7 +10,7 @@ from app.utils.exceptions import (
 )
 from app import crud
 from app.api import deps
-from app.deps import role_deps
+from app.deps import role_deps, user_deps
 from app.models import User, UserFollow
 from app.models.role_model import Role
 from app.utils.minio_client import MinioClient
@@ -34,7 +34,6 @@ from app.schemas.response_schema import (
     IPutResponseBase,
     create_response,
 )
-from app.deps import role_deps, user_deps
 from app.schemas.role_schema import IRoleEnum
 from app.schemas.user_follow_schema import IUserFollowRead
 from app.schemas.user_schema import (
@@ -72,7 +71,9 @@ async def read_users_list_by_role_name(
         default=IUserStatus.active,
         description="User status, It is optional. Default is active",
     ),
-    role_name: str = Depends(role_deps.get_user_role_by_name), #Dep to check if rol exists
+    role_name: str = Depends(
+        role_deps.get_user_role_by_name
+    ),  # Dep to check if rol exists
     params: Params = Depends(),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])

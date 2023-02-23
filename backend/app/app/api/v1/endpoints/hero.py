@@ -69,6 +69,7 @@ async def get_hero_by_id(
         raise IdNotFoundException(Hero, hero_id)
     return create_response(data=hero)
 
+
 @router.get("/get_by_name/{hero_name}")
 async def get_hero_by_name(
     hero_name: str,
@@ -81,6 +82,7 @@ async def get_hero_by_name(
     if not hero:
         raise NameNotFoundException(Hero, hero_name)
     return create_response(data=hero)
+
 
 @router.post("")
 async def create_hero(

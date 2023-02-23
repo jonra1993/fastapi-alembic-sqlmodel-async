@@ -26,5 +26,3 @@ async def get_group_by_id(
     if not group:
         raise IdNotFoundException(Group, id=group_id)
     return group
-
-

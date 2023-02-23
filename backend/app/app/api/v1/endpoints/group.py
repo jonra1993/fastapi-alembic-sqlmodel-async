@@ -1,5 +1,5 @@
 from uuid import UUID
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends
 from fastapi_pagination import Params
 from app import crud
 from app.api import deps
@@ -21,7 +21,6 @@ from app.schemas.response_schema import (
 )
 from app.schemas.role_schema import IRoleEnum
 from app.utils.exceptions import (
-    ContentNoChangeException,
     IdNotFoundException,
     NameExistException,
 )
