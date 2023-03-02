@@ -49,7 +49,6 @@ async def get_team_by_id(
     Gets a team by its id
     """
     team = await crud.team.get(id=team_id)
-    print("team", team)
     if not team:
         raise IdNotFoundException(Team, id=team_id)
     return create_response(data=team)

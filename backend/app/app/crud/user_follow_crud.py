@@ -1,6 +1,5 @@
 from typing import List, Optional
 from uuid import UUID
-from fastapi_async_sqlalchemy import db
 from sqlmodel import and_, select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.crud.base_crud import CRUDBase
@@ -17,7 +16,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         target_user: User,
         db_session: Optional[AsyncSession] = None,
     ) -> UserFollowModel:
-        db_session = db_session or db.session
+        db_session = db_session or super().get_db().session
         new_user_follow = IUserFollowCreate(
             user_id=user.id, target_user_id=target_user.id
         )
@@ -49,7 +48,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         target_user: User,
         db_session: Optional[AsyncSession] = None,
     ) -> UserFollowModel:
-        db_session = db_session or db.session
+        db_session = db_session or super().get_db().session
 
         follow_user_obj = await self.get(id=user_follow_id)
         await db_session.delete(follow_user_obj)
@@ -72,7 +71,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
     async def get_follow_by_user_id(
         self, *, user_id: UUID, db_session: Optional[AsyncSession] = None
     ) -> Optional[List[UserFollowModel]]:
-        db_session = db_session or db.session
+        db_session = db_session or super().get_db().session
         followed = await db_session.execute(
             select(UserFollowModel).where(UserFollowModel.user_id == user_id)
         )
@@ -81,7 +80,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
     async def get_follow_by_target_user_id(
         self, *, target_user_id: UUID, db_session: Optional[AsyncSession] = None
     ) -> Optional[List[UserFollowModel]]:
-        db_session = db_session or db.session
+        db_session = db_session or super().get_db().session
         followed = await db_session.execute(
             select(UserFollowModel).where(
                 UserFollowModel.target_user_id == target_user_id
@@ -96,7 +95,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         target_user_id: UUID,
         db_session: Optional[AsyncSession] = None,
     ) -> Optional[UserFollowModel]:
-        db_session = db_session or db.session
+        db_session = db_session or super().get_db().session
         followed_user = await db_session.execute(
             select(UserFollowModel).where(
                 and_(

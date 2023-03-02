@@ -3,7 +3,6 @@ from app.schemas.hero_schema import IHeroCreate, IHeroUpdate
 from datetime import datetime
 from app.crud.base_crud import CRUDBase
 from app.models.hero_model import Hero
-from fastapi_async_sqlalchemy import db
 from sqlmodel import select, func, and_
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -12,7 +11,7 @@ class CRUDHero(CRUDBase[Hero, IHeroCreate, IHeroUpdate]):
     async def get_heroe_by_name(
         self, *, name: str, db_session: Optional[AsyncSession] = None
     ) -> Hero:
-        db_session = db_session or db.session
+        db_session = db_session or super().get_db().session
         heroe = await db_session.execute(
             select(Hero).where(Hero.name == name)
         )  # TODO add pg_trgm to better search
@@ -25,7 +24,7 @@ class CRUDHero(CRUDBase[Hero, IHeroCreate, IHeroUpdate]):
         end_time: datetime,
         db_session: Optional[AsyncSession] = None,
     ) -> int:
-        db_session = db_session or db.session
+        db_session = db_session or super().get_db().session
         subquery = (
             select(Hero)
             .where(
