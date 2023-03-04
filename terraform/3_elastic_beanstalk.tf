@@ -17,7 +17,7 @@ module "elastic_beanstalk_environment" {
   loadbalancer_type                  = "application"
   region                             = var.aws_region
   autoscale_min                      = 1
-  //force_destroy = var.force_destroy
+  force_destroy                      = var.force_destroy
 
   instance_type    = var.instance_type
 #   root_volume_size = var.root_volume_size
