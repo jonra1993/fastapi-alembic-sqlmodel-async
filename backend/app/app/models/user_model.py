@@ -1,9 +1,11 @@
 from app.models.base_uuid_model import BaseUUIDModel
 from app.models.links_model import LinkGroupUser
 from app.models.image_media_model import ImageMedia
+from app.schemas.common_schema import IGenderEnum
 from datetime import datetime
-from sqlmodel import BigInteger, Field, SQLModel, Relationship, Column, DateTime
+from sqlmodel import BigInteger, Field, SQLModel, Relationship, Column, DateTime, String
 from typing import List, Optional
+from sqlalchemy_utils import ChoiceType
 from pydantic import EmailStr
 from uuid import UUID
 
@@ -21,6 +23,7 @@ class UserBase(SQLModel):
     )  # birthday with timezone
     role_id: Optional[UUID] = Field(default=None, foreign_key="Role.id")
     phone: Optional[str]
+    gender: Optional[IGenderEnum] =  Field(default=IGenderEnum.other, sa_column = Column(ChoiceType(IGenderEnum, impl=String())))
     state: Optional[str]
     country: Optional[str]
     address: Optional[str]

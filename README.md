@@ -267,11 +267,11 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Add production deployment orchestation using terraform + Elastic Beanstalk - AWS
 - [x] Add Github actions automation for deploy on Elastic Beanstalk - AWS
 - [x] Database query optimization. Many-Many use "selectin" and One-One and One-Many use "joined" [issue](https://github.com/jonra1993/fastapi-alembic-sqlmodel-async/issues/20)
+- [x] Add Enum sample column
 - [ ] Add a nextjs sample frontend
 - [ ] Upgrade typing (Compatible just with python > 3.10)
 - [ ] Add testing
 - [ ] Install pg_trgm by code and add a query for smart search of users by name
-- [ ] Add Enum sample column
 - [ ] Add jsonb field on table sample
 - [ ] Add AuthN and AuthZ using Keycloak
 - [ ] Add instructions on doc for production deployment using github actions and dockerhub (CI/CD)

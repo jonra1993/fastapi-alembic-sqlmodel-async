@@ -27,7 +27,6 @@ module "rds_instance" {
     instance_class              = var.instance_class
     db_parameter_group          = var.db_parameter_group
     
-    snapshot_identifier         = "rds:production-2015-06-26-06-05"
     skip_final_snapshot         = false
     copy_tags_to_snapshot       = true
     backup_retention_period     = 7

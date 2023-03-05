@@ -276,7 +276,7 @@ variable "instance_class" {
 
 variable "db_parameter_group" {
   type        = string
-  default     = "postgres14.6"
+  default     = "postgres14"
   description = "Parameter group, depends on DB engine used"
   # "mysql5.6"
   # "postgres9.5"

@@ -4,6 +4,12 @@ from enum import Enum
 from app.schemas.role_schema import IRoleRead
 
 
+class IGenderEnum(str, Enum):
+    female = "female"
+    male = "male"    
+    other = "other"
+
+
 class IMetaGeneral(BaseModel):
     roles: List[IRoleRead]
 
