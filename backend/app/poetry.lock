@@ -629,14 +629,14 @@ files = [
 
 [[package]]
 name = "fastapi"
-version = "0.94.0"
+version = "0.94.1"
 description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "fastapi-0.94.0-py3-none-any.whl", hash = "sha256:898d7f6616dea49e78fa00e34401f9ace238fc670aafe4e30a16a384e3a671e1"},
-    {file = "fastapi-0.94.0.tar.gz", hash = "sha256:08ce0bc6f381ef1b6431e84a31d26eca0b60d6e1ac575adba4af95cc5a36cb62"},
+    {file = "fastapi-0.94.1-py3-none-any.whl", hash = "sha256:451387550c2d25a972193f22e408a82e75a8e7867c834a03076704fe20df3256"},
+    {file = "fastapi-0.94.1.tar.gz", hash = "sha256:4a75936dbf9eb74be5eb0d41a793adefe9f3fc6ba66dbdabd160120fd3c2d9cd"},
 ]
 
 [package.dependencies]
@@ -648,7 +648,7 @@ orjson = {version = ">=3.2.1", optional = true, markers = "extra == \"all\""}
 pydantic = ">=1.6.2,<1.7 || >1.7,<1.7.1 || >1.7.1,<1.7.2 || >1.7.2,<1.7.3 || >1.7.3,<1.8 || >1.8,<1.8.1 || >1.8.1,<2.0.0"
 python-multipart = {version = ">=0.0.5", optional = true, markers = "extra == \"all\""}
 pyyaml = {version = ">=5.3.1", optional = true, markers = "extra == \"all\""}
-starlette = ">=0.26.0,<0.27.0"
+starlette = ">=0.26.1,<0.27.0"
 ujson = {version = ">=4.0.1,<4.0.2 || >4.0.2,<4.1.0 || >4.1.0,<4.2.0 || >4.2.0,<4.3.0 || >4.3.0,<5.0.0 || >5.0.0,<5.1.0 || >5.1.0", optional = true, markers = "extra == \"all\""}
 uvicorn = {version = ">=0.12.0", extras = ["standard"], optional = true, markers = "extra == \"all\""}
 
@@ -2590,4 +2590,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "846010c66421adc5163050e6e19b14d6bfbc6c51f6336ab16cff557960dfe721"
+content-hash = "5c1753e3659b78f9bcd7d7b43ffdab3c2af5e6526a6ef8b7fc6a7d99fca4ee1c"
