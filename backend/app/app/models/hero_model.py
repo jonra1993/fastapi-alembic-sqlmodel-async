@@ -12,7 +12,7 @@ class HeroBase(SQLModel):
 
 
 class Hero(BaseUUIDModel, HeroBase, table=True):
-    team: Optional["Team"] = Relationship(  # noqa: F821
+    team: "Team" = Relationship(  # noqa: F821
         back_populates="heroes", sa_relationship_kwargs={"lazy": "joined"}
     )
     created_by_id: Optional[UUID] = Field(default=None, foreign_key="User.id")
