@@ -6,7 +6,7 @@ authors = ["jonra1993 <jon_ra@hotmail.es>"]
 
 [tool.black]
 line-length = 88
-target-version = [ "py37", "py38", "py39",]
+target-version = [ "py38", "py39", "py310", "py311" ]
 exclude = "((.eggs | .git | .pytest_cache | build | dist))"
 
 [tool.ruff]
@@ -33,7 +33,7 @@ ignore = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-alembic = "^1.8.1"
+alembic = "^1.10.2"
 asyncpg = "^0.27.0"
 fastapi = {extras = ["all"], version = "^0.94.1"}
 sqlmodel = "^0.0.8"
@@ -42,22 +42,22 @@ cryptography = "^38.0.3"
 passlib = "^1.7.4"
 SQLAlchemy-Utils = "^0.38.3"
 SQLAlchemy = "^1.4.40"
-fastapi-pagination = {extras = ["sqlalchemy"], version = "^0.11.0"}
-fastapi-cache2 = {extras = ["redis"], version = "^0.2.0"}
-minio = "^7.1.12"
-Pillow = "^9.3.0"
+fastapi-pagination = {extras = ["sqlalchemy"], version = "^0.11.4"}
+fastapi-cache2 = {extras = ["redis"], version = "^0.2.1"}
+minio = "^7.1.13"
+Pillow = "^9.4.0"
 watchfiles = "^0.18.1"
 asyncer = "^0.0.2"
 httpx = "^0.23.1"
 pandas = "^1.5.3"
 openpyxl = "^3.0.10"
-redis = "^4.4.2"
+redis = "^4.5.1"
 fastapi-async-sqlalchemy = "^0.3.12"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^5.2"
-black = "^22.10.0"
-ruff = "^0.0.214"
+black = "^23.1.0"
+ruff = "^0.0.256"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
