@@ -74,7 +74,7 @@ async def get_hero_by_id(
 async def get_hero_by_name(
     hero_name: str,
     current_user: User = Depends(deps.get_current_user()),
-) -> IGetResponseBase[IHeroReadWithTeam]:
+) -> IGetResponseBase[list[IHeroReadWithTeam]]:
     """
     Gets a hero by his/her name
     """
@@ -93,6 +93,10 @@ async def create_hero(
 ) -> IPostResponseBase[IHeroRead]:
     """
     Creates a new hero
+
+    Required roles:
+    - admin
+    - manager
     """
     heroe = await crud.hero.create(obj_in=hero, created_by_id=current_user.id)
     return create_response(data=heroe)
@@ -108,6 +112,10 @@ async def update_hero(
 ) -> IPutResponseBase[IHeroRead]:
     """
     Updates a hero by its id
+
+    Required roles:
+    - admin
+    - manager
     """
     current_hero = await crud.hero.get(id=hero_id)
     if not current_hero:
@@ -125,6 +133,10 @@ async def remove_hero(
 ) -> IDeleteResponseBase[IHeroRead]:
     """
     Deletes a hero by its id
+
+    Required roles:
+    - admin
+    - manager
     """
     current_hero = await crud.hero.get(id=hero_id)
     if not current_hero:

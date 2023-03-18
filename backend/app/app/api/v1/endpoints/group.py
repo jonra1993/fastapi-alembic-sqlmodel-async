@@ -64,6 +64,10 @@ async def create_group(
 ) -> IPostResponseBase[IGroupRead]:
     """
     Creates a new group
+
+    Required roles:
+    - admin
+    - manager
     """
     group_current = await crud.group.get_group_by_name(name=group.name)
     if group_current:
@@ -82,6 +86,10 @@ async def update_group(
 ) -> IPutResponseBase[IGroupRead]:
     """
     Updates a group by its id
+
+    Required roles:
+    - admin
+    - manager
     """
     group_updated = await crud.group.update(obj_current=current_group, obj_new=group)
     return create_response(data=group_updated)
@@ -97,6 +105,10 @@ async def add_user_into_a_group(
 ) -> IPostResponseBase[IGroupRead]:
     """
     Adds a user into a group
+
+    Required roles:
+    - admin
+    - manager
     """
     group = await crud.group.add_user_to_group(user=user, group_id=group.id)
     return create_response(message="User added to group", data=group)
