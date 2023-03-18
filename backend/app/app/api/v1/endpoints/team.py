@@ -63,6 +63,10 @@ async def create_team(
 ) -> IPostResponseBase[ITeamRead]:
     """
     Creates a new team
+
+    Required roles:
+    - admin
+    - manager
     """
     team_current = await crud.team.get_team_by_name(name=team.name)
     if team_current:
@@ -81,6 +85,10 @@ async def update_team(
 ) -> IPostResponseBase[ITeamRead]:
     """
     Update a team by its id
+
+    Required roles:
+    - admin
+    - manager
     """
     current_team = await crud.team.get(id=team_id)
     if not current_team:
@@ -109,6 +117,10 @@ async def remove_team(
 ) -> IDeleteResponseBase[ITeamRead]:
     """
     Deletes a team by its id
+
+    Required roles:
+    - admin
+    - manager
     """
     current_team = await crud.team.get(id=team_id)
     if not current_team:

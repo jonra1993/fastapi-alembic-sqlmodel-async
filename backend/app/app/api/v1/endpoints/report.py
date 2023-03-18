@@ -34,6 +34,9 @@ async def export_users_list(
 ) -> StreamingResponse:
     """
     Export users list in a csv/xlsx file
+
+    Required roles:
+    - admin    
     """
     users = await crud.user.get_multi_ordered(limit=1000, order_by="id")
     users_list = [
@@ -76,6 +79,9 @@ async def export_heroes_list(
 ) -> StreamingResponse:
     """
     Export heroes list in a csv/xlsx file
+
+    Required roles:
+    - admin    
     """
     heroes = await crud.hero.get_multi_ordered(limit=1000, order_by="id")
     heroes_list = [

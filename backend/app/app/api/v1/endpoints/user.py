@@ -46,7 +46,7 @@ from app.schemas.user_follow_schema import (
     IUserFollowReadCommon,
 )
 from fastapi_pagination import Params
-from sqlmodel import and_, select
+from sqlmodel import and_, select, col, or_, text
 
 router = APIRouter()
 
@@ -60,6 +60,10 @@ async def read_users_list(
 ) -> IGetResponsePaginated[IUserReadWithoutGroups]:
     """
     Retrieve users. Requires admin or manager role
+
+    Required roles:
+    - admin
+    - manager
     """
     users = await crud.user.get_multi_paginated(params=params)
     return create_response(data=users)
@@ -67,13 +71,12 @@ async def read_users_list(
 
 @router.get("/list/by_role_name")
 async def read_users_list_by_role_name(
+    name: str = "",
     user_status: Optional[IUserStatus] = Query(
         default=IUserStatus.active,
         description="User status, It is optional. Default is active",
     ),
-    role_name: str = Depends(
-        role_deps.get_user_role_by_name
-    ),  # Dep to check if rol exists
+    role_name: str = "",
     params: Params = Depends(),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
@@ -81,12 +84,26 @@ async def read_users_list_by_role_name(
 ) -> IGetResponsePaginated[IUserReadWithoutGroups]:
     """
     Retrieve users by role name and status. Requires admin role
+
+    Required roles:
+    - admin    
     """
     user_status = True if user_status == IUserStatus.active else False
     query = (
         select(User)
         .join(Role, User.role_id == Role.id)
-        .where(and_(Role.name == role_name, User.is_active == user_status))
+        .where(
+            and_(
+                col(Role.name).ilike(f"%{role_name}%"),
+                User.is_active == user_status,
+                or_(                    
+                    col(User.first_name).ilike(f"%{name}%"),
+                    col(User.last_name).ilike(f"%{name}%"),
+                    text(f"'{name}' % concat(last_name, ' ', first_name)"),
+                    text(f"'{name}' % concat(first_name, ' ', last_name)"),
+                ),
+            )
+        )
         .order_by(User.first_name)
     )
     users = await crud.user.get_multi_paginated(query=query, params=params)
@@ -102,6 +119,10 @@ async def get_hero_list_order_by_created_at(
 ) -> IGetResponsePaginated[IUserReadWithoutGroups]:
     """
     Gets a paginated list of users ordered by created datetime
+
+    Required roles:
+    - admin
+    - manager
     """
     users = await crud.user.get_multi_paginated_ordered(
         params=params, order_by="created_at"
@@ -327,6 +348,10 @@ async def get_user_by_id(
 ) -> IGetResponseBase[IUserRead]:
     """
     Gets a user by his/her id
+
+    Required roles:
+    - admin
+    - manager
     """
     return create_response(data=user)
 
@@ -350,6 +375,9 @@ async def create_user(
 ) -> IPostResponseBase[IUserRead]:
     """
     Creates a new user
+
+    Required roles:
+    - admin    
     """
     user = await crud.user.create_with_role(obj_in=new_user)
     return create_response(data=user)
@@ -364,6 +392,9 @@ async def remove_user(
 ) -> IDeleteResponseBase[IUserRead]:
     """
     Deletes a user by his/her id
+
+    Required roles:
+    - admin
     """
     if current_user.id == user_id:
         raise UserSelfDeleteException()
@@ -419,6 +450,9 @@ async def upload_user_image(
 ) -> IPostResponseBase[IUserRead]:
     """
     Uploads a user image by his/her id
+
+    Required roles:
+    - admin    
     """
     try:
         image_modified = modify_image(BytesIO(image_file.file.read()))

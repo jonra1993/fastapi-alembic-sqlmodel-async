@@ -53,6 +53,9 @@ async def create_role(
 ) -> IPostResponseBase[IRoleRead]:
     """
     Create a new role
+
+    Required roles:
+    - admin    
     """
     role_current = await crud.role.get_role_by_name(name=role.name)
     if role_current:
@@ -72,6 +75,9 @@ async def update_role(
 ) -> IPutResponseBase[IRoleRead]:
     """
     Updates a role by its id
+
+    Required roles:
+    - admin    
     """
     if current_role.name == role.name and current_role.description == role.description:
         raise ContentNoChangeException()
