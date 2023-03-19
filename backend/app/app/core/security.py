@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any, Union
+from typing import Any
 from cryptography.fernet import Fernet
 from jose import jwt
 from passlib.context import CryptContext
@@ -11,9 +11,7 @@ fernet = Fernet(str.encode(settings.ENCRYPT_KEY))
 ALGORITHM = "HS256"
 
 
-def create_access_token(
-    subject: Union[str, Any], expires_delta: timedelta = None
-) -> str:
+def create_access_token(subject: str | Any, expires_delta: timedelta = None) -> str:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
@@ -25,9 +23,7 @@ def create_access_token(
     return encoded_jwt
 
 
-def create_refresh_token(
-    subject: Union[str, Any], expires_delta: timedelta = None
-) -> str:
+def create_refresh_token(subject: str | Any, expires_delta: timedelta = None) -> str:
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:

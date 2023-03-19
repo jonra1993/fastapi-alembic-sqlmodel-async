@@ -2,7 +2,6 @@ from app.models.hero_model import HeroBase
 from app.models.team_model import TeamBase
 from app.utils.partial import optional
 from uuid import UUID
-from typing import Optional
 from pydantic import validator
 
 
@@ -25,4 +24,4 @@ class IHeroRead(HeroBase):
 
 
 class IHeroReadWithTeam(IHeroRead):
-    team: Optional[TeamBase]
+    team: TeamBase | None

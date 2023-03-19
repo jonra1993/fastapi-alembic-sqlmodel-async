@@ -1,12 +1,11 @@
 from app.models.base_uuid_model import BaseUUIDModel
 from sqlmodel import SQLModel
-from typing import Optional
 
 
 class MediaBase(SQLModel):
-    title: Optional[str]
-    description: Optional[str]
-    path: Optional[str]
+    title: str | None
+    description: str | None
+    path: str | None
 
 
 class Media(BaseUUIDModel, MediaBase, table=True):

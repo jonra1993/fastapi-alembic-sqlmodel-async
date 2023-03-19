@@ -1,4 +1,3 @@
-from typing import Optional
 from app.utils.uuid6 import uuid7, UUID
 from sqlmodel import SQLModel as _SQLModel, Field
 from sqlalchemy.orm import declared_attr
@@ -20,7 +19,7 @@ class BaseUUIDModel(SQLModel):
         index=True,
         nullable=False,
     )
-    updated_at: Optional[datetime] = Field(
+    updated_at: datetime | None = Field(
         default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow}
     )
-    created_at: Optional[datetime] = Field(default_factory=datetime.utcnow)
+    created_at: datetime | None = Field(default_factory=datetime.utcnow)

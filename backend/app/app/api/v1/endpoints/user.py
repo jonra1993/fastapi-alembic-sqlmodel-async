@@ -1,5 +1,4 @@
 from io import BytesIO
-from typing import Optional
 from uuid import UUID
 from app.utils.exceptions import (
     IdNotFoundException,
@@ -10,7 +9,7 @@ from app.utils.exceptions import (
 )
 from app import crud
 from app.api import deps
-from app.deps import role_deps, user_deps
+from app.deps import user_deps
 from app.models import User, UserFollow
 from app.models.role_model import Role
 from app.utils.minio_client import MinioClient
@@ -72,7 +71,8 @@ async def read_users_list(
 @router.get("/list/by_role_name")
 async def read_users_list_by_role_name(
     name: str = "",
-    user_status: Optional[IUserStatus] = Query(
+    user_status: IUserStatus
+    | None = Query(
         default=IUserStatus.active,
         description="User status, It is optional. Default is active",
     ),
@@ -86,7 +86,7 @@ async def read_users_list_by_role_name(
     Retrieve users by role name and status. Requires admin role
 
     Required roles:
-    - admin    
+    - admin
     """
     user_status = True if user_status == IUserStatus.active else False
     query = (
@@ -96,7 +96,7 @@ async def read_users_list_by_role_name(
             and_(
                 col(Role.name).ilike(f"%{role_name}%"),
                 User.is_active == user_status,
-                or_(                    
+                or_(
                     col(User.first_name).ilike(f"%{name}%"),
                     col(User.last_name).ilike(f"%{name}%"),
                     text(f"'{name}' % concat(last_name, ' ', first_name)"),
@@ -377,7 +377,7 @@ async def create_user(
     Creates a new user
 
     Required roles:
-    - admin    
+    - admin
     """
     user = await crud.user.create_with_role(obj_in=new_user)
     return create_response(data=user)
@@ -405,8 +405,8 @@ async def remove_user(
 
 @router.post("/image")
 async def upload_my_image(
-    title: Optional[str] = Body(None),
-    description: Optional[str] = Body(None),
+    title: str | None = Body(None),
+    description: str | None = Body(None),
     image_file: UploadFile = File(...),
     current_user: User = Depends(deps.get_current_user()),
     minio_client: MinioClient = Depends(deps.minio_auth),
@@ -440,8 +440,8 @@ async def upload_my_image(
 @router.post("/{user_id}/image")
 async def upload_user_image(
     user: User = Depends(user_deps.is_valid_user),
-    title: Optional[str] = Body(None),
-    description: Optional[str] = Body(None),
+    title: str | None = Body(None),
+    description: str | None = Body(None),
     image_file: UploadFile = File(...),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
@@ -452,7 +452,7 @@ async def upload_user_image(
     Uploads a user image by his/her id
 
     Required roles:
-    - admin    
+    - admin
     """
     try:
         image_modified = modify_image(BytesIO(image_file.file.read()))

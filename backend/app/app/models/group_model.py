@@ -1,5 +1,4 @@
 from sqlmodel import Field, Relationship, SQLModel
-from typing import List, Optional
 from .links_model import LinkGroupUser
 from app.models.base_uuid_model import BaseUUIDModel
 from app.models.user_model import User
@@ -12,14 +11,14 @@ class GroupBase(SQLModel):
 
 
 class Group(BaseUUIDModel, GroupBase, table=True):
-    created_by_id: Optional[UUID] = Field(default=None, foreign_key="User.id")
+    created_by_id: UUID | None = Field(default=None, foreign_key="User.id")
     created_by: "User" = Relationship(
         sa_relationship_kwargs={
             "lazy": "joined",
             "primaryjoin": "Group.created_by_id==User.id",
         }
     )
-    users: List["User"] = Relationship(
+    users: list["User"] = Relationship(
         back_populates="groups",
         link_model=LinkGroupUser,
         sa_relationship_kwargs={"lazy": "selectin"},
