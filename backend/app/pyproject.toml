@@ -53,6 +53,7 @@ pandas = "^1.5.3"
 openpyxl = "^3.0.10"
 redis = "^4.5.1"
 fastapi-async-sqlalchemy = "^0.3.12"
+oso = "^0.26.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^5.2"
