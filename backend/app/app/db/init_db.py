@@ -1,4 +1,3 @@
-from typing import Dict, List, Union
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app import crud
 from app.schemas.role_schema import IRoleCreate
@@ -8,17 +7,17 @@ from app.schemas.team_schema import ITeamCreate
 from app.schemas.hero_schema import IHeroCreate
 from app.schemas.group_schema import IGroupCreate
 
-roles: List[IRoleCreate] = [
+roles: list[IRoleCreate] = [
     IRoleCreate(name="admin", description="This the Admin role"),
     IRoleCreate(name="manager", description="Manager role"),
     IRoleCreate(name="user", description="User role"),
 ]
 
-groups: List[IGroupCreate] = [
+groups: list[IGroupCreate] = [
     IGroupCreate(name="GR1", description="This is the first group")
 ]
 
-users: List[Dict[str, Union[str, IUserCreate]]] = [
+users: list[dict[str, str | IUserCreate]] = [
     {
         "data": IUserCreate(
             first_name="Admin",
@@ -51,12 +50,12 @@ users: List[Dict[str, Union[str, IUserCreate]]] = [
     },
 ]
 
-teams: List[ITeamCreate] = [
+teams: list[ITeamCreate] = [
     ITeamCreate(name="Preventers", headquarters="Sharp Tower"),
     ITeamCreate(name="Z-Force", headquarters="Sister Margaret's Bar"),
 ]
 
-heroes: List[Dict[str, Union[str, IHeroCreate]]] = [
+heroes: list[dict[str, str | IHeroCreate]] = [
     {
         "data": IHeroCreate(name="Deadpond", secret_name="Dive Wilson", age=21),
         "team": "Z-Force",

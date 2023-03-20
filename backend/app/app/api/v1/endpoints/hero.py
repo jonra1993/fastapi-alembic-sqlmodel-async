@@ -1,4 +1,3 @@
-from typing import Optional
 from uuid import UUID
 from app.utils.exceptions import IdNotFoundException, NameNotFoundException
 from fastapi import APIRouter, Depends, Query
@@ -41,7 +40,8 @@ async def get_hero_list(
 
 @router.get("/get_by_created_at")
 async def get_hero_list_order_by_created_at(
-    order: Optional[IOrderEnum] = Query(
+    order: IOrderEnum
+    | None = Query(
         default=IOrderEnum.ascendent, description="It is optional. Default is ascendent"
     ),
     params: Params = Depends(),

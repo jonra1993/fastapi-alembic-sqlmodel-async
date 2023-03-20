@@ -1,4 +1,3 @@
-from typing import List, Optional
 from app.models.group_model import GroupBase
 from app.utils.partial import optional
 from uuid import UUID
@@ -15,7 +14,7 @@ class IGroupRead(GroupBase):
 
 class IGroupReadWithUsers(GroupBase):
     id: UUID
-    users: Optional[List[IUserReadWithoutGroups]] = []
+    users: list[IUserReadWithoutGroups] | None = []
 
 
 # All these fields are optional

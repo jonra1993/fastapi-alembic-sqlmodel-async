@@ -4,7 +4,7 @@ from pydantic import validator, AnyHttpUrl
 from app.core.config import settings
 from app.utils.partial import optional
 from app import api
-from typing import Any, Optional, Union
+from typing import Any
 from uuid import UUID
 
 
@@ -19,8 +19,8 @@ class IMediaUpdate(MediaBase):
 
 
 class IMediaRead(MediaBase):
-    id: Union[UUID, str]
-    link: Optional[str] = None
+    id: UUID | str
+    link: str | None = None
 
     @validator(
         "link", pre=True, check_fields=False, always=True

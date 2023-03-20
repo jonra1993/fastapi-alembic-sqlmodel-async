@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Generator
+from collections.abc import Generator
 
 API_EPOCH = 1640995200000
 

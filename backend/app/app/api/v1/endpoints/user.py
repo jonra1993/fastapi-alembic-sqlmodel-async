@@ -1,5 +1,4 @@
 from io import BytesIO
-from typing import Optional
 from uuid import UUID
 from app.utils.exceptions import (
     IdNotFoundException,
@@ -72,7 +71,8 @@ async def read_users_list(
 @router.get("/list/by_role_name")
 async def read_users_list_by_role_name(
     name: str = "",
-    user_status: IUserStatus = Query(
+    user_status: IUserStatus
+    | None = Query(
         default=IUserStatus.active,
         title="User status",
         description="User status, It is optional. Default is active",
@@ -406,8 +406,8 @@ async def remove_user(
 
 @router.post("/image")
 async def upload_my_image(
-    title: Optional[str] = Body(None),
-    description: Optional[str] = Body(None),
+    title: str | None = Body(None),
+    description: str | None = Body(None),
     image_file: UploadFile = File(...),
     current_user: User = Depends(deps.get_current_user()),
     minio_client: MinioClient = Depends(deps.minio_auth),
@@ -441,8 +441,8 @@ async def upload_my_image(
 @router.post("/{user_id}/image")
 async def upload_user_image(
     user: User = Depends(user_deps.is_valid_user),
-    title: Optional[str] = Body(None),
-    description: Optional[str] = Body(None),
+    title: str | None = Body(None),
+    description: str | None = Body(None),
     image_file: UploadFile = File(...),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
