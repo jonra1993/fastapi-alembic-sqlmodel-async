@@ -6,7 +6,7 @@ from app.schemas.role_schema import IRoleRead
 
 class IGenderEnum(str, Enum):
     female = "female"
-    male = "male"    
+    male = "male"
     other = "other"
 
 

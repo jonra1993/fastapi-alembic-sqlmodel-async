@@ -36,7 +36,7 @@ async def export_users_list(
     Export users list in a csv/xlsx file
 
     Required roles:
-    - admin    
+    - admin
     """
     users = await crud.user.get_multi_ordered(limit=1000, order_by="id")
     users_list = [
@@ -81,7 +81,7 @@ async def export_heroes_list(
     Export heroes list in a csv/xlsx file
 
     Required roles:
-    - admin    
+    - admin
     """
     heroes = await crud.hero.get_multi_ordered(limit=1000, order_by="id")
     heroes_list = [

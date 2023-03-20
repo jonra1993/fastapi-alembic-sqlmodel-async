@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
 from fastapi_cache.decorator import cache
 from typing import Dict
 from asyncer import asyncify, create_task_group, syncify
@@ -44,9 +44,7 @@ def do_sync_work(city: str):
 
 @router.get("/weather_sync/sync1")
 @cache(expire=10)
-async def get_weather_sync_work_by_city(
-    city: str = Query(default="Quito"),
-) -> IGetResponseBase:
+async def get_weather_sync_work_by_city(city: str) -> IGetResponseBase:
     """
     Gets Weather by city using sync work
     """
@@ -58,9 +56,7 @@ async def get_weather_sync_work_by_city(
 
 @router.get("/weather_sync/sync2")
 @cache(expire=10)
-async def get_weather_sync_client_by_city(
-    city: str = Query(default="Quito"),
-) -> IGetResponseBase:
+async def get_weather_sync_client_by_city(city: str) -> IGetResponseBase:
     """
     Gets Weather by city using sync client
     """
@@ -72,9 +68,7 @@ async def get_weather_sync_client_by_city(
 
 @router.get("/weather_async")
 @cache(expire=10)
-async def get_weather_async_client_by_city(
-    city: str = Query(default="Quito"),
-) -> IGetResponseBase:
+async def get_weather_async_client_by_city(city: str) -> IGetResponseBase:
     """
     Gets Weather by city using async client
     """
@@ -87,7 +81,7 @@ async def get_weather_async_client_by_city(
 @router.get("/weather_async_list/sequencial")
 @cache(expire=10)
 async def get_weather_async_sequencial_by_cities(
-    cities: List[str] = Query(default=["Quito", "Miami", "Barcelona"]),
+    cities: List[str] = ["Quito", "Miami", "Barcelona"],
 ) -> IGetResponseBase:
     """
     Gets Weather by list of cities
@@ -106,7 +100,7 @@ async def get_weather_async_sequencial_by_cities(
 @router.get("/weather_async_list/concurrent")
 @cache(expire=10)
 async def get_weather_async_concurrent_by_cities(
-    cities: List[str] = Query(default=["Quito", "Miami", "Barcelona"]),
+    cities: List[str] = ["Quito", "Miami", "Barcelona"],
 ) -> IGetResponseBase:
     """
     Gets Weather by list of cities

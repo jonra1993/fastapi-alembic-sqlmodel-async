@@ -10,7 +10,7 @@ from app.utils.exceptions import (
 )
 from app import crud
 from app.api import deps
-from app.deps import role_deps, user_deps
+from app.deps import user_deps
 from app.models import User, UserFollow
 from app.models.role_model import Role
 from app.utils.minio_client import MinioClient
@@ -72,8 +72,9 @@ async def read_users_list(
 @router.get("/list/by_role_name")
 async def read_users_list_by_role_name(
     name: str = "",
-    user_status: Optional[IUserStatus] = Query(
+    user_status: IUserStatus = Query(
         default=IUserStatus.active,
+        title="User status",
         description="User status, It is optional. Default is active",
     ),
     role_name: str = "",
@@ -86,7 +87,7 @@ async def read_users_list_by_role_name(
     Retrieve users by role name and status. Requires admin role
 
     Required roles:
-    - admin    
+    - admin
     """
     user_status = True if user_status == IUserStatus.active else False
     query = (
@@ -96,7 +97,7 @@ async def read_users_list_by_role_name(
             and_(
                 col(Role.name).ilike(f"%{role_name}%"),
                 User.is_active == user_status,
-                or_(                    
+                or_(
                     col(User.first_name).ilike(f"%{name}%"),
                     col(User.last_name).ilike(f"%{name}%"),
                     text(f"'{name}' % concat(last_name, ' ', first_name)"),
@@ -377,7 +378,7 @@ async def create_user(
     Creates a new user
 
     Required roles:
-    - admin    
+    - admin
     """
     user = await crud.user.create_with_role(obj_in=new_user)
     return create_response(data=user)
@@ -452,7 +453,7 @@ async def upload_user_image(
     Uploads a user image by his/her id
 
     Required roles:
-    - admin    
+    - admin
     """
     try:
         image_modified = modify_image(BytesIO(image_file.file.read()))

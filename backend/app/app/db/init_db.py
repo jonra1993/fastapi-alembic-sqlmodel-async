@@ -69,7 +69,6 @@ heroes: List[Dict[str, Union[str, IHeroCreate]]] = [
 
 
 async def init_db(db_session: AsyncSession) -> None:
-
     for role in roles:
         role_current = await crud.role.get_role_by_name(
             name=role.name, db_session=db_session

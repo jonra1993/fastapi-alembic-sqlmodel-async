@@ -23,7 +23,10 @@ class UserBase(SQLModel):
     )  # birthday with timezone
     role_id: Optional[UUID] = Field(default=None, foreign_key="Role.id")
     phone: Optional[str]
-    gender: Optional[IGenderEnum] =  Field(default=IGenderEnum.other, sa_column = Column(ChoiceType(IGenderEnum, impl=String())))
+    gender: Optional[IGenderEnum] = Field(
+        default=IGenderEnum.other,
+        sa_column=Column(ChoiceType(IGenderEnum, impl=String())),
+    )
     state: Optional[str]
     country: Optional[str]
     address: Optional[str]
