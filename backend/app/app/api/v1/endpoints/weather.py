@@ -1,7 +1,5 @@
-from typing import List
 from fastapi import APIRouter, Query
 from fastapi_cache.decorator import cache
-from typing import Dict
 from asyncer import asyncify, create_task_group, syncify
 from app.core.config import settings
 import httpx
@@ -9,7 +7,7 @@ from app.schemas.response_schema import IGetResponseBase, create_response
 
 router = APIRouter()
 
-api_reference: Dict[str, str] = {"api_reference": "https://github.com/chubin/wttr.in"}
+api_reference: dict[str, str] = {"api_reference": "https://github.com/chubin/wttr.in"}
 
 
 def get_weather_sync(city: str):
@@ -87,7 +85,7 @@ async def get_weather_async_client_by_city(
 @router.get("/weather_async_list/sequencial")
 @cache(expire=10)
 async def get_weather_async_sequencial_by_cities(
-    cities: List[str] = Query(default=["Quito", "Miami", "Barcelona"]),
+    cities: list[str] = Query(default=["Quito", "Miami", "Barcelona"]),
 ) -> IGetResponseBase:
     """
     Gets Weather by list of cities
@@ -106,7 +104,7 @@ async def get_weather_async_sequencial_by_cities(
 @router.get("/weather_async_list/concurrent")
 @cache(expire=10)
 async def get_weather_async_concurrent_by_cities(
-    cities: List[str] = Query(default=["Quito", "Miami", "Barcelona"]),
+    cities: list[str] = Query(default=["Quito", "Miami", "Barcelona"]),
 ) -> IGetResponseBase:
     """
     Gets Weather by list of cities

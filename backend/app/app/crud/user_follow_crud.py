@@ -1,4 +1,3 @@
-from typing import List, Optional
 from uuid import UUID
 from sqlmodel import and_, select
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -14,7 +13,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         *,
         user: User,
         target_user: User,
-        db_session: Optional[AsyncSession] = None,
+        db_session: AsyncSession | None = None,
     ) -> UserFollowModel:
         db_session = db_session or super().get_db().session
         new_user_follow = IUserFollowCreate(
@@ -46,7 +45,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         user_follow_id: UUID,
         user: User,
         target_user: User,
-        db_session: Optional[AsyncSession] = None,
+        db_session: AsyncSession | None = None,
     ) -> UserFollowModel:
         db_session = db_session or super().get_db().session
 
@@ -69,8 +68,8 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         return follow_user_obj
 
     async def get_follow_by_user_id(
-        self, *, user_id: UUID, db_session: Optional[AsyncSession] = None
-    ) -> Optional[List[UserFollowModel]]:
+        self, *, user_id: UUID, db_session: AsyncSession | None = None
+    ) -> list[UserFollowModel] | None:
         db_session = db_session or super().get_db().session
         followed = await db_session.execute(
             select(UserFollowModel).where(UserFollowModel.user_id == user_id)
@@ -78,8 +77,8 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         return followed.scalars().all()
 
     async def get_follow_by_target_user_id(
-        self, *, target_user_id: UUID, db_session: Optional[AsyncSession] = None
-    ) -> Optional[List[UserFollowModel]]:
+        self, *, target_user_id: UUID, db_session: AsyncSession | None = None
+    ) -> list[UserFollowModel] | None:
         db_session = db_session or super().get_db().session
         followed = await db_session.execute(
             select(UserFollowModel).where(
@@ -93,8 +92,8 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         *,
         user_id: UUID,
         target_user_id: UUID,
-        db_session: Optional[AsyncSession] = None,
-    ) -> Optional[UserFollowModel]:
+        db_session: AsyncSession | None = None,
+    ) -> UserFollowModel | None:
         db_session = db_session or super().get_db().session
         followed_user = await db_session.execute(
             select(UserFollowModel).where(

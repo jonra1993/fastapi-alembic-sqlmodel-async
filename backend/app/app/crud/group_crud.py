@@ -1,4 +1,3 @@
-from typing import List, Optional
 from app.models.group_model import Group
 from app.models.user_model import User
 from app.schemas.group_schema import IGroupCreate, IGroupUpdate
@@ -10,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 class CRUDGroup(CRUDBase[Group, IGroupCreate, IGroupUpdate]):
     async def get_group_by_name(
-        self, *, name: str, db_session: Optional[AsyncSession] = None
+        self, *, name: str, db_session: AsyncSession | None = None
     ) -> Group:
         db_session = db_session or super().get_db().session
         group = await db_session.execute(select(Group).where(Group.name == name))
@@ -28,9 +27,9 @@ class CRUDGroup(CRUDBase[Group, IGroupCreate, IGroupUpdate]):
     async def add_users_to_group(
         self,
         *,
-        users: List[User],
+        users: list[User],
         group_id: UUID,
-        db_session: Optional[AsyncSession] = None,
+        db_session: AsyncSession | None = None,
     ) -> Group:
         db_session = db_session or super().get_db().session
         group = await super().get(id=group_id, db_session=db_session)

@@ -1,4 +1,3 @@
-from typing import List
 from pydantic import BaseModel
 from enum import Enum
 from app.schemas.role_schema import IRoleRead
@@ -6,12 +5,12 @@ from app.schemas.role_schema import IRoleRead
 
 class IGenderEnum(str, Enum):
     female = "female"
-    male = "male"    
+    male = "male"
     other = "other"
 
 
 class IMetaGeneral(BaseModel):
-    roles: List[IRoleRead]
+    roles: list[IRoleRead]
 
 
 class IOrderEnum(str, Enum):

@@ -55,7 +55,7 @@ async def create_role(
     Create a new role
 
     Required roles:
-    - admin    
+    - admin
     """
     role_current = await crud.role.get_role_by_name(name=role.name)
     if role_current:
@@ -77,7 +77,7 @@ async def update_role(
     Updates a role by its id
 
     Required roles:
-    - admin    
+    - admin
     """
     if current_role.name == role.name and current_role.description == role.description:
         raise ContentNoChangeException()

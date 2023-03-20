@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar, Union
+from typing import Any, Generic, TypeVar
 from uuid import UUID
 from app.schemas.common_schema import IOrderEnum
 from fastapi_pagination.ext.async_sqlalchemy import paginate
@@ -21,7 +21,7 @@ T = TypeVar("T", bound=SQLModel)
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
-    def __init__(self, model: Type[ModelType]):
+    def __init__(self, model: type[ModelType]):
         """
         CRUD object with default methods to Create, Read, Update, Delete (CRUD).
         **Parameters**
@@ -35,8 +35,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return self.db
 
     async def get(
-        self, *, id: Union[UUID, str], db_session: Optional[AsyncSession] = None
-    ) -> Optional[ModelType]:
+        self, *, id: UUID | str, db_session: AsyncSession | None = None
+    ) -> ModelType | None:
         db_session = db_session or self.db.session
         query = select(self.model).where(self.model.id == id)
         response = await db_session.execute(query)
@@ -45,9 +45,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_by_ids(
         self,
         *,
-        list_ids: List[Union[UUID, str]],
-        db_session: Optional[AsyncSession] = None,
-    ) -> Optional[List[ModelType]]:
+        list_ids: list[UUID | str],
+        db_session: AsyncSession | None = None,
+    ) -> list[ModelType] | None:
         db_session = db_session or self.db.session
         response = await db_session.execute(
             select(self.model).where(self.model.id.in_(list_ids))
@@ -55,8 +55,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return response.scalars().all()
 
     async def get_count(
-        self, db_session: Optional[AsyncSession] = None
-    ) -> Optional[ModelType]:
+        self, db_session: AsyncSession | None = None
+    ) -> ModelType | None:
         db_session = db_session or self.db.session
         response = await db_session.execute(
             select(func.count()).select_from(select(self.model).subquery())
@@ -68,9 +68,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         *,
         skip: int = 0,
         limit: int = 100,
-        query: Optional[Union[T, Select[T]]] = None,
-        db_session: Optional[AsyncSession] = None,
-    ) -> List[ModelType]:
+        query: T | Select[T] | None = None,
+        db_session: AsyncSession | None = None,
+    ) -> list[ModelType]:
         db_session = db_session or self.db.session
         if query is None:
             query = select(self.model).offset(skip).limit(limit).order_by(self.model.id)
@@ -80,9 +80,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_multi_paginated(
         self,
         *,
-        params: Optional[Params] = Params(),
-        query: Optional[Union[T, Select[T]]] = None,
-        db_session: Optional[AsyncSession] = None,
+        params: Params | None = Params(),
+        query: T | Select[T] | None = None,
+        db_session: AsyncSession | None = None,
     ) -> Page[ModelType]:
         db_session = db_session or self.db.session
         if query is None:
@@ -92,11 +92,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_multi_paginated_ordered(
         self,
         *,
-        params: Optional[Params] = Params(),
-        order_by: Optional[str] = None,
-        order: Optional[IOrderEnum] = IOrderEnum.ascendent,
-        query: Optional[Union[T, Select[T]]] = None,
-        db_session: Optional[AsyncSession] = None,
+        params: Params | None = Params(),
+        order_by: str | None = None,
+        order: IOrderEnum | None = IOrderEnum.ascendent,
+        query: T | Select[T] | None = None,
+        db_session: AsyncSession | None = None,
     ) -> Page[ModelType]:
         db_session = db_session or self.db.session
 
@@ -118,10 +118,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         *,
         skip: int = 0,
         limit: int = 100,
-        order_by: Optional[str] = None,
-        order: Optional[IOrderEnum] = IOrderEnum.ascendent,
-        db_session: Optional[AsyncSession] = None,
-    ) -> List[ModelType]:
+        order_by: str | None = None,
+        order: IOrderEnum | None = IOrderEnum.ascendent,
+        db_session: AsyncSession | None = None,
+    ) -> list[ModelType]:
         db_session = db_session or self.db.session
 
         columns = self.model.__table__.columns
@@ -150,9 +150,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def create(
         self,
         *,
-        obj_in: Union[CreateSchemaType, ModelType],
-        created_by_id: Optional[Union[UUID, str]] = None,
-        db_session: Optional[AsyncSession] = None,
+        obj_in: CreateSchemaType | ModelType,
+        created_by_id: UUID | str | None = None,
+        db_session: AsyncSession | None = None,
     ) -> ModelType:
         db_session = db_session or self.db.session
         db_obj = self.model.from_orm(obj_in)  # type: ignore
@@ -176,8 +176,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self,
         *,
         obj_current: ModelType,
-        obj_new: Union[UpdateSchemaType, Dict[str, Any], ModelType],
-        db_session: Optional[AsyncSession] = None,
+        obj_new: UpdateSchemaType | dict[str, Any] | ModelType,
+        db_session: AsyncSession | None = None,
     ) -> ModelType:
         db_session = db_session or self.db.session
         obj_data = jsonable_encoder(obj_current)
@@ -198,7 +198,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return obj_current
 
     async def remove(
-        self, *, id: Union[UUID, str], db_session: Optional[AsyncSession] = None
+        self, *, id: UUID | str, db_session: AsyncSession | None = None
     ) -> ModelType:
         db_session = db_session or self.db.session
         response = await db_session.execute(

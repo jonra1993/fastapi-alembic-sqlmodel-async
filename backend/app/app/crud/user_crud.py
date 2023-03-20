@@ -5,7 +5,7 @@ from app.models.media_model import Media
 from app.models.image_media_model import ImageMedia
 from app.core.security import verify_password, get_password_hash
 from pydantic.networks import EmailStr
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 from app.crud.base_crud import CRUDBase
 from app.crud.user_follow_crud import user_follow as UserFollowCRUD
 from sqlmodel import select
@@ -15,14 +15,14 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
     async def get_by_email(
-        self, *, email: str, db_session: Optional[AsyncSession] = None
-    ) -> Optional[User]:
+        self, *, email: str, db_session: AsyncSession | None = None
+    ) -> User | None:
         db_session = db_session or super().get_db().session
         users = await db_session.execute(select(User).where(User.email == email))
         return users.scalar_one_or_none()
 
     async def create_with_role(
-        self, *, obj_in: IUserCreate, db_session: Optional[AsyncSession] = None
+        self, *, obj_in: IUserCreate, db_session: AsyncSession | None = None
     ) -> User:
         db_session = db_session or super().get_db().session
         db_obj = User.from_orm(obj_in)
@@ -33,8 +33,8 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         return db_obj
 
     async def update_is_active(
-        self, *, db_obj: List[User], obj_in: Union[int, str, Dict[str, Any]]
-    ) -> Union[User, None]:
+        self, *, db_obj: list[User], obj_in: int | str | dict[str, Any]
+    ) -> User | None:
         response = None
         db_session = super().get_db().session
         for x in db_obj:
@@ -45,7 +45,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
             response.append(x)
         return response
 
-    async def authenticate(self, *, email: EmailStr, password: str) -> Optional[User]:
+    async def authenticate(self, *, email: EmailStr, password: str) -> User | None:
         user = await self.get_by_email(email=email)
         if not user:
             return None
@@ -75,7 +75,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         return user
 
     async def remove(
-        self, *, id: Union[UUID, str], db_session: Optional[AsyncSession] = None
+        self, *, id: UUID | str, db_session: AsyncSession | None = None
     ) -> User:
         db_session = db_session or super().get_db().session
         response = await db_session.execute(

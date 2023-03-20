@@ -1,4 +1,3 @@
-from typing import Optional
 from app.schemas.hero_schema import IHeroCreate, IHeroUpdate
 from datetime import datetime
 from app.crud.base_crud import CRUDBase
@@ -9,7 +8,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 class CRUDHero(CRUDBase[Hero, IHeroCreate, IHeroUpdate]):
     async def get_heroe_by_name(
-        self, *, name: str, db_session: Optional[AsyncSession] = None
+        self, *, name: str, db_session: AsyncSession | None = None
     ) -> Hero:
         db_session = db_session or super().get_db().session
         heroe = await db_session.execute(
@@ -22,7 +21,7 @@ class CRUDHero(CRUDBase[Hero, IHeroCreate, IHeroUpdate]):
         *,
         start_time: datetime,
         end_time: datetime,
-        db_session: Optional[AsyncSession] = None,
+        db_session: AsyncSession | None = None,
     ) -> int:
         db_session = db_session or super().get_db().session
         subquery = (

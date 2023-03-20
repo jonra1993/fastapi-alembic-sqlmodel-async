@@ -1,4 +1,4 @@
-from typing import AsyncGenerator, List
+from collections.abc import AsyncGenerator
 from fastapi import Depends, HTTPException, status
 from app.utils.token import get_valid_tokens
 from app.utils.minio_client import MinioClient
@@ -41,7 +41,7 @@ async def get_general_meta() -> IMetaGeneral:
     return IMetaGeneral(roles=current_roles)
 
 
-def get_current_user(required_roles: List[str] = None) -> User:
+def get_current_user(required_roles: list[str] = None) -> User:
     async def current_user(
         token: str = Depends(reusable_oauth2),
         redis_client: Redis = Depends(get_redis_client),
