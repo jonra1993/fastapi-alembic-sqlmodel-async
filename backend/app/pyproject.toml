@@ -6,7 +6,7 @@ authors = ["jonra1993 <jon_ra@hotmail.es>"]
 
 [tool.black]
 line-length = 88
-target-version = [ "py38", "py39", "py310", "py311" ]
+target-version = [ "py310", "py311" ]
 exclude = "((.eggs | .git | .pytest_cache | build | dist))"
 
 [tool.ruff]
@@ -32,10 +32,10 @@ ignore = [
 "__init__.py" = ["F401"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 alembic = "^1.10.2"
 asyncpg = "^0.27.0"
-fastapi = {extras = ["all"], version = "^0.94.1"}
+fastapi = {extras = ["all"], version = "^0.95.0"}
 sqlmodel = "^0.0.8"
 python-jose = "^3.3.0"
 cryptography = "^38.0.3"
@@ -53,6 +53,7 @@ pandas = "^1.5.3"
 openpyxl = "^3.0.10"
 redis = "^4.5.1"
 fastapi-async-sqlalchemy = "^0.3.12"
+oso = "^0.26.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^5.2"

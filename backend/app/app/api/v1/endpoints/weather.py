@@ -42,9 +42,7 @@ def do_sync_work(city: str):
 
 @router.get("/weather_sync/sync1")
 @cache(expire=10)
-async def get_weather_sync_work_by_city(
-    city: str = Query(default="Quito"),
-) -> IGetResponseBase:
+async def get_weather_sync_work_by_city(city: str) -> IGetResponseBase:
     """
     Gets Weather by city using sync work
     """
@@ -56,9 +54,7 @@ async def get_weather_sync_work_by_city(
 
 @router.get("/weather_sync/sync2")
 @cache(expire=10)
-async def get_weather_sync_client_by_city(
-    city: str = Query(default="Quito"),
-) -> IGetResponseBase:
+async def get_weather_sync_client_by_city(city: str) -> IGetResponseBase:
     """
     Gets Weather by city using sync client
     """
@@ -70,9 +66,7 @@ async def get_weather_sync_client_by_city(
 
 @router.get("/weather_async")
 @cache(expire=10)
-async def get_weather_async_client_by_city(
-    city: str = Query(default="Quito"),
-) -> IGetResponseBase:
+async def get_weather_async_client_by_city(city: str) -> IGetResponseBase:
     """
     Gets Weather by city using async client
     """

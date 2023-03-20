@@ -74,6 +74,7 @@ async def read_users_list_by_role_name(
     user_status: IUserStatus
     | None = Query(
         default=IUserStatus.active,
+        title="User status",
         description="User status, It is optional. Default is active",
     ),
     role_name: str = "",
@@ -99,8 +100,8 @@ async def read_users_list_by_role_name(
                 or_(
                     col(User.first_name).ilike(f"%{name}%"),
                     col(User.last_name).ilike(f"%{name}%"),
-                    text(f"'{name}' % concat(last_name, ' ', first_name)"),
-                    text(f"'{name}' % concat(first_name, ' ', last_name)"),
+                    text(f"""'{name}' % concat("User".last_name, ' ', "User".first_name)"""),
+                    text(f"""'{name}' % concat("User".first_name, ' ', "User".last_name)"""),
                 ),
             )
         )

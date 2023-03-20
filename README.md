@@ -1,6 +1,6 @@
 # Async configuration for FastAPI and SQLModel
 
-This is a project template which uses [FastAPI](https://fastapi.tiangolo.com/), [Alembic](https://alembic.sqlalchemy.org/en/latest/) and async [SQLModel](https://sqlmodel.tiangolo.com/) as ORM. It shows a complete async CRUD template using authentication.
+This is a project template which uses [FastAPI](https://fastapi.tiangolo.com/), [Alembic](https://alembic.sqlalchemy.org/en/latest/) and async [SQLModel](https://sqlmodel.tiangolo.com/) as ORM. It shows a complete async CRUD template using authentication. Our implementation utilizes the newest version of FastAPI and incorporates typing hints that are fully compatible with **Python 3.10** and later versions.
 
 ## Set environment variables
 
@@ -270,7 +270,7 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Add Enum sample column
 - [x] Add docstrings
 - [x] Install pg_trgm by code and add a query for smart search of users by name
-- [ ] Upgrade typing (Compatible just with python > 3.10)
+- [x] Upgrade typing (Compatible just with python > 3.10)
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
 - [ ] Add jsonb field on table sample

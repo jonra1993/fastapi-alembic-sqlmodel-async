@@ -5,13 +5,12 @@ from app.utils.exceptions.common_exception import (
     IdNotFoundException,
 )
 from uuid import UUID
-from fastapi import Query
+from fastapi import Query, Path
+from typing_extensions import Annotated
 
 
 async def get_user_role_by_name(
-    role_name: str = Query(
-        default="", description="String compare with name or last name"
-    )
+    role_name: Annotated[str, Query(title="String compare with name or last name")] = ""
 ) -> str:
     role = await crud.role.get_role_by_name(name=role_name)
     if not role:
@@ -20,7 +19,7 @@ async def get_user_role_by_name(
 
 
 async def get_user_role_by_id(
-    role_id: UUID = Query(default="", description="The UUID id of the role")
+    role_id: Annotated[UUID, Path(title="The UUID id of the role")]
 ) -> Role:
     role = await crud.role.get(id=role_id)
     if not role:

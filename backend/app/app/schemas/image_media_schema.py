@@ -3,6 +3,7 @@ from .media_schema import IMediaRead
 from app.utils.partial import optional
 
 
+
 # Image Media
 class IImageMediaCreate(ImageMediaBase):
     pass
