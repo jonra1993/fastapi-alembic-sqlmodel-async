@@ -1,4 +1,6 @@
 import asyncio
+import gc
+from typing import Any
 from fastapi import FastAPI
 from app.api.deps import get_redis_client
 from fastapi_pagination import add_pagination
@@ -18,11 +20,16 @@ async def lifespan(app: FastAPI):
     # Startup
     redis_client = await get_redis_client()
     FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
-    # Load a pre-trained sentiment analysis model
-    sentiment_model = pipeline("sentiment-analysis")
-    text_generator_model = pipeline("text-generation")
-    g.set_default("sentiment_model", sentiment_model)
-    g.set_default("text_generator_model", text_generator_model)
+    # Load a pre-trained sentiment analysis model as a dictionary to an easy cleanup
+    models: dict[str, Any] = {
+        "sentiment_model": pipeline(
+            "sentiment-analysis",
+            model="distilbert-base-uncased-finetuned-sst-2-english",
+        ),
+        "text_generator_model": pipeline("text-generation", model="gpt2"),
+    }
+    g.set_default("sentiment_model", models["sentiment_model"])
+    g.set_default("text_generator_model", models["text_generator_model"])
     g.set_default("blah", 0)
     g.set_default(
         "my_var", "World"
@@ -31,6 +38,9 @@ async def lifespan(app: FastAPI):
     yield
     # shutdown
     await FastAPICache.clear()
+    models.clear()
+    g.cleanup()
+    gc.collect()
 
 
 # Core Application Instance
