@@ -100,8 +100,12 @@ async def read_users_list_by_role_name(
                 or_(
                     col(User.first_name).ilike(f"%{name}%"),
                     col(User.last_name).ilike(f"%{name}%"),
-                    text(f"""'{name}' % concat("User".last_name, ' ', "User".first_name)"""),
-                    text(f"""'{name}' % concat("User".first_name, ' ', "User".last_name)"""),
+                    text(
+                        f"""'{name}' % concat("User".last_name, ' ', "User".first_name)"""
+                    ),
+                    text(
+                        f"""'{name}' % concat("User".first_name, ' ', "User".last_name)"""
+                    ),
                 ),
             )
         )
