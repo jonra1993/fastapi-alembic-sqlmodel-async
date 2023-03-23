@@ -78,7 +78,8 @@ class Globals:
 
         default = self._defaults.get(name, None)
 
-        return default() if callable(default) else default
+        # return default() if callable(default) else default
+        return default
 
     def _ensure_var(self, name: str) -> None:
         """Ensure a ContextVar exists for a variable."""

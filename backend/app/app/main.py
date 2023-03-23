@@ -10,6 +10,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from fastapi_async_sqlalchemy import SQLAlchemyMiddleware
 from contextlib import asynccontextmanager
 from app.utils.fastapi_globals import g, GlobalsMiddleware
+from transformers import pipeline
 
 
 @asynccontextmanager
@@ -17,6 +18,11 @@ async def lifespan(app: FastAPI):
     # Startup
     redis_client = await get_redis_client()
     FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
+    # Load a pre-trained sentiment analysis model
+    sentiment_model = pipeline("sentiment-analysis")
+    text_generator_model = pipeline("text-generation")
+    g.set_default("sentiment_model", sentiment_model)
+    g.set_default("text_generator_model", text_generator_model)
     g.set_default("blah", 0)
     g.set_default(
         "my_var", "World"
