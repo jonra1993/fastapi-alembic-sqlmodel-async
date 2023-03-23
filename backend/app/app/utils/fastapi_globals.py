@@ -56,6 +56,14 @@ class Globals:
         object.__setattr__(self, "_vars", {})
         object.__setattr__(self, "_defaults", {})
 
+    def cleanup(self):
+        """Clear all variables and free memory."""
+
+        self._vars.clear()
+        self._defaults.clear()
+        del self._vars
+        del self._defaults
+
     def set_default(self, name: str, default: Any) -> None:
         """Set a default value for a variable."""
 
