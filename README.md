@@ -271,7 +271,7 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Add docstrings
 - [x] Install pg_trgm by code and add a query for smart search of users by name
 - [x] Upgrade typing (Compatible just with python > 3.10)
-- [x] Add sample transformers NLP modles and its inference
+- [x] Add sample transformers NLP models and use them globally
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
 - [ ] Add jsonb field on table sample
