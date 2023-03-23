@@ -4,7 +4,7 @@
 
 #### 💅 Polish
 
-- `Add cleanup and relese memory of ml modles when the server shutdown`
+- `Add cleanup and relese memory of ml models when the server shutdown`
 
 ## v0.1.14 (2023-03-22)
 
