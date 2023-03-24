@@ -1,4 +1,3 @@
-import asyncio
 import gc
 from typing import Any
 from fastapi import FastAPI
@@ -30,10 +29,6 @@ async def lifespan(app: FastAPI):
     }
     g.set_default("sentiment_model", models["sentiment_model"])
     g.set_default("text_generator_model", models["text_generator_model"])
-    g.set_default("blah", 0)
-    g.set_default(
-        "my_var", "World"
-    )  # Adds global variable to context (It can be useful to load ML models)
     print("startup fastapi")
     yield
     # shutdown
@@ -50,6 +45,8 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     lifespan=lifespan,
 )
+
+
 
 app.add_middleware(
     SQLAlchemyMiddleware,
@@ -85,21 +82,13 @@ class CustomException(Exception):
         self.message = message
 
 
-async def double():
-    await asyncio.sleep(0.01)
-    return g.blah * 2
-
-
 @app.get("/")
 async def root():
     """
     An example "Hello world" FastAPI route.
     """
-    # if oso.is_allowed(user, "read", message):
-    g.blah = g.blah + 1
-    result = await double()
-    world = g.my_var
-    return {"message": f"Hello {world} {result}"}
+    # if oso.is_allowed(user, "read", message):    
+    return {"message": "Hello World"}
 
 
 # Add Routers
