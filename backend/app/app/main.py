@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
 import gc
 from typing import Any
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from app.api.deps import get_redis_client
 from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
@@ -12,7 +13,8 @@ from fastapi_async_sqlalchemy import SQLAlchemyMiddleware
 from contextlib import asynccontextmanager
 from app.utils.fastapi_globals import g, GlobalsMiddleware
 from transformers import pipeline
-
+from app.api.celery_task import increment
+from app.core.celery import celery
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -87,9 +89,39 @@ async def root():
     """
     An example "Hello world" FastAPI route.
     """
-    # if oso.is_allowed(user, "read", message):    
-    return {"message": "Hello World"}
 
+
+    val = increment.delay(1)  #wait
+    increment.delay(9)  #no wait
+    tomorrow = datetime.utcnow() + timedelta(seconds=20)
+    new_tomorrow = increment.apply_async(args=[7], eta=tomorrow)
+    print("task_id", new_tomorrow.task_id)
+    print("result", new_tomorrow.result)
+    print("status", new_tomorrow.status)
+    increment.apply_async(args=[20], expires=datetime.now() + timedelta(seconds=10))
+    
+    
+    # if oso.is_allowed(user, "read", message):    
+    return {"message": new_tomorrow.task_id}
+
+
+@app.get("/2")
+async def root(task_id: Any):
+    """
+    An example "Hello world" FastAPI route.
+    """
+    # Retrieve the result using the task ID
+    async_result = celery.AsyncResult(task_id)
+    print("state", async_result.state)
+    print("ready", async_result.ready())
+    print("successful", async_result.successful())
+    if async_result.ready():
+        print(f"Task {task_id} exists and has completed.")
+        result = async_result.get(timeout=1.0)
+        return {"message": result}
+    else:        
+        raise HTTPException(status_code=404, detail="Task {task_id} does not exist or is still running.")
+    
 
 # Add Routers
 app.include_router(api_router_v1, prefix=settings.API_V1_STR)

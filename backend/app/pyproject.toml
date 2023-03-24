@@ -55,6 +55,9 @@ redis = "^4.5.1"
 fastapi-async-sqlalchemy = "^0.3.12"
 oso = "^0.26.4"
 transformers = {extras = ["torch"], version = "^4.27.2"}
+celery = "^5.2.7"
+celery-sqlalchemy-scheduler = "^0.3.0"
+psycopg2-binary = "^2.9.5"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^5.2"
