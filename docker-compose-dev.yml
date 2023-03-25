@@ -23,31 +23,9 @@ services:
       - "traefik.http.routers.fastapi_local_base.entrypoints=web"
       - "traefik.http.routers.fastapi_local_base.rule=Host(`${LOCAL_1}`, `${LOCAL_2}`, `${EXT_ENDPOINT1}`)"
       - traefik.http.services.fastapi_localservice.loadbalancer.server.port=8000
-  
-  # database:
-  #   image: postgres
-  #   restart: always
-  #   container_name: database
-  #   env_file: ".env"
-  #   #user: root
-  #   volumes:
-  #     - ./db_docker:/var/lib/postgresql/data
-  #     #- ./db_docker:/bitnami/postgresql
-  #     - ./init-multi-postgres-databases.sh:/docker-entrypoint-initdb.d/init-multi-postgres-databases.sh
-  #   ports:
-  #     - 5454:5432  # Remove this on production
-  #   expose:
-  #     - 5432
-  #   environment:
-  #     - POSTGRES_USERNAME=${DATABASE_USER}
-  #     - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-  #     - POSTGRES_DB=fastapi_db
-  #     #- POSTGRES_DATABASE=${DATABASE_NAME},${DATABASE_CELERY_NAME}
-  #     - POSTGRES_MULTIBLE_DATABASES=fastapi_db,celery_schedule_jobs
-  #   #command: ["bash", "-c", "chmod +x /docker-entrypoint-initdb.d/init-multi-postgres-databases.sh && postgres"]
 
   database:
-    image: postgres:latest
+    image: postgres:alpine
     restart: always
     container_name: database
     env_file: ".env"
@@ -64,8 +42,8 @@ services:
     
       
   redis_server:
-    container_name: redis_server
-    image: "redis:alpine"
+    image: redis:alpine
+    container_name: redis_server    
     restart: always
     expose:
       - 6379
@@ -111,7 +89,7 @@ services:
     restart: unless-stopped
     logging:
       driver: none
-    image: "nginx:latest"
+    image: "nginx:alpine"
     expose:
       - 8080
     volumes:
