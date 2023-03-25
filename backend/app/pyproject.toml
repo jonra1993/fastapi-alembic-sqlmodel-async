@@ -32,7 +32,7 @@ ignore = [
 "__init__.py" = ["F401"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = ">3.9,<3.12"
 alembic = "^1.10.2"
 asyncpg = "^0.27.0"
 fastapi = {extras = ["all"], version = "^0.95.0"}
@@ -54,11 +54,11 @@ openpyxl = "^3.0.10"
 redis = "^4.5.1"
 fastapi-async-sqlalchemy = "^0.3.12"
 oso = "^0.26.4"
-transformers = {extras = ["torch"], version = "^4.27.2"}
 celery = "^5.2.7"
 celery-sqlalchemy-scheduler = "^0.3.0"
 psycopg2-binary = "^2.9.5"
-watchdog = "^3.0.0"
+tensorflow-cpu = "^2.12.0"
+transformers = "^4.27.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^5.2"
