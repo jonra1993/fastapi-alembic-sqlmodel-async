@@ -79,6 +79,12 @@ run-prod:
 stop-prod:
 	docker compose down
 
+create-celery-db:
+	if ! docker compose -f docker-compose-dev.yml exec database psql -U ${DATABASE_USER} -h localhost -lqt | cut -d \| -f 1 | grep -qw ${DATABASE_CELERY_NAME}; then \
+		docker compose -f docker-compose-dev.yml exec database createdb -U ${DATABASE_USER} -W ${DATABASE_PASSWORD} -h localhost -O ${DATABASE_USER} ${DATABASE_CELERY_NAME}; \
+	fi
+	
+
 init-db:
 	docker compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py && \
 	echo "Initial data created." 

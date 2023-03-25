@@ -58,6 +58,7 @@ transformers = {extras = ["torch"], version = "^4.27.2"}
 celery = "^5.2.7"
 celery-sqlalchemy-scheduler = "^0.3.0"
 psycopg2-binary = "^2.9.5"
+watchdog = "^3.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^5.2"

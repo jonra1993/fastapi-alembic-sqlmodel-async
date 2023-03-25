@@ -24,24 +24,44 @@ services:
       - "traefik.http.routers.fastapi_local_base.rule=Host(`${LOCAL_1}`, `${LOCAL_2}`, `${EXT_ENDPOINT1}`)"
       - traefik.http.services.fastapi_localservice.loadbalancer.server.port=8000
   
+  # database:
+  #   image: postgres
+  #   restart: always
+  #   container_name: database
+  #   env_file: ".env"
+  #   #user: root
+  #   volumes:
+  #     - ./db_docker:/var/lib/postgresql/data
+  #     #- ./db_docker:/bitnami/postgresql
+  #     - ./init-multi-postgres-databases.sh:/docker-entrypoint-initdb.d/init-multi-postgres-databases.sh
+  #   ports:
+  #     - 5454:5432  # Remove this on production
+  #   expose:
+  #     - 5432
+  #   environment:
+  #     - POSTGRES_USERNAME=${DATABASE_USER}
+  #     - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+  #     - POSTGRES_DB=fastapi_db
+  #     #- POSTGRES_DATABASE=${DATABASE_NAME},${DATABASE_CELERY_NAME}
+  #     - POSTGRES_MULTIBLE_DATABASES=fastapi_db,celery_schedule_jobs
+  #   #command: ["bash", "-c", "chmod +x /docker-entrypoint-initdb.d/init-multi-postgres-databases.sh && postgres"]
+
   database:
-    image: bitnami/postgresql:13.3.0
+    image: postgres:latest
     restart: always
     container_name: database
     env_file: ".env"
-    user: root
-    volumes:
-      - ./db_docker:/bitnami/postgresql
     ports:
       - 5454:5432  # Remove this on production
     expose:
       - 5432
+    volumes:
+      - ./db_docker:/var/lib/postgresql/data
+      - ./create-dbs.sql:/docker-entrypoint-initdb.d/create-dbs.sql
     environment:
-      - POSTGRES_USERNAME=${DATABASE_USER}
+      - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-      - POSTGRES_DATABASE=${DATABASE_NAME}
-      - POSTGRES_HOST_AUTH_METHOD= "trust"
-      - POSTGRESQL_POSTGRES_PASSWORD= ${DATABASE_PASSWORD}
+    
       
   redis_server:
     container_name: redis_server
@@ -59,9 +79,7 @@ services:
       context: ./backend      
       args:
         INSTALL_DEV: ${INSTALL_DEV-false}
-    command: "celery -A app.core.celery worker -l info "
-    # celery -A my_celery_app worker --without-heartbeat --without-gossip --without-mingle
-    # command: " watchmedo auto-restart --directory=./ --pattern=*.py --recursive -- celery -A app.core.worker worker -l info "
+    command: "watchfiles 'celery -A app.core.celery worker -l info' "
     volumes:
       - ./backend/app:/code
       # - "${EB_LOG_BASE_DIR}/php-app:/var/log/celery"
@@ -86,6 +104,7 @@ services:
       - database
       - redis_server
     env_file: .env
+  
 
   nginx_server:
     container_name: nginx_server
