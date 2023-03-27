@@ -15,7 +15,7 @@ from fastapi_async_sqlalchemy import SQLAlchemyMiddleware
 from contextlib import asynccontextmanager
 from app.utils.fastapi_globals import g, GlobalsMiddleware
 from transformers import pipeline
-from app.api.celery_task import increment
+from app.api.celery_task import increment, predict_transformers_pipeline
 from app.core.celery import celery
 from celery_sqlalchemy_scheduler.models import (
     PeriodicTask,
@@ -147,7 +147,7 @@ async def root(celery_session=Depends(get_job_db)):
         ),
         name="new_uuid",
         args="[8]",
-        task="increment_a_value",
+        task="tasks.increment",
         one_off=True,
     )
     celery_session.add(periodic_task)
@@ -185,7 +185,7 @@ async def root(celery_session=Depends(get_job_db)):
         interval=IntervalSchedule(every=10, period=IntervalSchedule.SECONDS),
         name="new_uuid_new_interval",
         args="[8]",
-        task="increment_a_value",
+        task="tasks.increment",
     )
     celery_session.add(periodic_task)
     celery_session.commit()
@@ -205,6 +205,8 @@ async def root(celery_session=Depends(get_job_db)):
     celery_session.close()
 
     return {"message": "hello"}
+
+
 
 # Add Routers
 app.include_router(api_router_v1, prefix=settings.API_V1_STR)

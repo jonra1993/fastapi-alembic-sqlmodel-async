@@ -11,7 +11,7 @@ connect_args = {"check_same_thread": False}
 
 engine = create_async_engine(
     settings.ASYNC_DATABASE_URI,
-    echo=True,
+    # echo=True,
     future=True,
     pool_size=POOL_SIZE,
     max_overflow=64,
