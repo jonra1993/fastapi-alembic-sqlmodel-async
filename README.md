@@ -272,12 +272,14 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Install pg_trgm by code and add a query for smart search of users by name
 - [x] Upgrade typing (Compatible just with python > 3.10)
 - [x] Add sample transformers NLP models and use them globally
+- [x] Add Celery samples for tasks, and schedule tasks
+- [ ] Add documentation and explanation Celery
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
 - [ ] Add jsonb field on table sample
 - [ ] Add AuthN and AuthZ using Keycloak
 - [ ] Add instructions on doc for production deployment using github actions and dockerhub (CI/CD)
-- [ ] Add Celery sample for tasks
+
 - [ ] Convert repo into template using cookiecutter
 
 

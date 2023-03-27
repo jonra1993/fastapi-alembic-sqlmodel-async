@@ -15,12 +15,15 @@ class Settings(BaseSettings):
     DATABASE_HOST: str
     DATABASE_PORT: int | str
     DATABASE_NAME: str
+    DATABASE_CELERY_NAME: str = "celery_schedule_jobs"
     REDIS_HOST: str
     REDIS_PORT: str
     DB_POOL_SIZE = 83
     WEB_CONCURRENCY = 9
     POOL_SIZE = max(DB_POOL_SIZE // WEB_CONCURRENCY, 5)
-    ASYNC_DATABASE_URI: str | None
+    ASYNC_DATABASE_URI: PostgresDsn | None
+    SYNC_CELERY_DATABASE_URI: str | None
+    SYNC_CELERY_BEAT_DATABASE_URI: str | None
 
     @validator("ASYNC_DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
@@ -33,6 +36,36 @@ class Settings(BaseSettings):
             host=values.get("DATABASE_HOST"),
             port=str(values.get("DATABASE_PORT")),
             path=f"/{values.get('DATABASE_NAME') or ''}",
+        )
+
+    @validator("SYNC_CELERY_DATABASE_URI", pre=True)
+    def assemble_celery_db_connection(
+        cls, v: str | None, values: dict[str, Any]
+    ) -> Any:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme="db+postgresql",
+            user=values.get("DATABASE_USER"),
+            password=values.get("DATABASE_PASSWORD"),
+            host=values.get("DATABASE_HOST"),
+            port=str(values.get("DATABASE_PORT")),
+            path=f"/{values.get('DATABASE_CELERY_NAME') or ''}",
+        )
+
+    @validator("SYNC_CELERY_BEAT_DATABASE_URI", pre=True)
+    def assemble_celery_beat_db_connection(
+        cls, v: str | None, values: dict[str, Any]
+    ) -> Any:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme="postgresql+psycopg2",
+            user=values.get("DATABASE_USER"),
+            password=values.get("DATABASE_PASSWORD"),
+            host=values.get("DATABASE_HOST"),
+            port=str(values.get("DATABASE_PORT")),
+            path=f"/{values.get('DATABASE_CELERY_NAME') or ''}",
         )
 
     FIRST_SUPERUSER_EMAIL: EmailStr

@@ -24,21 +24,21 @@ services:
       - traefik.http.services.fastapi_localservice.loadbalancer.server.port=8000
   
   database:
-    image: bitnami/postgresql:13.3.0
+    image: postgres:alpine
     restart: always
     container_name: database
     env_file: ".env"
-    user: root
-    volumes:
-      - ./db_docker:/bitnami/postgresql
+    ports:
+      - 5454:5432  # Remove this on production
     expose:
       - 5432
+    volumes:
+      - ./db_docker:/var/lib/postgresql/data
+      - ./create-dbs.sql:/docker-entrypoint-initdb.d/create-dbs.sql
     environment:
-      - POSTGRES_USERNAME=${DATABASE_USER}
+      - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-      - POSTGRES_DATABASE=${DATABASE_NAME}
-      - POSTGRES_HOST_AUTH_METHOD= "trust"
-      - POSTGRESQL_POSTGRES_PASSWORD= ${DATABASE_PASSWORD}
+
       
   redis_server:
     container_name: redis_server
@@ -48,12 +48,48 @@ services:
       - 6379
     env_file: .env
 
+
+  celery_worker:
+    container_name: celery_worker
+    restart: always
+    # platform: linux/arm64/v8
+    build:
+      context: ./backend      
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+    command: "watchfiles 'celery -A app.core.celery worker -l info' "
+    volumes:
+      - ./backend/app:/code
+      # - "${EB_LOG_BASE_DIR}/php-app:/var/log/celery"
+    depends_on:
+      - database
+      - redis_server
+    env_file: .env
+  
+  celery_beat:  #Good for crontab and schedule tasks
+    container_name: celery_beat
+    restart: always
+    # platform: linux/arm64/v8
+    build:
+      context: ./backend
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+    command: celery -A app.core.celery beat -l info -S celery_sqlalchemy_scheduler.schedulers:DatabaseScheduler -l info
+    volumes:
+      - ./backend/app:/code
+      # - "${EB_LOG_BASE_DIR}/php-app:/var/log/celery-beat"
+    depends_on:
+      - database
+      - redis_server
+    env_file: .env
+
+
   nginx_server:
     container_name: nginx_server
     restart: unless-stopped
     logging:
       driver: none
-    image: "nginx:latest"
+    image: "nginx:alpine"
     expose:
       - 8080
     volumes:
