@@ -1,5 +1,4 @@
-from typing import Any
-from uuid import UUID
+from datetime import datetime, timedelta
 from app.api.celery_task import predict_transformers_pipeline
 from fastapi import APIRouter, HTTPException
 from app.utils.fastapi_globals import g
@@ -40,7 +39,25 @@ async def text_generation_prediction_batch_task(
     """
     Async batch task for text generation using a NLP model from transformers libray
     """
-    prection_task = predict_transformers_pipeline.delay(prompt)  # wait
+    prection_task = predict_transformers_pipeline.delay(prompt)
+    return create_response(
+        message="Prediction got succesfully", data={"task_id": prection_task.task_id}
+    )
+
+
+@router.post("/text_generation_prediction_batch_task_after_some_seconds")
+async def text_generation_prediction_batch_task_after_some_seconds(
+    prompt: str = "Batman is awesome because", seconds: float = 5
+) -> IPostResponseBase:
+    """
+    Async batch task for text generation using a NLP model from transformers libray
+
+    It is executed after x number of seconds
+    """
+    delay_elapsed = datetime.utcnow() + timedelta(seconds=seconds)
+    prection_task = predict_transformers_pipeline.apply_async(
+        args=[prompt], eta=delay_elapsed
+    )
     return create_response(
         message="Prediction got succesfully", data={"task_id": prection_task.task_id}
     )

@@ -24,7 +24,6 @@ from app.schemas.response_schema import (
 )
 from app.schemas.role_schema import IRoleEnum
 from app.core.authz import is_authorized
-from fastapi.encoders import jsonable_encoder
 
 router = APIRouter()
 
@@ -70,7 +69,7 @@ async def get_hero_by_id(
     hero = await crud.hero.get(id=hero_id)
     if not hero:
         raise IdNotFoundException(Hero, hero_id)
-    
+
     print_hero.delay(hero.id)
     return create_response(data=hero)
 

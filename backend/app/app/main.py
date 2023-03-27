@@ -1,9 +1,6 @@
-from datetime import datetime, timedelta
 import gc
-import json
 from typing import Any
-from app.deps.celery_deps import get_job_db
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import FastAPI
 from app.api.deps import get_redis_client
 from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
@@ -15,14 +12,6 @@ from fastapi_async_sqlalchemy import SQLAlchemyMiddleware
 from contextlib import asynccontextmanager
 from app.utils.fastapi_globals import g, GlobalsMiddleware
 from transformers import pipeline
-from app.api.celery_task import increment, predict_transformers_pipeline
-from app.core.celery import celery
-from celery_sqlalchemy_scheduler.models import (
-    PeriodicTask,
-    IntervalSchedule,
-    CrontabSchedule,
-)
-from sqlmodel import select
 
 
 @asynccontextmanager
@@ -97,115 +86,8 @@ async def root():
     """
     An example "Hello world" FastAPI route.
     """
-
-    val = increment.delay(1)  # wait
-    increment.delay(9)  # no wait
-    tomorrow = datetime.utcnow() + timedelta(seconds=20)
-    new_tomorrow = increment.apply_async(args=[8], eta=tomorrow)
-    print("task_id", new_tomorrow.task_id)
-    print("result", new_tomorrow.result)
-    print("status", new_tomorrow.status)
-    increment.apply_async(args=[20], expires=datetime.now() + timedelta(seconds=10))
-
     # if oso.is_allowed(user, "read", message):
-    return {"message": new_tomorrow.task_id}
-
-
-@app.get("/2")
-async def root(task_id: Any):
-    """
-    An example "Hello world" FastAPI route.
-    """
-    # Retrieve the result using the task ID
-    async_result = celery.AsyncResult(task_id)
-
-    if async_result.ready():
-        if not async_result.successful():
-            raise HTTPException(
-                status_code=404,
-                detail=f"Task {task_id} with state {async_result.state}.",
-            )
-
-        result = async_result.get(timeout=1.0)
-        return {"message": result}
-    else:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Task {task_id} does not exist or is still running.",
-        )
-
-
-@app.get("/3")
-async def root(celery_session=Depends(get_job_db)):
-    """
-    An example "Hello world" FastAPI route.
-    """
-    # Retrieve the result using the task ID
-    periodic_task = PeriodicTask(
-        crontab=CrontabSchedule(
-            hour=14, minute=47, day_of_month=24, month_of_year=3, timezone="UTC"
-        ),
-        name="new_uuid",
-        args="[8]",
-        task="tasks.increment",
-        one_off=True,
-    )
-    celery_session.add(periodic_task)
-    celery_session.commit()
-    celery_session.close()
-
-    return {"message": "hello"}
-
-
-@app.get("/4")
-async def root(celery_session=Depends(get_job_db)):
-    """
-    An example "Hello world" FastAPI route.
-    """
-    # Retrieve the result using the task ID
-    query = select(PeriodicTask).where(PeriodicTask.name == "new_uuid")
-    periodic_task = celery_session.execute(query).scalar_one_or_none()
-    
-    periodic_task.crontab = CrontabSchedule(
-            hour=19, minute=58, day_of_month=24, month_of_year=3, timezone="UTC"
-        )
-    celery_session.add(periodic_task)
-    celery_session.commit()
-    celery_session.close()
-
-    return {"message": "hello"}
-
-@app.get("/5")
-async def root(celery_session=Depends(get_job_db)):
-    """
-    An example "Hello world" FastAPI route.
-    """
-    # Retrieve the result using the task ID
-    periodic_task = PeriodicTask(
-        interval=IntervalSchedule(every=10, period=IntervalSchedule.SECONDS),
-        name="new_uuid_new_interval",
-        args="[8]",
-        task="tasks.increment",
-    )
-    celery_session.add(periodic_task)
-    celery_session.commit()
-    celery_session.close()
-
-@app.get("/6")
-async def root(celery_session=Depends(get_job_db)):
-    """
-    An example "Hello world" FastAPI route.
-    """
-    # Retrieve the result using the task ID
-    query = select(PeriodicTask).where(PeriodicTask.name == "new_uuid_new_interval")
-    periodic_task = celery_session.execute(query).scalar_one_or_none()
-    periodic_task.enabled = False
-    celery_session.add(periodic_task)
-    celery_session.commit()
-    celery_session.close()
-
-    return {"message": "hello"}
-
+    return {"message": "Hello World"}
 
 
 # Add Routers

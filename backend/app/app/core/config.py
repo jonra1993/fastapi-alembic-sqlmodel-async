@@ -39,7 +39,9 @@ class Settings(BaseSettings):
         )
 
     @validator("SYNC_CELERY_DATABASE_URI", pre=True)
-    def assemble_celery_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
+    def assemble_celery_db_connection(
+        cls, v: str | None, values: dict[str, Any]
+    ) -> Any:
         if isinstance(v, str):
             return v
         return PostgresDsn.build(
@@ -50,9 +52,11 @@ class Settings(BaseSettings):
             port=str(values.get("DATABASE_PORT")),
             path=f"/{values.get('DATABASE_CELERY_NAME') or ''}",
         )
-    
+
     @validator("SYNC_CELERY_BEAT_DATABASE_URI", pre=True)
-    def assemble_celery_beat_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
+    def assemble_celery_beat_db_connection(
+        cls, v: str | None, values: dict[str, Any]
+    ) -> Any:
         if isinstance(v, str):
             return v
         return PostgresDsn.build(
