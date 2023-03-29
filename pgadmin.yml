@@ -3,7 +3,7 @@ version: '3.8'
 services:
   pgadmin:
     container_name: pgadmin
-    image: dpage/pgadmin4:4.16
+    image: dpage/pgadmin4
     restart: always
     volumes:
       - ./pgadmin/servers.json:/pgadmin4/servers.json      

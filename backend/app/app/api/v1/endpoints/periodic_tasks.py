@@ -17,17 +17,15 @@ async def create_periodic_task_by_crontab(celery_session=Depends(get_job_db)):
     """
     periodic_task = PeriodicTask(
         crontab=CrontabSchedule(
-            hour=14, minute=47, day_of_month=24, month_of_year=3, timezone="UTC"
+            hour=22, minute=2, day_of_month=29, month_of_year=3, timezone="UTC"
         ),
-        name="new_interval_periodic_task_crontab",
+        name="new_interval_periodic_task_crontab_2",
         args="[9]",
         task="tasks.increment",
         one_off=False,
     )
     celery_session.add(periodic_task)
     celery_session.commit()
-    celery_session.close()
-
     return {"message": "Task created"}
 
 
@@ -37,16 +35,14 @@ async def update_periodic_task_by_crontab(celery_session=Depends(get_job_db)):
     Updates an existing periodic task that runs at specified intervals using crontab syntax.
     """
     query = select(PeriodicTask).where(
-        PeriodicTask.name == "new_interval_periodic_task_crontab"
+        PeriodicTask.name == "new_interval_periodic_task_crontab_2"
     )
     periodic_task = celery_session.execute(query).scalar_one_or_none()
     periodic_task.crontab = CrontabSchedule(
-        hour=19, minute=58, day_of_month=24, month_of_year=3, timezone="UTC"
+        hour=22, minute=14, day_of_month=29, month_of_year=3, timezone="UTC"
     )
     celery_session.add(periodic_task)
     celery_session.commit()
-    celery_session.close()
-
     return {"message": "Task updated"}
 
 
@@ -62,8 +58,6 @@ async def remove_periodic_task_by_crontab(celery_session=Depends(get_job_db)):
     periodic_task.enabled = False
     celery_session.add(periodic_task)
     celery_session.commit()
-    celery_session.close()
-
     return {"message": "Task removed"}
 
 
@@ -82,8 +76,6 @@ async def create_periodic_task_by_interval(
     )
     celery_session.add(periodic_task)
     celery_session.commit()
-    celery_session.close()
-
     return {"message": "Periodic task created"}
 
 
@@ -104,8 +96,6 @@ async def update_periodic_task_by_interval(
     )
     celery_session.add(periodic_task)
     celery_session.commit()
-    celery_session.close()
-
     return {"message": "Periodic task updated"}
 
 
@@ -122,6 +112,4 @@ async def remove_periodic_task_by_interval(celery_session=Depends(get_job_db)):
     periodic_task.enabled = False
     celery_session.add(periodic_task)
     celery_session.commit()
-    celery_session.close()
-
     return {"message": "Periodic task removed"}
