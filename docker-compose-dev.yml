@@ -25,22 +25,24 @@ services:
       - traefik.http.services.fastapi_localservice.loadbalancer.server.port=8000
 
   database:
-    image: postgres:alpine
+    image: bitnami/postgresql:13.3.0
     restart: always
     container_name: database
     env_file: ".env"
+    user: root
+    volumes:
+      - ./db_docker:/bitnami/postgresql
+      - ./create-dbs.sql:/docker-entrypoint-initdb.d/create-dbs.sql
     ports:
-      - 5454:5432  # Remove this on production
+      - 5454:5432 # Remove this on production
     expose:
       - 5432
-    volumes:
-      - ./db_docker:/var/lib/postgresql/data
-      - ./create-dbs.sql:/docker-entrypoint-initdb.d/create-dbs.sql
     environment:
-      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_USERNAME=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-    
-      
+      - POSTGRES_DATABASE=${DATABASE_NAME}
+      - POSTGRES_HOST_AUTH_METHOD= "trust"
+
   redis_server:
     image: redis:alpine
     container_name: redis_server    
