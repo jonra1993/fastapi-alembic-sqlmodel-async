@@ -67,6 +67,22 @@ class Settings(BaseSettings):
             path=f"/{values.get('DATABASE_CELERY_NAME') or ''}",
         )
 
+    ASYNC_CELERY_BEAT_DATABASE_URI: str | None
+    @validator("ASYNC_CELERY_BEAT_DATABASE_URI", pre=True)
+    def assemble_async_celery_beat_db_connection(
+        cls, v: str | None, values: dict[str, Any]
+    ) -> Any:
+        if isinstance(v, str):
+            return v
+        return PostgresDsn.build(
+            scheme="postgresql+asyncpg",
+            user=values.get("DATABASE_USER"),
+            password=values.get("DATABASE_PASSWORD"),
+            host=values.get("DATABASE_HOST"),
+            port=str(values.get("DATABASE_PORT")),
+            path=f"/{values.get('DATABASE_CELERY_NAME') or ''}",
+        )
+
     FIRST_SUPERUSER_EMAIL: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
 

@@ -47,7 +47,7 @@ async def update_periodic_task_by_crontab(celery_session=Depends(get_job_db)):
     celery_session.commit()
     celery_session.close()
 
-    return {"message": "Task removed"}
+    return {"message": "Task updated"}
 
 
 @router.delete("/by_crontab")

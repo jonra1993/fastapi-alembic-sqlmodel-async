@@ -255,6 +255,7 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [Styling and makefiles](https://github.com/RasaHQ/rasa).
 - [awesome-fastapi](https://github.com/mjhea0/awesome-fastapi).
 - [Serving ML Models in Production with FastAPI and Celery](https://towardsdatascience.com/deploying-ml-models-in-production-with-fastapi-and-celery-7063e539a5db)
+- [Database detup](https://christophergs.com/tutorials/ultimate-fastapi-tutorial-pt-7-sqlalchemy-database-setup/)
 
 ## TODO List:
 
@@ -289,9 +290,11 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Upgrade typing (Compatible just with python > 3.10)
 - [x] Add sample transformers NLP models and use them globally
 - [x] Add Celery samples for tasks, and schedule tasks
+- [x] Add Celery samples for tasks, and schedule tasks
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
 - [ ] Add jsonb field on table sample
+- [ ] Make that celery-sqlalchemy-scheduler works async
 - [ ] Add AuthN and AuthZ using Keycloak
 - [ ] Add instructions on doc for production deployment using github actions and dockerhub (CI/CD)
 
