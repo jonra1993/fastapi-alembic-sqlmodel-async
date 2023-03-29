@@ -111,6 +111,21 @@ This template allows users can upload their photos. The images are stored using 
   <img src="static/minio.png" align="center"/>
 </p>
 
+## Celery
+[Celery](https://docs.celeryq.dev/en/stable/getting-started/introduction.html) is a distributed task queue that allows developers to run asynchronous tasks in their applications. It is particularly useful for tasks that are time-consuming, require heavy computation or access external services, and can be run independently of the main application. It also offers features such as task scheduling, task prioritization, and retries in case of failure.
+
+[Celery Beat](https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html) is an additional component of Celery that allows developers to schedule periodic tasks and intervals for their Celery workers. It provides an easy-to-use interface for defining task schedules and supports several scheduling options such as crontab, interval, and relative.
+
+You can see the architecture used in this project which uses Redis as celery broker and the current postgres database as celery backend. It also uses [celery-sqlalchemy-scheduler](https://github.com/AngelLiang/celery-sqlalchemy-scheduler) to store celery beats task into database so they can mutated.
+
+Within the **natural_language** endpoints, you can access a sample application that demonstrates not only synchronous prediction of machine learning models but also batch prediction. Additionally, there are examples of how to schedule periodic tasks using Celery Beat in the **periodic_tasks** endpoints.
+
+
+<p align="center">
+  <img src="static/celery_diagram.png" align="center"/>
+</p>
+
+
 ## Run Alembic migrations (Only if you change the DB model)
 
 *Using docker compose command*
@@ -239,6 +254,8 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [pgadmin Makefile](https://gist.github.com/alldevic/b2a0573e5464fe91fd118024f33bcbaa).
 - [Styling and makefiles](https://github.com/RasaHQ/rasa).
 - [awesome-fastapi](https://github.com/mjhea0/awesome-fastapi).
+- [Serving ML Models in Production with FastAPI and Celery](https://towardsdatascience.com/deploying-ml-models-in-production-with-fastapi-and-celery-7063e539a5db)
+- [Database detup](https://christophergs.com/tutorials/ultimate-fastapi-tutorial-pt-7-sqlalchemy-database-setup/)
 
 ## TODO List:
 
@@ -273,10 +290,11 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Upgrade typing (Compatible just with python > 3.10)
 - [x] Add sample transformers NLP models and use them globally
 - [x] Add Celery samples for tasks, and schedule tasks
-- [ ] Add documentation and explanation Celery
+- [x] Add Celery samples for tasks, and schedule tasks
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
 - [ ] Add jsonb field on table sample
+- [ ] Make that celery-sqlalchemy-scheduler works async
 - [ ] Add AuthN and AuthZ using Keycloak
 - [ ] Add instructions on doc for production deployment using github actions and dockerhub (CI/CD)
 

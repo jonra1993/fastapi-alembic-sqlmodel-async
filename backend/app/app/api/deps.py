@@ -9,7 +9,7 @@ from pydantic import ValidationError
 from app import crud
 from app.core import security
 from app.core.config import settings
-from app.db.session import SessionLocal
+from app.db.session import SessionLocal, SessionLocalCelery
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.schemas.common_schema import IMetaGeneral, TokenType
 import redis.asyncio as aioredis
@@ -33,6 +33,11 @@ async def get_redis_client() -> Redis:
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
+        yield session
+
+
+async def get_jobs_db() -> AsyncGenerator[AsyncSession, None]:
+    async with SessionLocalCelery() as session:
         yield session
 
 
