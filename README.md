@@ -79,7 +79,7 @@ This starts pgamin in [http://localhost:15432](http://localhost:15432).
   <img src="static/container_architecture.png" align="center"/>
 </p>
 
-As this project uses [traefik](https://doc.traefik.io/traefik/routing/routers/) as a reverse proxy, which uses namespaces routing, you can access the documentation with the following path [http://fastapi.localhost/docs](http://fastapi.localhost/docs)
+As this project uses [Caddy](https://caddyserver.com/) as a reverse proxy, which uses namespaces routing, you can access the documentation with the following path [http://fastapi.localhost/docs](http://fastapi.localhost/docs)
 
 ## Preview
   
@@ -90,18 +90,8 @@ As this project uses [traefik](https://doc.traefik.io/traefik/routing/routers/) 
   <img src="static/2.png" align="center"/>
 </p>
 
-## Traefik Dashboard
-Traefik has been configurated as a reverse proxy on the ingress of the project; you can access Traefik Dashboard using the following link [http://traefik.localhost/](http://traefik.localhost/). You should use **username: test** and **pass: test**. If you want to change the password, you can find more information on how to do it [here](https://doc.traefik.io/traefik/operations/api/)
-
-<p align="center">
-  <img src="static/traefik1.png" align="center"/>
-</p>
-<p align="center">
-  <img src="static/traefik2.png" align="center"/>
-</p>
-
 ## Static files
-All files on static folder will be served by nginx container as static files. You can check it with this link [http://nginx.localhost/1.png](http://nginx.localhost/1.png)
+All files on static folder will be served by Caddy container as static files. You can check it with this link [http://static.localhost](http://static.localhost)
 
 ## Minio server
 This template allows users can upload their photos. The images are stored using the open source Object Storage Service (OSS) [minio](https://min.io/), which provides storage of images using buckets in a secure way through presigned URLs.
@@ -265,8 +255,7 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Add JWT authentication
 - [x] Add Pagination
 - [x] Add User birthday field with timezone
-- [x] Add reverse proxy (traefik) with docker compose
-- [x] Add static server with nginx
+- [x] Add static server
 - [x] Add basic RBAC (Role base access control)
 - [x] Add sample heroes, teams and groups on init db
 - [x] Add cache configuration using fastapi-cache2 and redis
@@ -290,7 +279,7 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Upgrade typing (Compatible just with python > 3.10)
 - [x] Add sample transformers NLP models and use them globally
 - [x] Add Celery samples for tasks, and schedule tasks
-- [ ] Migrate from traefik reverse proxy to Caddy reverse proxy for automatic ssl
+- [x] Migrate from traefik reverse proxy to Caddy reverse proxy for automatic ssl
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
 - [ ] Add jsonb field on table sample

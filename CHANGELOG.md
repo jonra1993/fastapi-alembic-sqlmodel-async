@@ -1,5 +1,12 @@
 # Project Changelog
 
+
+## v0.1.17 (2023-04-01)
+
+#### 💅 Polish
+
+- `Migrate from traefik to Caddy as reverse proxy server`
+
 ## v0.1.16 (2023-03-25)
 
 #### 💅 Polish
