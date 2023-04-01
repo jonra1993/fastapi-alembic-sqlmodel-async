@@ -14,14 +14,7 @@ services:
     depends_on:
       - database
     links:
-      - traefik-proxy:storage.localhost
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.fastapi_local.entrypoints=web"
-      - "traefik.http.routers.fastapi_local.rule=Host(`fastapi.${LOCAL_1}`, `fastapi.${LOCAL_2}`, `fastapi.${EXT_ENDPOINT1}`)"
-      - "traefik.http.routers.fastapi_local_base.entrypoints=web"
-      - "traefik.http.routers.fastapi_local_base.rule=Host(`${LOCAL_1}`, `${LOCAL_2}`, `${EXT_ENDPOINT1}`)"
-      - traefik.http.services.fastapi_localservice.loadbalancer.server.port=8000
+      - caddy_reverse_proxy:storage.localhost
   
   database:
     image: bitnami/postgresql:13.3.0
@@ -87,25 +80,6 @@ services:
     env_file: .env
 
 
-  nginx_server:
-    container_name: nginx_server
-    restart: unless-stopped
-    logging:
-      driver: none
-    image: "nginx:alpine"
-    expose:
-      - 8080
-    volumes:
-      - ./static:/code/static
-      - ./nginx-config-files/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx-config-files/app.nginx.template:/etc/nginx/templates/app.nginx.template
-      - "${EB_LOG_BASE_DIR:-./nginx-config-files}/nginx-proxy:/var/log/nginx"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nginx_local.entrypoints=web"
-      - "traefik.http.routers.nginx_local.rule=Host(`nginx.${LOCAL_1}`, `nginx.${LOCAL_2}`, `nginx.${EXT_ENDPOINT1}`)"
-      - traefik.http.services.nginx_local_service.loadbalancer.server.port=8080
-
   minio_server:
     image: minio/minio:latest
     restart: always
@@ -119,34 +93,26 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
       MINIO_BROWSER_REDIRECT_URL: http://stash.localhost
-    command: "server /data --console-address ':9090'"    
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.minio.entrypoints=web
-      - traefik.http.routers.minio.service=minio
-      - traefik.http.routers.minio.rule=Host(`storage.${LOCAL_1}`, `storage.${LOCAL_2}`, `storage.${EXT_ENDPOINT1}`)      
-      - traefik.http.services.minio.loadbalancer.server.port=9000
-      - traefik.http.routers.minio-console.entrypoints=web
-      - traefik.http.routers.minio-console.service=minio-console
-      - traefik.http.routers.minio-console.rule=Host(`stash.${LOCAL_1}`, `stash.${LOCAL_2}`, `stash.${EXT_ENDPOINT1}`)      
-      - traefik.http.services.minio-console.loadbalancer.server.port=9090
+    command: "server /data --console-address ':9090'"  
 
-  traefik-proxy:
-    container_name: traefik-proxy
+  caddy_reverse_proxy:
+    container_name: caddy_reverse_proxy
+    image: caddy:alpine
     restart: always
-    image: "traefik:latest"
-    command:
-      - "--providers.docker=true"
     ports:
-      - "80:80"
+      - 80:80
+      - 8080:8080
+      - 443:443
+    environment:
+      - EXT_ENDPOINT1=${EXT_ENDPOINT1}
+      - LOCAL_1=${LOCAL_1}
+      - LOCAL_2=${LOCAL_2}
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - ./traefik/traefik.yml:/traefik.yml:ro
-      - ./traefik/.htpasswd:/.htpasswd
-      - "${EB_LOG_BASE_DIR:-./traefik}/traefik-proxy:/logs"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.${LOCAL_1}`, `traefik.${LOCAL_2}`, `traefik.${EXT_ENDPOINT1}`)"
-      - "traefik.http.routers.dashboard.service=api@internal"
-      - "traefik.http.routers.dashboard.middlewares=auth"
-      - "traefik.http.middlewares.auth.basicauth.usersfile=/.htpasswd"
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ./static:/code/static
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
