@@ -1,3 +1,4 @@
+from typing import Annotated
 from fastapi import APIRouter, Query
 from fastapi_cache.decorator import cache
 from asyncer import asyncify, create_task_group, syncify
@@ -79,7 +80,7 @@ async def get_weather_async_client_by_city(city: str) -> IGetResponseBase:
 @router.get("/weather_async_list/sequencial")
 @cache(expire=10)
 async def get_weather_async_sequencial_by_cities(
-    cities: list[str] = Query(default=["Quito", "Miami", "Barcelona"]),
+    cities: Annotated[list[str], Query(title="Cities")] = ["Quito", "Miami", "Barcelona"],
 ) -> IGetResponseBase:
     """
     Gets Weather by list of cities
@@ -98,7 +99,7 @@ async def get_weather_async_sequencial_by_cities(
 @router.get("/weather_async_list/concurrent")
 @cache(expire=10)
 async def get_weather_async_concurrent_by_cities(
-    cities: list[str] = Query(default=["Quito", "Miami", "Barcelona"]),
+    cities: Annotated[list[str], Query(title="Cities")] = ["Quito", "Miami", "Barcelona"],
 ) -> IGetResponseBase:
     """
     Gets Weather by list of cities

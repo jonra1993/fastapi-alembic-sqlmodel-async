@@ -1,3 +1,4 @@
+from typing import Annotated
 from app import crud
 from app.api import deps
 from app.schemas.hero_schema import (
@@ -24,10 +25,12 @@ class FileExtensionEnum(str, Enum):
 
 @router.get("/users_list")
 async def export_users_list(
-    file_extension: FileExtensionEnum = Query(
-        default=FileExtensionEnum.csv,
-        description="This is the exported file format",
-    ),
+    file_extension: Annotated[
+        FileExtensionEnum,
+        Query(
+            description="This is the exported file format",
+        ),
+    ] = FileExtensionEnum.csv,
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin])
     ),

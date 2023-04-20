@@ -1,3 +1,4 @@
+from typing import Annotated
 from app import crud
 from app.schemas.response_schema import IGetResponseBase, create_response
 from datetime import datetime, timedelta, date
@@ -27,8 +28,8 @@ async def get_a_normal_response() -> IGetResponseBase[str | datetime]:
 @router.get("/heroe_count/cached")
 @cache(expire=20)
 async def get_count_of_heroes_created_cached(
-    start_date: date = Query(default=(datetime.now() - timedelta(days=7)).date()),
-    end_date: date = Query(default=datetime.now().date()),
+    start_date: Annotated[date, Query(title="start date for get data")] = (datetime.now() - timedelta(days=7)).date(),
+    end_date: Annotated[date, Query(title="end date for get data")] = datetime.now().date(),
 ) -> IGetResponseBase[int]:
     """
     Gets count of heroes created on a base time (Cached response)
@@ -42,8 +43,8 @@ async def get_count_of_heroes_created_cached(
 
 @router.get("/heroe_count/no_cached")
 async def get_count_of_heroes_created_no_cached(
-    start_date: date = Query(default=(datetime.now() - timedelta(days=7)).date()),
-    end_date: date = Query(default=datetime.now().date()),
+    start_date: Annotated[date, Query(title="start date for get data")] = (datetime.now() - timedelta(days=7)).date(),
+    end_date: Annotated[date, Query(title="end date for get data")] = datetime.now().date(),
 ) -> IGetResponseBase[int]:
     """
     Gets count of heroes created on a base time (No Cached response)

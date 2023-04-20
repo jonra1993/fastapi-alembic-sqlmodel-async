@@ -1,4 +1,5 @@
 from io import BytesIO
+from typing import Annotated
 from uuid import UUID
 from app.utils.exceptions import (
     IdNotFoundException,
@@ -71,12 +72,13 @@ async def read_users_list(
 @router.get("/list/by_role_name")
 async def read_users_list_by_role_name(
     name: str = "",
-    user_status: IUserStatus
-    | None = Query(
-        default=IUserStatus.active,
-        title="User status",
-        description="User status, It is optional. Default is active",
-    ),
+    user_status: Annotated[
+        IUserStatus,
+        Query(
+            title="User status",
+            description="User status, It is optional. Default is active",
+        ),
+    ] = IUserStatus.active,
     role_name: str = "",
     params: Params = Depends(),
     current_user: User = Depends(
