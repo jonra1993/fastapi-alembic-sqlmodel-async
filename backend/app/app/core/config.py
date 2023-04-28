@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 1  # 1 hour
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 100  # 100 days
+    OPENAI_API_KEY: str
     DATABASE_USER: str
     DATABASE_PASSWORD: str
     DATABASE_HOST: str
