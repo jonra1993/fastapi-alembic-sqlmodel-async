@@ -37,7 +37,8 @@ async def user_id_identifier(request: Request):
                         status_code=status.HTTP_403_FORBIDDEN,
                         detail="Could not validate credentials",
                     )
-                user_id = payload["sub"]                
+                user_id = payload["sub"]  
+                print("here2", user_id)              
                 return user_id
 
     if request.scope["type"] == "websocket":
@@ -45,11 +46,9 @@ async def user_id_identifier(request: Request):
 
     forwarded = request.headers.get("X-Forwarded-For")
     if forwarded:
-        print("here2")
         return forwarded.split(",")[0]
 
-    ip = request.client.host
-    print("here3")
+    ip = request.client.host    
     return ip + ":" + request.scope["path"]
 
 @asynccontextmanager

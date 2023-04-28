@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
+from app.api import deps
 from app.api.celery_task import predict_transformers_pipeline
+from app.models.user_model import User
 from fastapi import APIRouter, Depends, HTTPException
 from app.utils.fastapi_globals import g
 from app.schemas.response_schema import IPostResponseBase, create_response
@@ -17,6 +19,7 @@ router = APIRouter()
 )
 async def sentiment_analysis_prediction(
     prompt: str = "Fastapi is awesome",
+    current_user: User = Depends(deps.get_current_user()),
 ) -> IPostResponseBase:
     """
     Gets a sentimental analysis predition using a NLP model from transformers libray
