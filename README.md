@@ -280,6 +280,8 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Add sample transformers NLP models and use them globally
 - [x] Add Celery samples for tasks, and schedule tasks
 - [x] Migrate from traefik reverse proxy to Caddy reverse proxy for automatic ssl
+- [x] Add fastapi limiter to natural language endpoints
+- [x] Add websocket conneting with chatgpt
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
 - [ ] Add jsonb field on table sample
