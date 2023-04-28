@@ -65,6 +65,9 @@ torch = [
 requests = "^2.29.0"
 wheel = "^0.40.0"
 setuptools = "^67.7.2"
+langchain = "^0.0.151"
+openai = "^0.27.5"
+fastapi-limiter = "^0.1.5"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^5.2"
