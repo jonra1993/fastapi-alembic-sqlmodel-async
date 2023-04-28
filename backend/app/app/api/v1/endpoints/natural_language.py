@@ -1,14 +1,20 @@
 from datetime import datetime, timedelta
 from app.api.celery_task import predict_transformers_pipeline
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from app.utils.fastapi_globals import g
 from app.schemas.response_schema import IPostResponseBase, create_response
 from app.core.celery import celery
+from fastapi_limiter.depends import RateLimiter
 
 router = APIRouter()
 
 
-@router.post("/sentiment_analysis")
+@router.post(
+    "/sentiment_analysis",
+    dependencies=[
+        Depends(RateLimiter(times=10, hours=24)),
+    ],
+)
 async def sentiment_analysis_prediction(
     prompt: str = "Fastapi is awesome",
 ) -> IPostResponseBase:
@@ -20,19 +26,12 @@ async def sentiment_analysis_prediction(
     return create_response(message="Prediction got succesfully", data=prediction)
 
 
-@router.post("/text_generation")
-async def text_generation_prediction(
-    prompt: str = "Superman is awesome because",
-) -> IPostResponseBase:
-    """
-    Sync text generation using a NLP model from transformers libray (Not reommended for long time inferences)
-    """
-    text_generator_model = g.text_generator_model
-    prediction = text_generator_model(prompt)
-    return create_response(message="Prediction got succesfully", data=prediction)
-
-
-@router.post("/text_generation_prediction_batch_task")
+@router.post(
+    "/text_generation_prediction_batch_task",
+    dependencies=[
+        Depends(RateLimiter(times=10, hours=24)),
+    ],
+)
 async def text_generation_prediction_batch_task(
     prompt: str = "Batman is awesome because",
 ) -> IPostResponseBase:
@@ -45,7 +44,12 @@ async def text_generation_prediction_batch_task(
     )
 
 
-@router.post("/text_generation_prediction_batch_task_after_some_seconds")
+@router.post(
+    "/text_generation_prediction_batch_task_after_some_seconds",
+    dependencies=[
+        Depends(RateLimiter(times=10, hours=24)),
+    ],
+)
 async def text_generation_prediction_batch_task_after_some_seconds(
     prompt: str = "Batman is awesome because", seconds: float = 5
 ) -> IPostResponseBase:
@@ -63,7 +67,12 @@ async def text_generation_prediction_batch_task_after_some_seconds(
     )
 
 
-@router.get("/get_result_from_batch_task")
+@router.get(
+    "/get_result_from_batch_task",
+    dependencies=[
+        Depends(RateLimiter(times=10, minutes=1)),
+    ],
+)
 async def get_result_from_batch_task(task_id: str) -> IPostResponseBase:
     """
     Get result from batch task using task_id

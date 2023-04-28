@@ -1,8 +1,10 @@
 import gc
 from typing import Any
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request, status
+from app.core import security
 from app.api.deps import get_redis_client
 from fastapi_pagination import add_pagination
+from pydantic import ValidationError
 from starlette.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router as api_router_v1
 from app.core.config import settings
@@ -12,27 +14,64 @@ from fastapi_async_sqlalchemy import SQLAlchemyMiddleware
 from contextlib import asynccontextmanager
 from app.utils.fastapi_globals import g, GlobalsMiddleware
 from transformers import pipeline
+from fastapi_limiter import FastAPILimiter
+from jose import jwt
+from fastapi_limiter.depends import RateLimiter, WebSocketRateLimiter
 
+async def user_id_identifier(request: Request):
+    if request.scope["type"] == "http":
+        # Retrieve the Authorization header from the request
+        auth_header = request.headers.get("Authorization")
+
+        if auth_header != None:
+            # Check that the header is in the correct format
+            header_parts = auth_header.split()
+            if len(header_parts) == 2 and header_parts[0].lower() == "bearer":
+                token = header_parts[1]
+                try:
+                    payload = jwt.decode(
+                        token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+                    )
+                except (jwt.JWTError, ValidationError):
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Could not validate credentials",
+                    )
+                user_id = payload["sub"]                
+                return user_id
+
+    if request.scope["type"] == "websocket":
+        return request.scope["path"]
+
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        print("here2")
+        return forwarded.split(",")[0]
+
+    ip = request.client.host
+    print("here3")
+    return ip + ":" + request.scope["path"]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     redis_client = await get_redis_client()
     FastAPICache.init(RedisBackend(redis_client), prefix="fastapi-cache")
+    await FastAPILimiter.init(redis_client, identifier=user_id_identifier)
+
     # Load a pre-trained sentiment analysis model as a dictionary to an easy cleanup
     models: dict[str, Any] = {
         "sentiment_model": pipeline(
             "sentiment-analysis",
             model="distilbert-base-uncased-finetuned-sst-2-english",
         ),
-        "text_generator_model": pipeline("text-generation", model="gpt2"),
     }
     g.set_default("sentiment_model", models["sentiment_model"])
-    g.set_default("text_generator_model", models["text_generator_model"])
     print("startup fastapi")
     yield
     # shutdown
     await FastAPICache.clear()
+    await FastAPILimiter.close()
     models.clear()
     g.cleanup()
     gc.collect()
