@@ -2045,6 +2045,21 @@ python-dateutil = ">=2.6,<3.0"
 pytzdata = ">=2020.1"
 
 [[package]]
+name = "pexpect"
+version = "4.8.0"
+description = "Pexpect allows easy control of interactive console applications."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pexpect-4.8.0-py2.py3-none-any.whl", hash = "sha256:0b48a55dcb3c05f3329815901ea4fc1537514d6ba867a152b581d69ae3710937"},
+    {file = "pexpect-4.8.0.tar.gz", hash = "sha256:fc65a43959d153d0114afe13997d439c22823a27cefceb5ff35c2178c6784c0c"},
+]
+
+[package.dependencies]
+ptyprocess = ">=0.5"
+
+[[package]]
 name = "pillow"
 version = "9.5.0"
 description = "Python Imaging Library (Fork)"
@@ -2240,6 +2255,18 @@ files = [
     {file = "psycopg2_binary-2.9.6-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:02c0f3757a4300cf379eb49f543fb7ac527fb00144d39246ee40e1df684ab514"},
     {file = "psycopg2_binary-2.9.6-cp39-cp39-win32.whl", hash = "sha256:c3dba7dab16709a33a847e5cd756767271697041fbe3fe97c215b1fc1f5c9848"},
     {file = "psycopg2_binary-2.9.6-cp39-cp39-win_amd64.whl", hash = "sha256:f6a88f384335bb27812293fdb11ac6aee2ca3f51d3c7820fe03de0a304ab6249"},
+]
+
+[[package]]
+name = "ptyprocess"
+version = "0.7.0"
+description = "Run a subprocess in a pseudo terminal"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35"},
+    {file = "ptyprocess-0.7.0.tar.gz", hash = "sha256:5c5d0a3b48ceee0b48485e0c26037c0acd7d29765ca3fbb5cb3831d347423220"},
 ]
 
 [[package]]
@@ -3003,6 +3030,7 @@ opt-einsum = ["opt-einsum (>=3.3)"]
 [package.source]
 type = "url"
 url = "https://download.pytorch.org/whl/cpu/torch-2.0.0%2Bcpu-cp310-cp310-linux_x86_64.whl"
+
 [[package]]
 name = "torch"
 version = "2.0.0+cpu"
@@ -3027,6 +3055,7 @@ opt-einsum = ["opt-einsum (>=3.3)"]
 [package.source]
 type = "url"
 url = "https://download.pytorch.org/whl/cpu/torch-2.0.0%2Bcpu-cp310-cp310-win_amd64.whl"
+
 [[package]]
 name = "tqdm"
 version = "4.65.0"
@@ -3548,4 +3577,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">3.9,<3.12"
-content-hash = "eab541517ddf53a512c3076ddc376c99720d88fa554c2b021f3882a40aac44d6"
+content-hash = "f1e76ccd234bd687f62990dd1ec48338e6e4fcadc0dbd44a39af160f75624abb"
