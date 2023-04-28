@@ -62,6 +62,9 @@ torch = [
   {url = "https://download.pytorch.org/whl/cpu/torch-2.0.0%2Bcpu-cp310-cp310-linux_x86_64.whl", markers = "sys_platform == 'linux'"},
   {url = "https://download.pytorch.org/whl/cpu/torch-2.0.0%2Bcpu-cp310-cp310-win_amd64.whl", markers = "sys_platform == 'win32'"}
 ]
+requests = "^2.29.0"
+wheel = "^0.40.0"
+setuptools = "^67.7.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^5.2"
