@@ -35,7 +35,7 @@ ignore = [
 python = ">3.9,<3.12"
 alembic = "^1.10.2"
 asyncpg = "^0.27.0"
-fastapi = {extras = ["all"], version = "^0.95.1"}
+fastapi = {extras = ["all"], version = "^0.95.2"}
 sqlmodel = "^0.0.8"
 python-jose = "^3.3.0"
 cryptography = "^38.0.3"
