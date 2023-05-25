@@ -10,7 +10,7 @@ from app.api.v1.endpoints import (
     cache,
     weather,
     report,
-    periodic_tasks
+    periodic_tasks,
 )
 
 api_router = APIRouter()

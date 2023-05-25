@@ -22,7 +22,8 @@ class Settings(BaseSettings):
     DB_POOL_SIZE = 83
     WEB_CONCURRENCY = 9
     POOL_SIZE = max(DB_POOL_SIZE // WEB_CONCURRENCY, 5)
-    ASYNC_DATABASE_URI: PostgresDsn | None    
+    ASYNC_DATABASE_URI: PostgresDsn | None
+
     @validator("ASYNC_DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
         if isinstance(v, str):
@@ -36,7 +37,8 @@ class Settings(BaseSettings):
             path=f"/{values.get('DATABASE_NAME') or ''}",
         )
 
-    SYNC_CELERY_DATABASE_URI: str | None    
+    SYNC_CELERY_DATABASE_URI: str | None
+
     @validator("SYNC_CELERY_DATABASE_URI", pre=True)
     def assemble_celery_db_connection(
         cls, v: str | None, values: dict[str, Any]
@@ -53,6 +55,7 @@ class Settings(BaseSettings):
         )
 
     SYNC_CELERY_BEAT_DATABASE_URI: str | None
+
     @validator("SYNC_CELERY_BEAT_DATABASE_URI", pre=True)
     def assemble_celery_beat_db_connection(
         cls, v: str | None, values: dict[str, Any]
@@ -69,6 +72,7 @@ class Settings(BaseSettings):
         )
 
     ASYNC_CELERY_BEAT_DATABASE_URI: str | None
+
     @validator("ASYNC_CELERY_BEAT_DATABASE_URI", pre=True)
     def assemble_async_celery_beat_db_connection(
         cls, v: str | None, values: dict[str, Any]
