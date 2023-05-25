@@ -24,26 +24,29 @@ class TokenType(str, Enum):
     ACCESS = "access_token"
     REFRESH = "refresh_token"
 
+
 class IUserMessage(BaseModel):
     """User message schema."""
 
     user_id: UUID | None
     message: str
 
+
 class IChatResponse(BaseModel):
     """Chat response schema."""
-    id:  str
+
+    id: str
     message_id: str
     sender: str
     message: str
     type: str
-    
+
     @validator("id", "message_id", pre=True, allow_reuse=True)
-    def check_ids(cls, v):        
-        if v == "" or v == None:            
+    def check_ids(cls, v):
+        if v == "" or v is None:
             return str(uuid7())
         return v
-    
+
     @validator("sender")
     def sender_must_be_bot_or_you(cls, v):
         if v not in ["bot", "you"]:

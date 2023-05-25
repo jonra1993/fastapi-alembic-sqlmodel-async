@@ -21,15 +21,13 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         users = await db_session.execute(select(User).where(User.email == email))
         return users.scalar_one_or_none()
 
-    async def get_by_id_active(
-        self, *, id: UUID
-    ) -> User | None:
+    async def get_by_id_active(self, *, id: UUID) -> User | None:
         user = await super().get(id=id)
-        if not user: 
+        if not user:
             return None
-        if user.is_active == False:
+        if user.is_active is False:
             return None
-        
+
         return user
 
     async def create_with_role(
