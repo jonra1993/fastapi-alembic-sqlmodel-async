@@ -103,7 +103,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         columns = self.model.__table__.columns
 
         if order_by is None or order_by not in columns:
-            order_by = self.model.id
+            order_by = "id"
 
         if query is None:
             if order == IOrderEnum.ascendent:
@@ -127,7 +127,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         columns = self.model.__table__.columns
 
         if order_by is None or order_by not in columns:
-            order_by = self.model.id
+            order_by = "id"
 
         if order == IOrderEnum.ascendent:
             query = (

@@ -52,9 +52,7 @@ async def get_hero_list_order_by_created_at(
     """
     Gets a paginated list of heroes ordered by created at datetime
     """
-    heroes = await crud.hero.get_multi_paginated_ordered(
-        params=params, order_by="created_at", order=order
-    )
+    heroes = await crud.hero.get_multi_paginated_ordered(params=params, order=order)
     return create_response(data=heroes)
 
 
