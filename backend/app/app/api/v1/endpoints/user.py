@@ -118,7 +118,7 @@ async def read_users_list_by_role_name(
 
 
 @router.get("/order_by_created_at")
-async def get_hero_list_order_by_created_at(
+async def get_user_list_order_by_created_at(
     params: Params = Depends(),
     current_user: User = Depends(
         deps.get_current_user(required_roles=[IRoleEnum.admin, IRoleEnum.manager])
