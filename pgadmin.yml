@@ -12,8 +12,9 @@ services:
       - 15432:15432
     env_file: ".env"
     environment:
-      PGADMIN_CONFIG_SERVER_MODE: 0
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 0
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      SERVER_MODE: "False"
       # Default user for desktop mode (SERVER_MODE = False)
       PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
       # Default password for desktop mode (SERVER_MODE = False)
