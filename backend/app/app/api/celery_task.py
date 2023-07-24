@@ -56,7 +56,6 @@ def predict_transformers_pipeline(self, prompt: str):
 def increment(value: int) -> int:
     time.sleep(5)
     new_value = value + 1
-    print("new_value", new_value)
     return new_value
 
 
@@ -70,5 +69,4 @@ async def get_hero(hero_id: UUID) -> Hero:
 @celery.task(name="tasks.print_hero")
 def print_hero(hero_id: UUID) -> None:
     hero = runnify(get_hero)(hero_id=hero_id)
-    print(f"hero_id {hero.id}")
     return hero.id
