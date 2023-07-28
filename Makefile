@@ -129,3 +129,6 @@ load-server-pgadmin:
 
 clean-pgadmin:
 	docker volume rm pgadmin_data
+
+pytest-docker:
+	docker compose -f docker-compose-dev.yml exec fastapi_server pytest
