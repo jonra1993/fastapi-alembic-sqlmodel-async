@@ -3,6 +3,7 @@ from app.utils.partial import optional
 from uuid import UUID
 
 
+
 class IMediaCreate(MediaBase):
     pass
 
@@ -15,4 +16,4 @@ class IMediaUpdate(MediaBase):
 
 class IMediaRead(MediaBase):
     id: UUID | str
-    link: str | None = None
+    link: str | None

@@ -3,15 +3,19 @@ version: '3.8'
 services:
   fastapi_server:
     container_name: fastapi_server
-    build: ./backend
+    build: 
+      context: ./backend      
+      args:
+        INSTALL_DEV: "true"   
     restart: always
     command: "sh -c 'alembic upgrade head && uvicorn app.main:app --reload --workers 3 --host 0.0.0.0 --port 8000'"
-    #command: "sh -c 'alembic upgrade head && gunicorn -w 3 -k uvicorn.workers.UvicornWorker app.main:app  --bind 0.0.0.0:8000 --preload --log-level=debug --timeout 120'"
     volumes:
       - ./backend/app:/code
     expose:
       - 8000
     env_file: ".env"
+    environment:                
+      MODE: "testing"      
     depends_on:
       - database
     links:
@@ -48,7 +52,10 @@ services:
     container_name: celery_worker
     restart: always
     # platform: linux/arm64/v8
-    build: ./backend
+    build:
+      context: ./backend      
+      args:
+        INSTALL_DEV: "true"
     command: "watchfiles 'celery -A app.core.celery worker -l info' "
     volumes:
       - ./backend/app:/code

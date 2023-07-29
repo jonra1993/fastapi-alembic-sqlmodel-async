@@ -229,6 +229,20 @@ make run-sonar-scanner
 
 When the build is successful, you can see the SonarQube screen automatically refreshed with the analysis. If you want to export a report, you can check this [this post](https://medium.com/jrtec/static-analysis-using-sonarqube-in-a-react-webapp-dd4b335d6062).
 
+## Testing
+
+https://docs.sqlalchemy.org/en/20/core/pooling.html#api-documentation-available-pool-implementations
+https://stackoverflow.com/questions/75252097/fastapi-testing-runtimeerror-task-attached-to-a-different-loop/75444607#75444607
+
+
+```sh
+make run-test
+```
+
+```sh
+make pytest
+```
+
 ## Inspiration and References
 
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).

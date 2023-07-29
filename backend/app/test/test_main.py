@@ -1,18 +1,22 @@
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, Response
 from app.main import app
 client = AsyncClient(app=app)
 
 url = "http://fastapi.localhost"
 
+@pytest.fixture(scope='function')
+async def test_client() -> AsyncClient:
+    async with AsyncClient(app=app, base_url=url) as client:
+        yield client
+
 @pytest.mark.asyncio
-async def test_root():
-    client = AsyncClient(app=app, base_url=url)
-    try:
+async def test_root(test_client):
+    async for client in test_client:      
+        response = await client.get('/')
+        assert response is not None
         assert response.status_code == 200
         assert response.json() == {"message": "Hello World"}
-
-    except Exception as e:
-        print(f"Exception occurred during test: {e}")
-    finally:
         await client.aclose()
+
+
