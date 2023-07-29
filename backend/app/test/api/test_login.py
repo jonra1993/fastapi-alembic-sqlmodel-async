@@ -1,6 +1,7 @@
 import pytest
 from httpx import AsyncClient
 from app.main import app
+from app.core.config import settings
 
 url = "http://fastapi.localhost/api/v1"
 
@@ -15,10 +16,8 @@ class TestPostLogin:
         "method, endpoint, data, expected_status, expected_response",
         [
             ("post", "/login", {"email": "incorrect_email@gmail.com", "password": "123456"}, 400, {"detail": "Email or Password incorrect"}),
-            ("post", "/login", {"email": "admin@admin.com", "password": "admin"}, 200, None),  # Add expected JSON response for successful login
-            # ("get", "/some_endpoint", None, 200, {"result": "success"}),
-            # ("put", "/another_endpoint", {"key": "value"}, 204, None),
-            # ("delete", "/delete_endpoint", None, 204, None),
+            ("post", "/login", {"email": settings.FIRST_SUPERUSER_EMAIL, "password": settings.FIRST_SUPERUSER_PASSWORD}, 200, None),  # Add expected JSON response for successful login
+            ("post", "/login/new_access_token", {"refresh_token": ""}, 403, {"detail": "Refresh token invalid"}),            
         ],
     )
     async def test(self, test_client, method, endpoint, data, expected_status, expected_response):
@@ -32,7 +31,6 @@ class TestPostLogin:
             else:  # Default to POST
                 response = await client.post(endpoint, json=data)
 
-            await client.aclose()
             assert response.status_code == expected_status
             if expected_response is not None:                
                 assert response.json() == expected_response
