@@ -229,6 +229,29 @@ make run-sonar-scanner
 
 When the build is successful, you can see the SonarQube screen automatically refreshed with the analysis. If you want to export a report, you can check this [this post](https://medium.com/jrtec/static-analysis-using-sonarqube-in-a-react-webapp-dd4b335d6062).
 
+## Testing
+Testing in FastAPI with pytest involves creating test functions that simulate HTTP requests to the API endpoints and verifying the responses. This approach allows us to conduct both unit tests for individual functions and integration tests for the entire application.
+
+To perform tests in this project, we utilize two essential libraries: [pytest](https://github.com/pytest-dev/pytest) and [pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio).
+
+However, when testing FastAPI endpoints that utilize async connections with the database and a pool strategy, there is a trick to be aware of. The recommended approach is to create an isolated testing environment that connects to the database using the "poolclass": NullPool parameter on the engine. This helps to avoid potential issues related to tasks being attached to different loops. For more details on this, you can refer to the following references: [Fastapi testing RuntimeError: Task attached to a different loop](https://stackoverflow.com/questions/75252097/fastapi-testing-runtimeerror-task-attached-to-a-different-loop/75444607#75444607) and [Connection Pooling](https://docs.sqlalchemy.org/en/20/core/pooling.html#api-documentation-available-pool-implementations).
+
+
+To execute the tests, follow these steps:
+
+
+
+1. Start the testing environment using the command:
+
+```sh
+make run-test
+```
+2. Once the testing environment is up and running, open another terminal and run the tests with the following command:
+
+```sh
+make pytest
+```
+
 ## Inspiration and References
 
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
@@ -246,6 +269,7 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [awesome-fastapi](https://github.com/mjhea0/awesome-fastapi).
 - [Serving ML Models in Production with FastAPI and Celery](https://towardsdatascience.com/deploying-ml-models-in-production-with-fastapi-and-celery-7063e539a5db)
 - [Database detup](https://christophergs.com/tutorials/ultimate-fastapi-tutorial-pt-7-sqlalchemy-database-setup/)
+- [Dispatch](https://github.com/Netflix/dispatch)
 
 ## TODO List:
 
@@ -282,6 +306,8 @@ When the build is successful, you can see the SonarQube screen automatically ref
 - [x] Migrate from traefik reverse proxy to Caddy reverse proxy for automatic ssl
 - [x] Add fastapi limiter to natural language endpoints
 - [x] Add websocket conneting with chatgpt
+- [x] Setup testing configuracion
+- [x] Add sample composition using pydantic
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
 - [ ] Add jsonb field on table sample

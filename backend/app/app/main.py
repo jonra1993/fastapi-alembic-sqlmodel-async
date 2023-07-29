@@ -19,7 +19,7 @@ from fastapi_pagination import add_pagination
 from pydantic import ValidationError
 from starlette.middleware.cors import CORSMiddleware
 from app.api.v1.api import api_router as api_router_v1
-from app.core.config import settings
+from app.core.config import ModeEnum, settings
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_async_sqlalchemy import SQLAlchemyMiddleware, db
@@ -31,6 +31,7 @@ from jose import jwt
 from fastapi_limiter.depends import WebSocketRateLimiter
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
+from sqlalchemy.pool import NullPool, QueuePool
 
 
 async def user_id_identifier(request: Request):
@@ -106,9 +107,12 @@ app.add_middleware(
     db_url=settings.ASYNC_DATABASE_URI,
     engine_args={
         "echo": False,
-        "pool_pre_ping": True,
-        "pool_size": settings.POOL_SIZE,
-        "max_overflow": 64,
+        # "pool_pre_ping": True,
+        # "pool_size": settings.POOL_SIZE,
+        # "max_overflow": 64,
+        "poolclass": NullPool
+        if settings.MODE == ModeEnum.testing
+        else QueuePool,  # Asincio pytest works with NullPool
     },
 )
 app.add_middleware(GlobalsMiddleware)
