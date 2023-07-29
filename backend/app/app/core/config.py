@@ -4,10 +4,12 @@ from typing import Any
 import secrets
 from enum import Enum
 
+
 class ModeEnum(str, Enum):
     development = "development"
     production = "production"
     testing = "testing"
+
 
 class Settings(BaseSettings):
     MODE: ModeEnum = ModeEnum.development

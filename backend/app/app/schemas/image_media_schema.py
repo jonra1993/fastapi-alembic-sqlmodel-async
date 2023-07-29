@@ -20,18 +20,18 @@ class IImageMediaRead(ImageMediaBase):
     media: IMediaRead | None
 
 
-
 class IImageMediaReadCombined(ImageMediaBase):
     link: str | None
 
     @root_validator(pre=True)
     def combine_attributes(cls, values):
         link_fields = {"link": values.get("link", None)}
-        if 'media' in values:
+        if "media" in values:
             if isinstance(values["media"], Media) and values["media"].path is not None:
-                link_fields = {'link': values["media"].link}
+                link_fields = {"link": values["media"].link}
 
-        image_media_fields = {k: v for k, v in values.items() if k in ImageMedia.__fields__}
+        image_media_fields = {
+            k: v for k, v in values.items() if k in ImageMedia.__fields__
+        }
         output = {**image_media_fields, **link_fields}
         return output
-
