@@ -64,7 +64,8 @@ async def user_id_identifier(request: Request):
     if forwarded:
         return forwarded.split(",")[0]
 
-    ip = request.client.host
+    client = request.client
+    ip = getattr(client, "host", "0.0.0.0")    
     return ip + ":" + request.scope["path"]
 
 
@@ -133,8 +134,8 @@ class CustomException(Exception):
     code: str
     message: str
 
-    def __init__(self, http_code: int = None, code: str = None, message: str = None):
-        self.http_code = http_code if http_code else 500
+    def __init__(self, http_code: int = 500, code: str | None = None, message: str = 'This is an error message'):
+        self.http_code = http_code
         self.code = code if code else str(self.http_code)
         self.message = message
 

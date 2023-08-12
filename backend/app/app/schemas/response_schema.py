@@ -72,10 +72,17 @@ class IDeleteResponseBase(IResponseBase[DataType], Generic[DataType]):
 
 
 def create_response(
-    data: DataType | None,
+    data: DataType,
     message: str | None = None,
     meta: dict | Any | None = {},
-) -> dict[str, DataType] | DataType:
+) -> (
+    IResponseBase[DataType]
+    | IGetResponsePaginated[DataType]
+    | IGetResponseBase[DataType]
+    | IPutResponseBase[DataType]
+    | IDeleteResponseBase[DataType]
+    | IPostResponseBase[DataType]
+):
     if isinstance(data, IGetResponsePaginated):
         data.message = "Data paginated correctly" if message is None else message
         data.meta = meta

@@ -6,7 +6,6 @@ from fastapi_pagination.ext.async_sqlalchemy import paginate
 from fastapi_async_sqlalchemy import db
 from fastapi_async_sqlalchemy.middleware import DBSessionMeta
 from fastapi_pagination import Params, Page
-from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlmodel import SQLModel, select, func
 from sqlmodel.ext.asyncio.session import AsyncSession

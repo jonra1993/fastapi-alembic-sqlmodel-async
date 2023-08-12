@@ -97,6 +97,10 @@ lint:
 	cd backend/app && \
 	poetry run ruff app && poetry run black --check app
 
+mypy:
+	cd backend/app && \
+	poetry run mypy .
+
 lint-watch:
 	cd backend/app && \
 	poetry run ruff app --watch
