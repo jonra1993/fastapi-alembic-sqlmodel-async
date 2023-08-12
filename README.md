@@ -310,6 +310,7 @@ make pytest
 - [x] Add sample composition using pydantic
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
+- [ ] Check typing using mypy
 - [ ] Add jsonb field on table sample
 - [ ] Make that celery-sqlalchemy-scheduler works async
 - [ ] Add AuthZ using oso
