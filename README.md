@@ -252,6 +252,18 @@ make run-test
 make pytest
 ```
 
+## Type checker
+Python's type hints, introduced in PEP 484 and fully embraced in later versions of Python, allow you to specify the expected types of variables, function parameters, and return values. It is really good how fastapi documentation promotes type hints so this code base tryies to use this tool the most posible because type hints make the code more self-documenting by providing clear information about what types of values a function or variable can hold and they catch type-related errors at compile time, before the code is executed.
+
+This project uses [mypy](https://mypy-lang.org/) a popular static type checker for Python. If you want to change the config rules you can edit the rules in the  *pyproject.toml* file.
+
+To execute Type checking, run this command:
+
+```sh
+make mypy
+```
+
+
 ## Inspiration and References
 
 - [full-stack-fastapi-postgresql](https://github.com/tiangolo/full-stack-fastapi-postgresql).
@@ -310,13 +322,11 @@ make pytest
 - [x] Add sample composition using pydantic
 - [ ] Add a nextjs sample frontend
 - [ ] Add testing
-- [ ] Check typing using mypy
 - [ ] Add jsonb field on table sample
 - [ ] Make that celery-sqlalchemy-scheduler works async
 - [ ] Add AuthZ using oso
 - [ ] Add SSL to reverse proxy on prod
 - [ ] Add instructions on doc for production deployment using github actions and dockerhub (CI/CD)
-
 - [ ] Convert repo into template using cookiecutter
 
 
