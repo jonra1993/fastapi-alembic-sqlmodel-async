@@ -1,0 +1,88 @@
+[tool.poetry]
+name = "app"
+version = "0.1.0"
+description = ""
+authors = ["jonra1993 <jon_ra@hotmail.es>"]
+
+[tool.black]
+line-length = 88
+target-version = [ "py310", "py311" ]
+exclude = "((.eggs | .git | .pytest_cache | build | dist))"
+
+[tool.ruff]
+line-length = 88
+exclude = [".git", "__pycache__", ".mypy_cache", ".pytest_cache"]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    # "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = [
+    "B904",
+    "B006",    
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.mypy]
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = ["alembic", "__pycache__"]
+
+
+[tool.poetry.dependencies]
+python = ">3.9,<3.12"
+alembic = "^1.10.2"
+asyncpg = "^0.27.0"
+fastapi = {extras = ["all"], version = "^0.95.2"}
+sqlmodel = "^0.0.8"
+python-jose = "^3.3.0"
+cryptography = "^38.0.3"
+passlib = "^1.7.4"
+SQLAlchemy-Utils = "^0.38.3"
+SQLAlchemy = "^1.4.40"
+fastapi-pagination = {extras = ["sqlalchemy"], version = "^0.11.4"}
+fastapi-cache2 = {extras = ["redis"], version = "^0.2.1"}
+minio = "^7.1.13"
+Pillow = "^9.4.0"
+watchfiles = "^0.18.1"
+asyncer = "^0.0.2"
+httpx = "^0.23.1"
+pandas = "^1.5.3"
+openpyxl = "^3.0.10"
+redis = "^4.5.1"
+fastapi-async-sqlalchemy = "^0.3.12"
+oso = "^0.26.4"
+celery = "^5.2.7"
+celery-sqlalchemy-scheduler = "^0.3.0"
+psycopg2-binary = "^2.9.5"
+transformers = "^4.28.1"
+torch = [
+  {url = "https://download.pytorch.org/whl/cpu/torch-2.0.0%2Bcpu-cp310-cp310-linux_x86_64.whl", markers = "sys_platform == 'linux'"},
+  {url = "https://download.pytorch.org/whl/cpu/torch-2.0.0%2Bcpu-cp310-cp310-win_amd64.whl", markers = "sys_platform == 'win32'"}
+]
+requests = "^2.29.0"
+wheel = "^0.40.0"
+setuptools = "^67.7.2"
+langchain = "^0.0.262"
+openai = "^0.27.5"
+fastapi-limiter = "^0.1.5"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+ruff = "^0.0.256"
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.1"
+mypy = "^1.5.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

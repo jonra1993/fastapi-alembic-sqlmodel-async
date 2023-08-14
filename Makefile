@@ -11,7 +11,7 @@ define SERVERS_JSON
 			"Host": "$(DATABASE_HOST)",
 			"Port": 5432,
 			"MaintenanceDB": "postgres",
-			"Username": "$(DATABASE_PASSWORD)",
+			"Username": "$(DATABASE_USER)",
 			"SSLMode": "prefer",
 			"PassFile": "/tmp/pgpassfile"
 		}
@@ -60,7 +60,7 @@ help:
 	@echo "        Stops Sonarqube container."
 
 install:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry shell && \
 	poetry install
 
@@ -79,45 +79,63 @@ run-prod:
 stop-prod:
 	docker compose down
 
+create-celery-db:
+	if ! docker compose -f docker-compose-dev.yml exec database psql -U ${DATABASE_USER} -h localhost -lqt | cut -d \| -f 1 | grep -qw ${DATABASE_CELERY_NAME}; then \
+		docker compose -f docker-compose-dev.yml exec database createdb -U ${DATABASE_USER} -W ${DATABASE_PASSWORD} -h localhost -O ${DATABASE_USER} ${DATABASE_CELERY_NAME}; \
+	fi
+	
+
 init-db:
-	docker compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py
+	docker compose -f docker-compose-dev.yml exec fastapi_server python app/initial_data.py && \
+	echo "Initial data created." 
 
 formatter:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry run black app
 
 lint:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry run ruff app && poetry run black --check app
 
+mypy:
+	cd backend/app && \
+	poetry run mypy .
+
 lint-watch:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry run ruff app --watch
 
 lint-fix:
-	cd fastapi-alembic-sqlmodel-async && \
+	cd backend/app && \
 	poetry run ruff app --fix
 
 run-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml up
 
-run-sonar-scanner:
-	docker run --rm -v "${PWD}/fastapi-alembic-sqlmodel-async:/usr/src" sonarsource/sonar-scanner-cli
-
 stop-sonarqube:
 	docker compose -f docker-compose-sonarqube.yml down
 
+run-sonar-scanner:
+	docker run --rm -v "${PWD}/backend:/usr/src" sonarsource/sonar-scanner-cli -X
+
 add-dev-migration:
 	docker compose -f docker-compose-dev.yml exec fastapi_server alembic revision --autogenerate && \
-	docker compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head
+	docker compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head && \
+	echo "Migration added and applied."
 
 run-pgadmin:
 	echo "$$SERVERS_JSON" > ./pgadmin/servers.json && \
 	docker volume create pgadmin_data && \
-	docker compose -f pgadmin.yml up
+	docker compose -f pgadmin.yml up --force-recreate
 	
 load-server-pgadmin:
 	docker exec -it pgadmin python /pgadmin4/setup.py --load-servers servers.json
 
 clean-pgadmin:
 	docker volume rm pgadmin_data
+
+run-test:
+	docker compose -f docker-compose-test.yml up --build
+
+pytest:
+	docker compose -f docker-compose-test.yml exec fastapi_server pytest
