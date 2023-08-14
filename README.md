@@ -1,6 +1,39 @@
 # Async configuration for FastAPI and SQLModel
 
-This is a project template which uses [FastAPI](https://fastapi.tiangolo.com/), [Alembic](https://alembic.sqlalchemy.org/en/latest/) and async [SQLModel](https://sqlmodel.tiangolo.com/) as ORM. It shows a complete async CRUD template using authentication. Our implementation utilizes the newest version of FastAPI and incorporates typing hints that are fully compatible with **Python 3.10** and later versions.
+This is a project template which uses [FastAPI](https://fastapi.tiangolo.com/), [Alembic](https://alembic.sqlalchemy.org/en/latest/) and async [SQLModel](https://sqlmodel.tiangolo.com/) as ORM. It shows a complete async CRUD template using authentication. Our implementation utilizes the newest version of FastAPI and incorporates typing hints that are fully compatible with **Python 3.10** and later versions. If you're looking to build modern and efficient web applications with Python, this template will provide you with the necessary tools to get started quickly.
+
+## Why Use This Template?
+
+Developing web applications can be a challenging process, especially when dealing with databases, authentication, asynchronous tasks, and other complex components. Our template is designed to simplify this process and offer you a solid starting point. Some of the highlights of this template include:
+
+- FastAPI Integration: FastAPI is a modern and efficient web framework that allows you to quickly and easily create APIs. This template uses the latest features of FastAPI and offers type hints that are compatible with **Python 3.10** and later versions.
+- Asynchronous Database Management: We use SQLModel, an asynchronous ORM library, to interact with the database efficiently and securely.
+- Asynchronous Tasks with Celery: This template includes examples of how to execute asynchronous and scheduled tasks using Celery, which is ideal for operations that require significant time or resources.
+- Authentication and Authorization: We implement JWT-based authentication and role-based access control to ensure that your APIs are secure and protected.
+- Documentation and Automated Testing: The template is configured to automatically generate interactive documentation for your APIs. It also includes automated tests using pytest to ensure code quality.
+- Development Best Practices: We apply code formatting, type checking, and static analysis tools to ensure that the code is readable, robust, and reliable.
+
+## Table of Contents
+1. [Set environment variables](#set-environment-variables)
+2. [Run the project using Docker containers and forcing build containers](#run-the-project-using-docker-containers-and-forcing-build-containers)
+3. [Run project using Docker containers](#run-project-using-docker-containers)
+4. [Setup database with initial data](#setup-database-with-initial-data)
+5. [ERD Database model](#erd-database-model)
+6. [Containers architecture](#containers-architecture)
+7. [Preview](#preview)
+8. [Static files](#static-files)
+9. [Minio server](#minio-server)
+10. [Celery](#celery)
+11. [Run Alembic migrations (Only if you change the DB model)](#run-alembic-migrations-only-if-you-change-the-db-model)
+12. [Production Deployment](#production-deployment)
+13. [Database unique IDs](#database-unique-ids)
+14. [Code Style](#code-style)
+15. [SonarQube static analysis](#sonarqube-static-analysis)
+16. [Testing](#testing)
+17. [Type checker](#type-checker)
+18. [Inspiration and References](#inspiration-and-references)
+19. [TODO List](#todo-list)
+20. [License](#license)
 
 ## Set environment variables
 
