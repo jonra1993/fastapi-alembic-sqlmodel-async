@@ -24,7 +24,7 @@ Developing web applications can be a challenging process, especially when dealin
 8. [Static files](#static-files)
 9. [Minio server](#minio-server)
 10. [Celery](#celery)
-11. [Run Alembic migrations (Only if you change the DB model)](#run-alembic-migrations-(only-if-you-change-the-db-model))
+11. [Run Alembic migrations (Only if you change the DB model)](#run-alembic-migrations-only-if-you-change-the-db-model)
 12. [Production Deployment](#production-deployment)
 13. [Database unique IDs](#database-unique-ids)
 14. [Code Style](#code-style)
