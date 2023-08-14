@@ -362,6 +362,8 @@ make mypy
 - [ ] Add instructions on doc for production deployment using github actions and dockerhub (CI/CD)
 - [ ] Convert repo into template using cookiecutter
 
+### Support and Maintenance
+
 `fastapi-alembic-sqlmodel-async` is supported by the [Allient development team](https://www.allient.io/). Our team is composed by a experienced professionals specializing in FastAPI projects and NLP. If you need assistance or support for your project, please don't hesitate to get in touch with us at [info@allient.io](mailto:info@allient.io) or schedule a meeting with us [here](https://calendly.com/jonathanvargas).
 
 
