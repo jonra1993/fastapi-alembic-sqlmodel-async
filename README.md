@@ -31,9 +31,10 @@ Developing web applications can be a challenging process, especially when dealin
 15. [SonarQube static analysis](#sonarqube-static-analysis)
 16. [Testing](#testing)
 17. [Type checker](#type-checker)
-18. [Inspiration and References](#inspiration-and-references)
-19. [TODO List](#todo-list)
-20. [License](#license)
+18. [Basic chatbot example with Langchain and OpenAI](#basic-chatbot-example-with-langchain-and-openai)
+19. [Inspiration and References](#inspiration-and-references)
+20. [TODO List](#todo-list)
+21. [License](#license)
 
 ## Set environment variables
 
@@ -295,6 +296,22 @@ To execute Type checking, run this command:
 ```sh
 make mypy
 ```
+
+## Basic chatbot example with Langchain and OpenAI
+In addition to its core features, this project template demonstrates how to integrate an basic chatbot powered by Langchain and OpenAI through websockets.
+
+To begin experimenting with the basic chatbot, follow these steps:
+
+1. **Obtain an OpenAI API Key**: You'll need to set the `OPENAI_API_KEY` environment variable, which you can obtain from [OpenAI's platform](https://platform.openai.com/).
+
+2. **Test Websocket Connection**: You can test the websocket connection by using the following URL: [ws://fastapi.localhost/chat/\<USER_ID\>](ws://fastapi.localhost/chat/<USER_ID>). Replace `<USER_ID>` with a user identifier of your choice.
+
+3. **Sending and Receiving Messages**: You should be able to send messages to the chatbot using the provided websocket connection. To do this, use the following message structure:
+   
+   ```json
+   {"message":"Hello world"}
+   ```
+   Once you send a message, the chatbot will respond with generated responses based on the content of your input.
 
 
 ## Inspiration and References
