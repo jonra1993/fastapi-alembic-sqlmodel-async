@@ -202,7 +202,7 @@ make lint-fix
 ```
 
 ## SonarQube static analysis
-[SonarQube](https://www.sonarqube.org/) is an automatic code review tool that detects bugs, vulnerabilities, and code smells in a project. You can read [this post](https://medium.com/jrtec/static-analysis-using-sonarqube-in-a-react-webapp-dd4b335d6062) in order to have a better understanding about what SonarQube can do.
+[SonarQube](https://www.sonarqube.org/) is an automatic code review tool that detects bugs, vulnerabilities, and code smells in a project. You can read [Our Journey Using Async FastAPI](https://medium.com/jrtec/static-analysis-using-sonarqube-in-a-react-webapp-dd4b335d6062) in order to have a better understanding about what SonarQube can do. If you are looking for a started template CLI, I recommend you to use [create-fastapi-project](https://github.com/allient/create-fastapi-project)
 
 The following steps can help you to run a local static code analysis
 
