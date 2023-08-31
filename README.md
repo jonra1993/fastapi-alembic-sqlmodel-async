@@ -1,6 +1,6 @@
 # Async configuration for FastAPI and SQLModel
 
-This is a project template which uses [FastAPI](https://fastapi.tiangolo.com/), [Alembic](https://alembic.sqlalchemy.org/en/latest/) and async [SQLModel](https://sqlmodel.tiangolo.com/) as ORM. It shows a complete async CRUD template using authentication. Our implementation utilizes the newest version of FastAPI and incorporates typing hints that are fully compatible with **Python 3.10** and later versions. If you're looking to build modern and efficient web applications with Python, this template will provide you with the necessary tools to get started quickly. You can read a short article with the motivations for starting this sample project [here](https://medium.com/allient/our-journey-using-async-fastapi-to-harnessing-the-power-of-modern-web-apis-90301827f14c?source=friends_link&sk=9006b3f2a4137a28a8576a69546c8c18).
+This is a project template which uses [FastAPI](https://fastapi.tiangolo.com/), [Alembic](https://alembic.sqlalchemy.org/en/latest/) and async [SQLModel](https://sqlmodel.tiangolo.com/) as ORM. It shows a complete async CRUD template using authentication. Our implementation utilizes the newest version of FastAPI and incorporates typing hints that are fully compatible with **Python 3.10** and later versions. If you're looking to build modern and efficient web applications with Python, this template will provide you with the necessary tools to get started quickly. You can read a short article with the motivations of starting this project in [Our Journey Using Async FastAPI](https://medium.com/allient/our-journey-using-async-fastapi-to-harnessing-the-power-of-modern-web-apis-90301827f14c?source=friends_link&sk=9006b3f2a4137a28a8576a69546c8c18). If you are looking for a started template CLI, I recommend you to use [create-fastapi-project](https://github.com/allient/create-fastapi-project)
 
 ## Why Use This Template?
 
@@ -202,7 +202,7 @@ make lint-fix
 ```
 
 ## SonarQube static analysis
-[SonarQube](https://www.sonarqube.org/) is an automatic code review tool that detects bugs, vulnerabilities, and code smells in a project. You can read [Our Journey Using Async FastAPI](https://medium.com/jrtec/static-analysis-using-sonarqube-in-a-react-webapp-dd4b335d6062) in order to have a better understanding about what SonarQube can do. If you are looking for a started template CLI, I recommend you to use [create-fastapi-project](https://github.com/allient/create-fastapi-project)
+[SonarQube](https://www.sonarqube.org/) is an automatic code review tool that detects bugs, vulnerabilities, and code smells in a project. You can read [this post](https://medium.com/jrtec/static-analysis-using-sonarqube-in-a-react-webapp-dd4b335d6062) in order to have a better understanding about what SonarQube can do.
 
 The following steps can help you to run a local static code analysis
 
