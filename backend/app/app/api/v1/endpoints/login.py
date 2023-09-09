@@ -1,24 +1,22 @@
 from datetime import timedelta
-from fastapi import APIRouter, Body, Depends, HTTPException
-from redis.asyncio import Redis
-from app.utils.token import get_valid_tokens
-from app.utils.token import delete_tokens
-from app.utils.token import add_token_to_redis
-from app.core.security import get_password_hash
-from app.core.security import verify_password
-from app.models.user_model import User
-from app.api.deps import get_redis_client
+
+from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from jose import jwt
+from jwt import DecodeError, ExpiredSignatureError, MissingRequiredClaimError
 from pydantic import EmailStr
-from pydantic import ValidationError
+from redis.asyncio import Redis
+
 from app import crud
 from app.api import deps
+from app.api.deps import get_redis_client
 from app.core import security
 from app.core.config import settings
-from app.schemas.common_schema import TokenType, IMetaGeneral
-from app.schemas.token_schema import TokenRead, Token, RefreshToken
+from app.core.security import decode_token, get_password_hash, verify_password
+from app.models.user_model import User
+from app.schemas.common_schema import IMetaGeneral, TokenType
 from app.schemas.response_schema import IPostResponseBase, create_response
+from app.schemas.token_schema import RefreshToken, Token, TokenRead
+from app.utils.token import add_token_to_redis, delete_tokens, get_valid_tokens
 
 router = APIRouter()
 
@@ -147,11 +145,22 @@ async def get_new_access_token(
     Gets a new access token using the refresh token for future requests
     """
     try:
-        payload = jwt.decode(
-            body.refresh_token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+        payload = decode_token(body.refresh_token)
+    except ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your token has expired. Please log in again.",
         )
-    except (jwt.JWTError, ValidationError):
-        raise HTTPException(status_code=403, detail="Refresh token invalid")
+    except DecodeError:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Error when decoding the token. Please check your request.",
+        )
+    except MissingRequiredClaimError as e:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="There is no required field in your token. Please contact the administrator.",
+        )
 
     if payload["type"] == "refresh":
         user_id = payload["sub"]
@@ -163,7 +172,7 @@ async def get_new_access_token(
 
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         user = await crud.user.get(id=user_id)
-        if getattr(user, "is_active"):
+        if user.is_active:
             access_token = security.create_access_token(
                 payload["sub"], expires_delta=access_token_expires
             )

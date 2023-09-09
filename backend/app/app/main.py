@@ -1,10 +1,9 @@
 import gc
 import logging
+from contextlib import asynccontextmanager
 from typing import Any
 from uuid import UUID, uuid4
-from app import crud
-from app.schemas.common_schema import IChatResponse, IUserMessage
-from app.utils.uuid6 import uuid7
+
 from fastapi import (
     FastAPI,
     HTTPException,
@@ -13,25 +12,27 @@ from fastapi import (
     WebSocketDisconnect,
     status,
 )
-from app.core import security
-from app.api.deps import get_redis_client
-from fastapi_pagination import add_pagination
-from pydantic import ValidationError
-from starlette.middleware.cors import CORSMiddleware
-from app.api.v1.api import api_router as api_router_v1
-from app.core.config import ModeEnum, settings
+from fastapi_async_sqlalchemy import SQLAlchemyMiddleware, db
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi_async_sqlalchemy import SQLAlchemyMiddleware, db
-from contextlib import asynccontextmanager
-from app.utils.fastapi_globals import g, GlobalsMiddleware
-from transformers import pipeline
 from fastapi_limiter import FastAPILimiter
-from jose import jwt
 from fastapi_limiter.depends import WebSocketRateLimiter
+from fastapi_pagination import add_pagination
+from jwt import DecodeError, ExpiredSignatureError, MissingRequiredClaimError
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
 from sqlalchemy.pool import NullPool, QueuePool
+from starlette.middleware.cors import CORSMiddleware
+from transformers import pipeline
+
+from app import crud
+from app.api.deps import get_redis_client
+from app.api.v1.api import api_router as api_router_v1
+from app.core.config import ModeEnum, settings
+from app.core.security import decode_token
+from app.schemas.common_schema import IChatResponse, IUserMessage
+from app.utils.fastapi_globals import GlobalsMiddleware, g
+from app.utils.uuid6 import uuid7
 
 
 async def user_id_identifier(request: Request):
@@ -45,16 +46,25 @@ async def user_id_identifier(request: Request):
             if len(header_parts) == 2 and header_parts[0].lower() == "bearer":
                 token = header_parts[1]
                 try:
-                    payload = jwt.decode(
-                        token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
-                    )
-                except (jwt.JWTError, ValidationError):
+                    payload = decode_token(token)
+                except ExpiredSignatureError:
                     raise HTTPException(
                         status_code=status.HTTP_403_FORBIDDEN,
-                        detail="Could not validate credentials",
+                        detail="Your token has expired. Please log in again.",
                     )
+                except DecodeError:
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Error when decoding the token. Please check your request.",
+                    )
+                except MissingRequiredClaimError:
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="There is no required field in your token. Please contact the administrator.",
+                    )
+
                 user_id = payload["sub"]
-                print("here2", user_id)
+
                 return user_id
 
     if request.scope["type"] == "websocket":
@@ -65,7 +75,7 @@ async def user_id_identifier(request: Request):
         return forwarded.split(",")[0]
 
     client = request.client
-    ip = getattr(client, "host", "0.0.0.0")    
+    ip = getattr(client, "host", "0.0.0.0")
     return ip + ":" + request.scope["path"]
 
 
@@ -134,7 +144,12 @@ class CustomException(Exception):
     code: str
     message: str
 
-    def __init__(self, http_code: int = 500, code: str | None = None, message: str = 'This is an error message'):
+    def __init__(
+        self,
+        http_code: int = 500,
+        code: str | None = None,
+        message: str = "This is an error message",
+    ):
         self.http_code = http_code
         self.code = code if code else str(self.http_code)
         self.message = message
