@@ -44,7 +44,7 @@ alembic = "^1.10.2"
 asyncpg = "^0.27.0"
 fastapi = {extras = ["all"], version = "^0.95.2"}
 sqlmodel = "^0.0.8"
-cryptography = "^38.0.3"
+cryptography = "^41.0.3"
 bcrypt = "^4.0.1"
 pyjwt = { extras = ["crypto"], version = "^2.8.0" }
 SQLAlchemy-Utils = "^0.38.3"
