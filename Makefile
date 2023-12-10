@@ -123,6 +123,10 @@ add-dev-migration:
 	docker compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head && \
 	echo "Migration added and applied."
 
+upgrade-migration:	
+	docker compose -f docker-compose-dev.yml exec fastapi_server alembic upgrade head && \
+	echo "Migration upgraded."
+
 run-pgadmin:
 	echo "$$SERVERS_JSON" > ./pgadmin/servers.json && \
 	docker volume create pgadmin_data && \

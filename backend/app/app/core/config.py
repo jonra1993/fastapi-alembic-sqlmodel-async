@@ -44,7 +44,7 @@ class Settings(BaseSettings):
                     password=info.data["DATABASE_PASSWORD"],
                     host=info.data["DATABASE_HOST"],
                     port=info.data["DATABASE_PORT"],
-                    path=f"/{info.data['DATABASE_NAME'] or ''}",
+                    path=info.data["DATABASE_NAME"],
                 )
         return v
 
@@ -62,7 +62,7 @@ class Settings(BaseSettings):
                     password=info.data["DATABASE_PASSWORD"],
                     host=info.data["DATABASE_HOST"],
                     port=info.data["DATABASE_PORT"],
-                    path=f"/{info.data['DATABASE_CELERY_NAME']or ''}",
+                    path=info.data["DATABASE_CELERY_NAME"],
                 )
         return v
 
@@ -80,7 +80,7 @@ class Settings(BaseSettings):
                     password=info.data["DATABASE_PASSWORD"],
                     host=info.data["DATABASE_HOST"],
                     port=info.data["DATABASE_PORT"],
-                    path=f"/{info.data['DATABASE_CELERY_NAME'] or ''}",
+                    path=info.data["DATABASE_CELERY_NAME"],
                 )
         return v
 
@@ -98,7 +98,7 @@ class Settings(BaseSettings):
                     password=info.data["DATABASE_PASSWORD"],
                     host=info.data["DATABASE_HOST"],
                     port=info.data["DATABASE_PORT"],
-                    path=f"/{info.data['DATABASE_CELERY_NAME'] or ''}",
+                    path=info.data["DATABASE_CELERY_NAME"],
                 )
         return v
 

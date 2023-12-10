@@ -24,6 +24,7 @@ fileConfig(config.config_file_name)
 
 target_metadata = SQLModel.metadata
 
+db_url = str(settings.ASYNC_DATABASE_URI)
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
@@ -39,13 +40,8 @@ def run_migrations_offline():
     Calls to context.execute() here emit the given string to the
     script output.
     """
-    url = str(settings.ASYNC_DATABASE_URI)
     context.configure(
-        url=url,
-        target_metadata=target_metadata,
-        literal_binds=True,
-        compare_type=True,
-        dialect_opts={"paramstyle": "named"},
+        url=db_url, target_metadata=target_metadata, literal_binds=True, compare_type=True, dialect_opts={"paramstyle": "named"}
     )
 
     with context.begin_transaction():
@@ -58,15 +54,12 @@ def do_run_migrations(connection):
     with context.begin_transaction():
         context.run_migrations()
 
-
 async def run_migrations_online():
     """Run migrations in 'online' mode.
     In this scenario we need to create an Engine
     and associate a connection with the context.
     """
-    connectable = create_async_engine(
-        str(settings.ASYNC_DATABASE_URI), echo=True, future=True
-    )
+    connectable = create_async_engine(db_url, echo=True, future=True)
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

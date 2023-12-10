@@ -36,13 +36,13 @@ services:
       - POSTGRES_DATABASE=${DATABASE_NAME}
       - POSTGRES_HOST_AUTH_METHOD= "trust"
 
-  # redis_server:
-  #   image: redis:alpine
-  #   container_name: redis_server    
-  #   restart: always
-  #   expose:
-  #     - 6379
-  #   env_file: .env
+  redis_server:
+    image: redis:alpine
+    container_name: redis_server    
+    restart: always
+    expose:
+      - 6379
+    env_file: .env
 
   # celery_worker:
   #   container_name: celery_worker
