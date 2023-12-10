@@ -34,8 +34,8 @@ engine_celery = create_async_engine(
     str(settings.ASYNC_CELERY_BEAT_DATABASE_URI),
     # echo=True,
     future=True,
-    pool_size=POOL_SIZE,
-    max_overflow=64,
+    #pool_size=POOL_SIZE,
+    #max_overflow=64,
 )
 
 SessionLocalCelery = sessionmaker(

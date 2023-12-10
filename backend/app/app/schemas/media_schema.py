@@ -15,4 +15,4 @@ class IMediaUpdate(MediaBase):
 
 class IMediaRead(MediaBase):
     id: UUID | str
-    link: str | None
+    link: str | None = None

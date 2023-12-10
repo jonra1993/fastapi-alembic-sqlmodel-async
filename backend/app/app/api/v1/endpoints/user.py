@@ -428,6 +428,7 @@ async def upload_my_image(
             file_data=BytesIO(image_modified.file_data),
             content_type=image_file.content_type,
         )
+        print("data_file", data_file)
         media = IMediaCreate(
             title=title, description=description, path=data_file.file_name
         )

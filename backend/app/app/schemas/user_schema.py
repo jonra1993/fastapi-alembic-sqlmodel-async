@@ -4,7 +4,7 @@ from app.models.group_model import GroupBase
 from pydantic import BaseModel
 from uuid import UUID
 from enum import Enum
-from .image_media_schema import IImageMediaReadCombined
+from .image_media_schema import IImageMediaReadCombined, IImageMediaRead
 from .role_schema import IRoleRead
 
 
@@ -30,7 +30,7 @@ class IUserRead(UserBase):
     id: UUID
     role: IRoleRead | None = None
     groups: list[IGroupReadBasic] | None = []
-    image: IImageMediaReadCombined | None
+    image: IImageMediaRead | None
     follower_count: int | None = 0
     following_count: int | None = 0
 
@@ -38,7 +38,7 @@ class IUserRead(UserBase):
 class IUserReadWithoutGroups(UserBase):
     id: UUID
     role: IRoleRead | None = None
-    image: IImageMediaReadCombined | None
+    image: IImageMediaRead | None
     follower_count: int | None = 0
     following_count: int | None = 0
 

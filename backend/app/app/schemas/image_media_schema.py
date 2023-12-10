@@ -1,6 +1,6 @@
 from app.models.image_media_model import ImageMedia, ImageMediaBase
 from app.models.media_model import Media
-from pydantic import root_validator
+from pydantic import model_validator, root_validator
 from .media_schema import IMediaRead
 from app.utils.partial import optional
 
@@ -20,10 +20,11 @@ class IImageMediaRead(ImageMediaBase):
     media: IMediaRead | None
 
 
+#Todo make it compatible with pydantic v2
 class IImageMediaReadCombined(ImageMediaBase):
     link: str | None
 
-    @root_validator(pre=True)
+    @model_validator(mode='before')
     def combine_attributes(cls, values):
         link_fields = {"link": values.get("link", None)}
         if "media" in values:
