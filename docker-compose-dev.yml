@@ -5,7 +5,7 @@ services:
     container_name: fastapi_server
     build: ./backend
     restart: always
-    command: "sh -c 'alembic upgrade head && uvicorn app.main:app --reload --workers 3 --host 0.0.0.0 --port 8000'"
+    command: "sh -c 'uvicorn app.main:app --reload --workers 3 --host 0.0.0.0 --port 8000'"
     #command: "sh -c 'alembic upgrade head && gunicorn -w 3 -k uvicorn.workers.UvicornWorker app.main:app  --bind 0.0.0.0:8000 --preload --log-level=debug --timeout 120'"
     volumes:
       - ./backend/app:/code
@@ -36,59 +36,59 @@ services:
       - POSTGRES_DATABASE=${DATABASE_NAME}
       - POSTGRES_HOST_AUTH_METHOD= "trust"
 
-  redis_server:
-    image: redis:alpine
-    container_name: redis_server    
-    restart: always
-    expose:
-      - 6379
-    env_file: .env
+  # redis_server:
+  #   image: redis:alpine
+  #   container_name: redis_server    
+  #   restart: always
+  #   expose:
+  #     - 6379
+  #   env_file: .env
 
-  celery_worker:
-    container_name: celery_worker
-    restart: always
-    # platform: linux/arm64/v8
-    build: ./backend
-    command: "watchfiles 'celery -A app.core.celery worker -l info' "
-    volumes:
-      - ./backend/app:/code
-      # - "${EB_LOG_BASE_DIR}/php-app:/var/log/celery"
-    depends_on:
-      - database
-      - redis_server
-    env_file: .env
+  # celery_worker:
+  #   container_name: celery_worker
+  #   restart: always
+  #   # platform: linux/arm64/v8
+  #   build: ./backend
+  #   command: "watchfiles 'celery -A app.core.celery worker -l info' "
+  #   volumes:
+  #     - ./backend/app:/code
+  #     # - "${EB_LOG_BASE_DIR}/php-app:/var/log/celery"
+  #   depends_on:
+  #     - database
+  #     - redis_server
+  #   env_file: .env
   
-  celery_beat:  #Good for crontab and schedule tasks
-    container_name: celery_beat
-    restart: always
-    # platform: linux/arm64/v8
-    build:
-      context: ./backend
-      args:
-        INSTALL_DEV: ${INSTALL_DEV-false}
-    command: celery -A app.core.celery beat -l info -S celery_sqlalchemy_scheduler.schedulers:DatabaseScheduler -l info
-    volumes:
-      - ./backend/app:/code
-      # - "${EB_LOG_BASE_DIR}/php-app:/var/log/celery-beat"
-    depends_on:
-      - database
-      - redis_server
-    env_file: .env
+  # celery_beat:  #Good for crontab and schedule tasks
+  #   container_name: celery_beat
+  #   restart: always
+  #   # platform: linux/arm64/v8
+  #   build:
+  #     context: ./backend
+  #     args:
+  #       INSTALL_DEV: ${INSTALL_DEV-false}
+  #   command: celery -A app.core.celery beat -l info -S celery_sqlalchemy_scheduler.schedulers:DatabaseScheduler -l info
+  #   volumes:
+  #     - ./backend/app:/code
+  #     # - "${EB_LOG_BASE_DIR}/php-app:/var/log/celery-beat"
+  #   depends_on:
+  #     - database
+  #     - redis_server
+  #   env_file: .env
 
-  minio_server:
-    image: minio/minio:latest
-    restart: always
-    container_name: minio_server
-    volumes:
-      - ./minio/data:/data
-    expose:
-      - 9000
-      - 9091
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_BROWSER_REDIRECT_URL: http://stash.localhost
-    command: "server /data --console-address ':9090'"    
+  # minio_server:
+  #   image: minio/minio:latest
+  #   restart: always
+  #   container_name: minio_server
+  #   volumes:
+  #     - ./minio/data:/data
+  #   expose:
+  #     - 9000
+  #     - 9091
+  #   environment:
+  #     MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+  #     MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+  #     MINIO_BROWSER_REDIRECT_URL: http://stash.localhost
+  #   command: "server /data --console-address ':9090'"    
 
   caddy_reverse_proxy:
     container_name: caddy_reverse_proxy

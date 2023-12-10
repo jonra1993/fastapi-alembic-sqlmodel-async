@@ -1,8 +1,8 @@
 from __future__ import with_statement
 import asyncio
 from logging.config import fileConfig
-from sqlmodel import SQLModel, create_engine
-from sqlmodel.ext.asyncio.session import AsyncEngine
+from sqlmodel import SQLModel
+from sqlalchemy.ext.asyncio import create_async_engine
 from alembic import context
 from app.core.config import Settings
 import sys
@@ -39,9 +39,13 @@ def run_migrations_offline():
     Calls to context.execute() here emit the given string to the
     script output.
     """
-    url = settings.ASYNC_DATABASE_URI
+    url = str(settings.ASYNC_DATABASE_URI)
     context.configure(
-        url=url, target_metadata=target_metadata, literal_binds=True, compare_type=True, dialect_opts={"paramstyle": "named"}
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        compare_type=True,
+        dialect_opts={"paramstyle": "named"},
     )
 
     with context.begin_transaction():
@@ -54,12 +58,15 @@ def do_run_migrations(connection):
     with context.begin_transaction():
         context.run_migrations()
 
+
 async def run_migrations_online():
     """Run migrations in 'online' mode.
     In this scenario we need to create an Engine
     and associate a connection with the context.
     """
-    connectable = AsyncEngine(create_engine(settings.ASYNC_DATABASE_URI, echo=True, future=True))
+    connectable = create_async_engine(
+        str(settings.ASYNC_DATABASE_URI), echo=True, future=True
+    )
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

@@ -2,9 +2,8 @@ from fastapi import HTTPException
 from typing import Any, Generic, TypeVar
 from uuid import UUID
 from app.schemas.common_schema import IOrderEnum
-from fastapi_pagination.ext.async_sqlalchemy import paginate
+from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_async_sqlalchemy import db
-from fastapi_async_sqlalchemy.middleware import DBSessionMeta
 from fastapi_pagination import Params, Page
 from pydantic import BaseModel
 from sqlmodel import SQLModel, select, func
@@ -30,7 +29,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         self.model = model
         self.db = db
 
-    def get_db(self) -> DBSessionMeta:
+    def get_db(self) -> type(db):
         return self.db
 
     async def get(

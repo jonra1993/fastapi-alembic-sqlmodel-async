@@ -8,7 +8,7 @@ from pydantic import BaseModel
 def optional(*fields):
     def dec(_cls):
         for field in fields:
-            _cls.__fields__[field].required = False
+            #_cls.__fields__[field].required = False
             if _cls.__fields__[field].default:
                 _cls.__fields__[field].default = None
         return _cls

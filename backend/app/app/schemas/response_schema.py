@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from fastapi_pagination import Params, Page
 from fastapi_pagination.bases import AbstractPage, AbstractParams
 from pydantic import Field
-from pydantic.generics import GenericModel
+from pydantic import BaseModel
 
 DataType = TypeVar("DataType")
 T = TypeVar("T")
@@ -17,7 +17,7 @@ class PageBase(Page[T], Generic[T]):
     next_page: int | None = Field(None, description="Page number of the next page")
 
 
-class IResponseBase(GenericModel, Generic[T]):
+class IResponseBase(BaseModel, Generic[T]):
     message: str = ""
     meta: dict = {}
     data: T | None

@@ -13,9 +13,7 @@ from uuid import UUID
 class UserBase(SQLModel):
     first_name: str
     last_name: str
-    email: EmailStr = Field(
-        nullable=True, index=True, sa_column_kwargs={"unique": True}
-    )
+    email: EmailStr = Field(sa_column=Column(String, index=True, unique=True))
     is_active: bool = Field(default=True)
     is_superuser: bool = Field(default=False)
     birthdate: datetime | None = Field(

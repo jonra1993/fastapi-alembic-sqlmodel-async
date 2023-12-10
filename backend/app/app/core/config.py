@@ -1,5 +1,7 @@
 import os
-from pydantic import BaseSettings, PostgresDsn, validator, EmailStr, AnyHttpUrl
+from pydantic_core.core_schema import FieldValidationInfo
+from pydantic import PostgresDsn, EmailStr, AnyHttpUrl, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Any
 import secrets
 from enum import Enum
@@ -22,79 +24,83 @@ class Settings(BaseSettings):
     DATABASE_USER: str
     DATABASE_PASSWORD: str
     DATABASE_HOST: str
-    DATABASE_PORT: int | str
+    DATABASE_PORT: int
     DATABASE_NAME: str
     DATABASE_CELERY_NAME: str = "celery_schedule_jobs"
     REDIS_HOST: str
     REDIS_PORT: str
-    DB_POOL_SIZE = 83
-    WEB_CONCURRENCY = 9
-    POOL_SIZE = max(DB_POOL_SIZE // WEB_CONCURRENCY, 5)
-    ASYNC_DATABASE_URI: PostgresDsn | None
+    DB_POOL_SIZE: int = 83
+    WEB_CONCURRENCY: int = 9
+    POOL_SIZE: int = max(DB_POOL_SIZE // WEB_CONCURRENCY, 5)
+    ASYNC_DATABASE_URI: PostgresDsn | str = ""
 
-    @validator("ASYNC_DATABASE_URI", pre=True)
-    def assemble_db_connection(cls, v: str | None, values: dict[str, Any]) -> Any:
+    @field_validator("ASYNC_DATABASE_URI", mode="after")
+    def assemble_db_connection(cls, v: str | None, info: FieldValidationInfo) -> Any:
         if isinstance(v, str):
-            return v
-        return PostgresDsn.build(
-            scheme="postgresql+asyncpg",
-            user=values.get("DATABASE_USER"),
-            password=values.get("DATABASE_PASSWORD"),
-            host=values.get("DATABASE_HOST"),
-            port=str(values.get("DATABASE_PORT")),
-            path=f"/{values.get('DATABASE_NAME') or ''}",
-        )
+            if v == "":
+                return PostgresDsn.build(
+                    scheme="postgresql+asyncpg",
+                    username=info.data["DATABASE_USER"],
+                    password=info.data["DATABASE_PASSWORD"],
+                    host=info.data["DATABASE_HOST"],
+                    port=info.data["DATABASE_PORT"],
+                    path=f"/{info.data['DATABASE_NAME'] or ''}",
+                )
+        return v
 
-    SYNC_CELERY_DATABASE_URI: str | None
+    SYNC_CELERY_DATABASE_URI: PostgresDsn | str = ""
 
-    @validator("SYNC_CELERY_DATABASE_URI", pre=True)
+    @field_validator("SYNC_CELERY_DATABASE_URI", mode="after")
     def assemble_celery_db_connection(
-        cls, v: str | None, values: dict[str, Any]
+        cls, v: str | None, info: FieldValidationInfo
     ) -> Any:
         if isinstance(v, str):
-            return v
-        return PostgresDsn.build(
-            scheme="db+postgresql",
-            user=values.get("DATABASE_USER"),
-            password=values.get("DATABASE_PASSWORD"),
-            host=values.get("DATABASE_HOST"),
-            port=str(values.get("DATABASE_PORT")),
-            path=f"/{values.get('DATABASE_CELERY_NAME') or ''}",
-        )
+            if v == "":
+                return PostgresDsn.build(
+                    scheme="db+postgresql",
+                    username=info.data["DATABASE_USER"],
+                    password=info.data["DATABASE_PASSWORD"],
+                    host=info.data["DATABASE_HOST"],
+                    port=info.data["DATABASE_PORT"],
+                    path=f"/{info.data['DATABASE_CELERY_NAME']or ''}",
+                )
+        return v
 
-    SYNC_CELERY_BEAT_DATABASE_URI: str | None
+    SYNC_CELERY_BEAT_DATABASE_URI: PostgresDsn | str = ""
 
-    @validator("SYNC_CELERY_BEAT_DATABASE_URI", pre=True)
+    @field_validator("SYNC_CELERY_BEAT_DATABASE_URI", mode="after")
     def assemble_celery_beat_db_connection(
-        cls, v: str | None, values: dict[str, Any]
+        cls, v: str | None, info: FieldValidationInfo
     ) -> Any:
         if isinstance(v, str):
-            return v
-        return PostgresDsn.build(
-            scheme="postgresql+psycopg2",
-            user=values.get("DATABASE_USER"),
-            password=values.get("DATABASE_PASSWORD"),
-            host=values.get("DATABASE_HOST"),
-            port=str(values.get("DATABASE_PORT")),
-            path=f"/{values.get('DATABASE_CELERY_NAME') or ''}",
-        )
+            if v == "":
+                return PostgresDsn.build(
+                    scheme="postgresql+psycopg2",
+                    username=info.data["DATABASE_USER"],
+                    password=info.data["DATABASE_PASSWORD"],
+                    host=info.data["DATABASE_HOST"],
+                    port=info.data["DATABASE_PORT"],
+                    path=f"/{info.data['DATABASE_CELERY_NAME'] or ''}",
+                )
+        return v
 
-    ASYNC_CELERY_BEAT_DATABASE_URI: str | None
+    ASYNC_CELERY_BEAT_DATABASE_URI: PostgresDsn | str = ""
 
-    @validator("ASYNC_CELERY_BEAT_DATABASE_URI", pre=True)
+    @field_validator("ASYNC_CELERY_BEAT_DATABASE_URI", mode="after")
     def assemble_async_celery_beat_db_connection(
-        cls, v: str | None, values: dict[str, Any]
+        cls, v: str | None, info: FieldValidationInfo
     ) -> Any:
         if isinstance(v, str):
-            return v
-        return PostgresDsn.build(
-            scheme="postgresql+asyncpg",
-            user=values.get("DATABASE_USER"),
-            password=values.get("DATABASE_PASSWORD"),
-            host=values.get("DATABASE_HOST"),
-            port=str(values.get("DATABASE_PORT")),
-            path=f"/{values.get('DATABASE_CELERY_NAME') or ''}",
-        )
+            if v == "":
+                return PostgresDsn.build(
+                    scheme="postgresql+asyncpg",
+                    username=info.data["DATABASE_USER"],
+                    password=info.data["DATABASE_PASSWORD"],
+                    host=info.data["DATABASE_HOST"],
+                    port=info.data["DATABASE_PORT"],
+                    path=f"/{info.data['DATABASE_CELERY_NAME'] or ''}",
+                )
+        return v
 
     FIRST_SUPERUSER_EMAIL: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
@@ -107,10 +113,10 @@ class Settings(BaseSettings):
     WHEATER_URL: AnyHttpUrl
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
-    ENCRYPT_KEY = secrets.token_urlsafe(32)
+    ENCRYPT_KEY: str = secrets.token_urlsafe(32)
     BACKEND_CORS_ORIGINS: list[str] | list[AnyHttpUrl]
 
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
+    @field_validator("BACKEND_CORS_ORIGINS")
     def assemble_cors_origins(cls, v: str | list[str]) -> list[str] | str:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",")]
@@ -118,9 +124,9 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    class Config:
-        case_sensitive = True
-        env_file = os.path.expanduser("~/.env")
+    model_config = SettingsConfigDict(
+        case_sensitive=True, env_file=os.path.expanduser("~/.env")
+    )
 
 
 settings = Settings()
