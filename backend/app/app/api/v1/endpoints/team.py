@@ -37,6 +37,7 @@ async def get_teams_list(
     Gets a paginated list of teams
     """
     teams = await crud.team.get_multi_paginated(params=params)
+    print("teams", teams)
     return create_response(data=teams)
 
 

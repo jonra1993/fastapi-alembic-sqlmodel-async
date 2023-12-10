@@ -238,4 +238,3 @@ async def websocket_endpoint(websocket: WebSocket, user_id: UUID):
 
 # Add Routers
 app.include_router(api_router_v1, prefix=settings.API_V1_STR)
-add_pagination(app)

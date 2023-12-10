@@ -1,3 +1,4 @@
+from typing import Any
 from app.models.hero_model import HeroBase
 from app.models.team_model import TeamBase
 from .user_schema import IUserBasicInfo
@@ -17,7 +18,7 @@ class ITeamUpdate(TeamBase):
 
 class ITeamRead(TeamBase):
     id: UUID
-    created_by: IUserBasicInfo | None = None
+    created_by: IUserBasicInfo
 
 
 class ITeamReadWithHeroes(ITeamRead):
