@@ -18,6 +18,6 @@ class IGroupReadWithUsers(GroupBase):
 
 
 # All these fields are optional
-@optional
+@optional()
 class IGroupUpdate(GroupBase):
     pass

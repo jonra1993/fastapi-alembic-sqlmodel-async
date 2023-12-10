@@ -8,11 +8,11 @@ class IMediaCreate(MediaBase):
 
 
 # All these fields are optional
-@optional
+@optional()
 class IMediaUpdate(MediaBase):
     pass
 
 
 class IMediaRead(MediaBase):
     id: UUID | str
-    link: str | None
+    link: str | None = None

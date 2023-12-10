@@ -9,7 +9,7 @@ class IUserFollowCreate(UserFollowBase):
 
 
 # All these fields are optional
-@optional
+@optional()
 class IUserFollowUpdate(UserFollowBase):
     pass
 

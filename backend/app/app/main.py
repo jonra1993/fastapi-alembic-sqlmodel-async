@@ -115,7 +115,7 @@ app = FastAPI(
 
 app.add_middleware(
     SQLAlchemyMiddleware,
-    db_url=settings.ASYNC_DATABASE_URI,
+    db_url=str(settings.ASYNC_DATABASE_URI),
     engine_args={
         "echo": False,
         # "pool_pre_ping": True,
@@ -238,4 +238,3 @@ async def websocket_endpoint(websocket: WebSocket, user_id: UUID):
 
 # Add Routers
 app.include_router(api_router_v1, prefix=settings.API_V1_STR)
-add_pagination(app)

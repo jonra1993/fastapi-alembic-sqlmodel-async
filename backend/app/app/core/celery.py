@@ -6,9 +6,9 @@ from app.core.config import settings
 celery = Celery(
     "async_task",
     broker=f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
-    backend=settings.SYNC_CELERY_DATABASE_URI,
+    backend=str(settings.SYNC_CELERY_DATABASE_URI),
     include="app.api.celery_task",  # route where tasks are defined
 )
 
-celery.conf.update({"beat_dburi": settings.SYNC_CELERY_BEAT_DATABASE_URI})
+celery.conf.update({"beat_dburi": str(settings.SYNC_CELERY_BEAT_DATABASE_URI)})
 celery.autodiscover_tasks()
