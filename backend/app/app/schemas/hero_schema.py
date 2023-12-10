@@ -2,14 +2,14 @@ from app.models.hero_model import HeroBase
 from app.models.team_model import TeamBase
 from app.utils.partial import optional
 from uuid import UUID
-from pydantic import validator
+from pydantic import field_validator
 
 
 class IHeroCreate(HeroBase):
-    @validator("age", pre=True, check_fields=False, always=True)
-    def check_age(cls, value, values, **kwargs) -> int:
+    @field_validator('age')
+    def check_age(cls, value):
         if value < 0:
-            raise ValueError("Invalida age")
+            raise ValueError("Invalid age")
         return value
 
 
