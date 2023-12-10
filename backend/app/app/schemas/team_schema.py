@@ -10,7 +10,7 @@ class ITeamCreate(TeamBase):
 
 
 # All these fields are optional
-@optional
+@optional()
 class ITeamUpdate(TeamBase):
     pass
 

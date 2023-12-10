@@ -14,7 +14,7 @@ class IHeroCreate(HeroBase):
 
 
 # All these fields are optional
-@optional
+@optional()
 class IHeroUpdate(HeroBase):
     pass
 

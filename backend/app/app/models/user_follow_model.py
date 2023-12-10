@@ -10,4 +10,4 @@ class UserFollowBase(SQLModel):
 
 
 class UserFollow(BaseUUIDModel, UserFollowBase, table=True):
-    is_mutual: bool | None = Field(sa_column=Column(Boolean(), server_default="0"))
+    is_mutual: bool | None = Field(default=None, sa_column=Column(Boolean(), server_default="0"))

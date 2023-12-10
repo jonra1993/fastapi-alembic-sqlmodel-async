@@ -9,7 +9,7 @@ class IRoleCreate(RoleBase):
 
 
 # All these fields are optional
-@optional
+@optional()
 class IRoleUpdate(RoleBase):
     pass
 

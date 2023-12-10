@@ -11,7 +11,7 @@ class IImageMediaCreate(ImageMediaBase):
 
 
 # All these fields are optional
-@optional
+@optional()
 class IImageMediaUpdate(ImageMediaBase):
     pass
 

@@ -16,7 +16,7 @@ class IUserCreate(UserBase):
 
 
 # All these fields are optional
-@optional
+@optional()
 class IUserUpdate(UserBase):
     pass
 

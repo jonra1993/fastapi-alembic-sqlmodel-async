@@ -1,20 +1,51 @@
 # https://github.com/pydantic/pydantic/issues/1223
 # https://github.com/pydantic/pydantic/pull/3179
-# Todo migrate to pydanticv2 partial
-import inspect
+# https://github.com/pydantic/pydantic/issues/1673
+
 from pydantic import BaseModel
+from copy import deepcopy
+from typing import Any, Callable, Optional, Type, TypeVar
+from pydantic import BaseModel, create_model
+from pydantic.fields import FieldInfo
+
+Model = TypeVar("Model", bound=Type[BaseModel])
 
 
-def optional(*fields):
-    def dec(_cls):
-        for field in fields:
-            #_cls.__fields__[field].required = False
-            if _cls.__fields__[field].default:
-                _cls.__fields__[field].default = None
-        return _cls
+def optional(without_fields: list[str] | None = None) -> Callable[[Model], Model]:
+    """A decorator that create a partial model.
 
-    if fields and inspect.isclass(fields[0]) and issubclass(fields[0], BaseModel):
-        cls = fields[0]
-        fields = cls.__fields__
-        return dec(cls)
-    return dec
+    Args:
+        model (Type[BaseModel]): BaseModel model.
+
+    Returns:
+        Type[BaseModel]: ModelBase partial model.
+    """
+    if without_fields is None:
+        without_fields = []
+
+    def wrapper(model: Type[Model]) -> Type[Model]:
+        base_model: Type[Model] = model
+
+        def make_field_optional(
+            field: FieldInfo, default: Any = None
+        ) -> tuple[Any, FieldInfo]:
+            new = deepcopy(field)
+            new.default = default
+            new.annotation = Optional[field.annotation]
+            return new.annotation, new
+
+        if without_fields:
+            base_model = BaseModel
+
+        return create_model(
+            model.__name__,
+            __base__=base_model,
+            __module__=model.__module__,
+            **{
+                field_name: make_field_optional(field_info)
+                for field_name, field_info in model.model_fields.items()
+                if field_name not in without_fields
+            },
+        )
+
+    return wrapper
