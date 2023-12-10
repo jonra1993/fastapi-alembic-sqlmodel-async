@@ -17,21 +17,21 @@ class UserBase(SQLModel):
     is_active: bool = Field(default=True)
     is_superuser: bool = Field(default=False)
     birthdate: datetime | None = Field(
-        sa_column=Column(DateTime(timezone=True), nullable=True)
+        default=None, sa_column=Column(DateTime(timezone=True), nullable=True)
     )  # birthday with timezone
     role_id: UUID | None = Field(default=None, foreign_key="Role.id")
-    phone: str | None
+    phone: str | None = None
     gender: IGenderEnum | None = Field(
         default=IGenderEnum.other,
         sa_column=Column(ChoiceType(IGenderEnum, impl=String())),
     )
-    state: str | None
-    country: str | None
-    address: str | None
+    state: str | None = None
+    country: str | None = None
+    address: str | None = None
 
 
 class User(BaseUUIDModel, UserBase, table=True):
-    hashed_password: str | None = Field(nullable=False, index=True)
+    hashed_password: str | None = Field(default=None, nullable=False, index=True)
     role: Optional["Role"] = Relationship(  # noqa: F821
         back_populates="users", sa_relationship_kwargs={"lazy": "joined"}
     )
@@ -48,8 +48,8 @@ class User(BaseUUIDModel, UserBase, table=True):
         }
     )
     follower_count: int | None = Field(
-        sa_column=Column(BigInteger(), server_default="0")
+        default=None, sa_column=Column(BigInteger(), server_default="0")
     )
     following_count: int | None = Field(
-        sa_column=Column(BigInteger(), server_default="0")
+        default=None, sa_column=Column(BigInteger(), server_default="0")
     )

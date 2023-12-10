@@ -6,9 +6,9 @@ from app import api
 
 
 class MediaBase(SQLModel):
-    title: str | None
-    description: str | None
-    path: str | None
+    title: str | None = None
+    description: str | None = None
+    path: str | None = None
 
 
 class Media(BaseUUIDModel, MediaBase, table=True):

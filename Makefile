@@ -38,6 +38,8 @@ help:
 	@echo "        Init database with sample data."	
 	@echo "    add-dev-migration"
 	@echo "        Add new database migration using alembic."
+	@echo "    upgrade-migration"
+	@echo "        This helps to upgrade pending migrations."	
 	@echo "    run-pgadmin"
 	@echo "        Run pgadmin4."	
 	@echo "    load-server-pgadmin"

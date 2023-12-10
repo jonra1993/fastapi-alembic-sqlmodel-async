@@ -5,9 +5,9 @@ from sqlmodel import Field, SQLModel, Relationship
 
 
 class ImageMediaBase(SQLModel):
-    file_format: str | None
-    width: int | None
-    height: int | None
+    file_format: str | None = None
+    width: int | None = None
+    height: int | None = None
 
 
 class ImageMedia(BaseUUIDModel, ImageMediaBase, table=True):

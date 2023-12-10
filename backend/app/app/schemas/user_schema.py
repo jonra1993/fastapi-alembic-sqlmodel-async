@@ -9,7 +9,7 @@ from .role_schema import IRoleRead
 
 
 class IUserCreate(UserBase):
-    password: str | None
+    password: str
 
     class Config:
         hashed_password = None
