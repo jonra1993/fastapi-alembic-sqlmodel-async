@@ -156,7 +156,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session: AsyncSession | None = None,
     ) -> ModelType:
         db_session = db_session or self.db.session
-        db_obj = self.model.from_orm(obj_in)  # type: ignore
+        db_obj = self.model.model_validate(obj_in)  # type: ignore
 
         if created_by_id:
             db_obj.created_by_id = created_by_id

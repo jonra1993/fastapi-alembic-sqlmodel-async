@@ -34,7 +34,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
         self, *, obj_in: IUserCreate, db_session: AsyncSession | None = None
     ) -> User:
         db_session = db_session or super().get_db().session
-        db_obj = User.from_orm(obj_in)
+        db_obj = User.model_validate(obj_in)
         db_obj.hashed_password = get_password_hash(obj_in.password)
         db_session.add(db_obj)
         await db_session.commit()
@@ -73,7 +73,7 @@ class CRUDUser(CRUDBase[User, IUserCreate, IUserUpdate]):
     ) -> User:
         db_session = super().get_db().session
         user.image = ImageMedia(
-            media=Media.from_orm(image),
+            media=Media.model_validate(image),
             height=heigth,
             width=width,
             file_format=file_format,

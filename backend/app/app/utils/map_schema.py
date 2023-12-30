@@ -8,4 +8,4 @@ ModelType = TypeVar("ModelType", bound=SQLModel)
 
 
 def map_models_schema(schema: SchemaType, models: list[ModelType]):
-    return [schema.from_orm(model) for model in models]
+    return [schema.model_validate(model) for model in models]
