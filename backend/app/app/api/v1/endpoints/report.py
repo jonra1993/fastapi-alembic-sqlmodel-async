@@ -43,7 +43,7 @@ async def export_users_list(
     """
     users = await crud.user.get_multi_ordered(limit=1000, order_by="id")
     users_list = [
-        IUserRead.from_orm(user) for user in users
+        IUserRead.model_validate(user) for user in users
     ]  # Creates a pydantic list of object
     users_df = pd.DataFrame([s.__dict__ for s in users_list])
     if file_extension == FileExtensionEnum.xls:
@@ -88,7 +88,7 @@ async def export_heroes_list(
     """
     heroes = await crud.hero.get_multi_ordered(limit=1000, order_by="id")
     heroes_list = [
-        IHeroRead.from_orm(hero) for hero in heroes
+        IHeroRead.model_validate(hero) for hero in heroes
     ]  # Creates a pydantic list of object
     heroes_df = pd.DataFrame([s.__dict__ for s in heroes_list])
     if file_extension == FileExtensionEnum.xls:

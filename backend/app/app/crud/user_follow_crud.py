@@ -19,7 +19,7 @@ class CRUDUserFollow(CRUDBase[UserFollowModel, IUserFollowCreate, IUserFollowUpd
         new_user_follow = IUserFollowCreate(
             user_id=user.id, target_user_id=target_user.id
         )
-        db_obj = UserFollowModel.from_orm(new_user_follow)
+        db_obj = UserFollowModel.model_validate(new_user_follow)
 
         reverse_follow = await self.get_follow_by_user_id_and_target_user_id(
             user_id=target_user.id, target_user_id=user.id
