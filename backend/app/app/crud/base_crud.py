@@ -87,7 +87,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             query = select(self.model)
         
         output = await paginate(db_session, query, params)
-        print("output", output)        
         return output
 
     async def get_multi_paginated_ordered(
