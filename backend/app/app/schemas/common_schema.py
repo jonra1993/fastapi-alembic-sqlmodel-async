@@ -28,7 +28,7 @@ class TokenType(str, Enum):
 class IUserMessage(BaseModel):
     """User message schema."""
 
-    user_id: UUID | None
+    user_id: UUID | None = None
     message: str
 
 

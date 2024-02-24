@@ -189,7 +189,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: UUID):
                 # Receive and send back the client message
                 data = await websocket.receive_json()
                 await ws_ratelimit(websocket)
-                user_message = IUserMessage.parse_obj(data)
+                user_message = IUserMessage.model_validate(data)
                 user_message.user_id = user_id
 
                 resp = IChatResponse(
@@ -227,7 +227,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: UUID):
                     message_id="",
                     id="",
                     sender="bot",
-                    message="Sorry, something went wrong. Your user limit of api usages has been reached.",
+                    message="Sorry, something went wrong. Your user limit of api usages has been reached or check your API key.",
                     type="error",
                 )
                 await websocket.send_json(resp.dict())
