@@ -4,7 +4,6 @@ from app.models.base_uuid_model import BaseUUIDModel
 from uuid import UUID
 
 
-
 class TeamBase(SQLModel):
     name: str = Field(index=True)
     headquarters: str

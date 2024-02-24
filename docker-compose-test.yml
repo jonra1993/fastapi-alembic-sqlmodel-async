@@ -22,23 +22,22 @@ services:
       - caddy_reverse_proxy:storage.localhost
 
   database:
-    image: bitnami/postgresql:13.3.0
+    image: bitnami/postgresql
     restart: always
     container_name: database
     env_file: ".env"
     user: root
     volumes:
-      - ./db_docker:/bitnami/postgresql
+      - db_docker:/bitnami/postgresql
       - ./create-dbs.sql:/docker-entrypoint-initdb.d/create-dbs.sql
     ports:
       - 5454:5432 # Remove this on production
     expose:
       - 5432
     environment:
-      - POSTGRES_USERNAME=${DATABASE_USER}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-      - POSTGRES_DATABASE=${DATABASE_NAME}
-      - POSTGRES_HOST_AUTH_METHOD= "trust"
+      - POSTGRESQL_USERNAME=${DATABASE_USER}
+      - POSTGRESQL_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRESQL_DATABASE=${DATABASE_NAME}
 
   redis_server:
     image: redis:alpine
@@ -52,10 +51,7 @@ services:
     container_name: celery_worker
     restart: always
     # platform: linux/arm64/v8
-    build:
-      context: ./backend      
-      args:
-        INSTALL_DEV: "true"
+    build: ./backend
     command: "watchfiles 'celery -A app.core.celery worker -l info' "
     volumes:
       - ./backend/app:/code
@@ -115,5 +111,6 @@ services:
       - caddy_config:/config
 
 volumes:
+  db_docker:
   caddy_data:
   caddy_config:

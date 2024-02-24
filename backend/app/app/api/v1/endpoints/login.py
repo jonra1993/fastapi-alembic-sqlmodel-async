@@ -158,7 +158,7 @@ async def get_new_access_token(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Error when decoding the token. Please check your request.",
         )
-    except MissingRequiredClaimError as e:
+    except MissingRequiredClaimError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="There is no required field in your token. Please contact the administrator.",

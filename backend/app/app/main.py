@@ -17,7 +17,6 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import WebSocketRateLimiter
-from fastapi_pagination import add_pagination
 from jwt import DecodeError, ExpiredSignatureError, MissingRequiredClaimError
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage
@@ -189,7 +188,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: UUID):
                 # Receive and send back the client message
                 data = await websocket.receive_json()
                 await ws_ratelimit(websocket)
-                user_message = IUserMessage.parse_obj(data)
+                user_message = IUserMessage.model_validate(data)
                 user_message.user_id = user_id
 
                 resp = IChatResponse(
@@ -227,7 +226,7 @@ async def websocket_endpoint(websocket: WebSocket, user_id: UUID):
                     message_id="",
                     id="",
                     sender="bot",
-                    message="Sorry, something went wrong. Your user limit of api usages has been reached.",
+                    message="Sorry, something went wrong. Your user limit of api usages has been reached or check your API key.",
                     type="error",
                 )
                 await websocket.send_json(resp.dict())

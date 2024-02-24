@@ -4,7 +4,7 @@ from app.models.group_model import GroupBase
 from pydantic import BaseModel
 from uuid import UUID
 from enum import Enum
-from .image_media_schema import IImageMediaReadCombined, IImageMediaRead
+from .image_media_schema import IImageMediaRead
 from .role_schema import IRoleRead
 
 

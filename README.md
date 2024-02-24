@@ -14,7 +14,7 @@ Developing web applications can be a challenging process, especially when dealin
 - Development Best Practices: We apply code formatting, type checking, and static analysis tools to ensure that the code is readable, robust, and reliable.
 
 ## Table of Contents
-1. [Set environment variables](#set-environment-variables)
+1. [Prerequisites](#prerequisites)
 2. [Run the project using Docker containers and forcing build containers](#run-the-project-using-docker-containers-and-forcing-build-containers)
 3. [Run project using Docker containers](#run-project-using-docker-containers)
 4. [Setup database with initial data](#setup-database-with-initial-data)
@@ -36,9 +36,71 @@ Developing web applications can be a challenging process, especially when dealin
 20. [TODO List](#todo-list)
 21. [License](#license)
 
+# Prerequisites
+
 ## Set environment variables
 
 Create an **.env** file on root folder and copy the content from **.env.example**. Feel free to change it according to your own configuration.
+
+## Docker engine
+This project utilizes Docker and Docker Compose, so please ensure that you have installed the latest version compatible with your operating system. If you haven't already installed Docker, you can find detailed instructions on how to do so [here](https://docs.docker.com/engine/install/). Docker desktop can be good for a dev computer.
+
+You can check if it is installed with this command
+```
+docker --version
+```
+
+## Make
+"Make" is a build automation tool that is primarily used to manage the compilation and building of software projects. It reads a file called a "Makefile" which specifies a set of rules and dependencies for building a project, and then executes the necessary commands to build the project according to those rules. Depending of your OS you will requiere to install it in different ways.
+
+Mac
+```
+xcode-select --install
+```
+
+Ubuntu
+```
+sudo apt-get install build-essential
+sudo apt-get -y install make
+```
+
+You can check if it is installed with this command
+```
+make --version
+```
+
+## Python ">3.9,<3.12"
+If you haven't already installed Python. You can download and install python from [here](https://www.python.org/downloads/). 
+
+You can check yu python version:
+```
+python --version
+```
+
+## Poetry
+
+Python Poetry is a tool for dependency management and packaging in Python. It provides a modern and efficient approach to managing Python projects' dependencies, virtual environments, and packaging. You can find detailed instructions on how install it [here](https://python-poetry.org/docs/#installing-with-the-official-installer). Poetry manages packages in **pyproject.toml** file; In this project you can find it in the folder backend/app.
+
+You can check if it is installed with this command
+```
+poetry --version
+```
+
+### Dev tip to activate virtual environment
+When you are opening python files do this cna help you to vscode detect installed packages. 
+
+```
+cd backend/app/
+poetry shell
+```
+
+After that you can show the interpreted path. You can copy that path and set as the default for the project in vscode. Press on **Enter interpreter path ..** and past path.
+
+<p align="center">
+  <img src="static/python_int.png" align="center"/>
+</p>
+
+
 
 ## Run the project using Docker containers and forcing build containers
 
@@ -92,12 +154,7 @@ You can connect to the Database using pgAdmin4 and use the credentials from .env
 make run-pgadmin
 ```
 
-*Load server configuration (It is required just the first time)*
-```sh
-make load-server-pgadmin
-```
-
-This starts pgamin in [http://localhost:15432](http://localhost:15432).
+This starts pgamin in [http://localhost:15432](http://localhost:15432). When connecting to db server introduce the password by default it is **postgres** if you didn't change it in .env file.
 
 <p align="center">
   <img src="static/tables.png" align="center"/>
@@ -298,13 +355,13 @@ make mypy
 ```
 
 ## Basic chatbot example with Langchain and OpenAI
-In addition to its core features, this project template demonstrates how to integrate an basic chatbot powered by Langchain and OpenAI through websockets.
+In addition to its core features, this project template demonstrates how to integrate an basic chatbot powered by Langchain and OpenAI through websockets. You can use [PieSocket Websocket Tester](https://chromewebstore.google.com/detail/oilioclnckkoijghdniegedkbocfpnip) to test websockets.
 
 To begin experimenting with the basic chatbot, follow these steps:
 
 1. **Obtain an OpenAI API Key**: You'll need to set the `OPENAI_API_KEY` environment variable, which you can obtain from [OpenAI's platform](https://platform.openai.com/).
 
-2. **Test Websocket Connection**: You can test the websocket connection by using the following URL: [ws://fastapi.localhost/chat/\<USER_ID\>](ws://fastapi.localhost/chat/<USER_ID>). Replace `<USER_ID>` with a user identifier of your choice.
+2. **Test Websocket Connection**: You can test the websocket connection by using the following URL: [ws://fastapi.localhost/chat/\<USER_ID\>](ws://fastapi.localhost/chat/<USER_ID>). Replace `<USER_ID>` with a user identifier of your choice. It should be the ID of your user.
 
 3. **Sending and Receiving Messages**: You should be able to send messages to the chatbot using the provided websocket connection. To do this, use the following message structure:
    
@@ -313,6 +370,9 @@ To begin experimenting with the basic chatbot, follow these steps:
    ```
    Once you send a message, the chatbot will respond with generated responses based on the content of your input.
 
+<p align="center">
+  <img src="static/ws.png" align="center"/>
+</p>
 
 ## Inspiration and References
 

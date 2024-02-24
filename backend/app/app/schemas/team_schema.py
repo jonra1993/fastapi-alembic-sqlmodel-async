@@ -1,4 +1,3 @@
-from typing import Any
 from app.models.hero_model import HeroBase
 from app.models.team_model import TeamBase
 from .user_schema import IUserBasicInfo
