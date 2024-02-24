@@ -6,7 +6,7 @@ from pydantic import field_validator
 
 
 class IHeroCreate(HeroBase):
-    @field_validator('age')
+    @field_validator("age")
     def check_age(cls, value):
         if value < 0:
             raise ValueError("Invalid age")

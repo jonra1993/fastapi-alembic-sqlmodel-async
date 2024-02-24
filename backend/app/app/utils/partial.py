@@ -2,7 +2,6 @@
 # https://github.com/pydantic/pydantic/pull/3179
 # https://github.com/pydantic/pydantic/issues/1673
 
-from pydantic import BaseModel
 from copy import deepcopy
 from typing import Any, Callable, Optional, Type, TypeVar
 from pydantic import BaseModel, create_model

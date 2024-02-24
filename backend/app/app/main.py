@@ -17,7 +17,6 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import WebSocketRateLimiter
-from fastapi_pagination import add_pagination
 from jwt import DecodeError, ExpiredSignatureError, MissingRequiredClaimError
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage

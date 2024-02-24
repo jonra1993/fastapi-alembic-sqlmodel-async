@@ -4,6 +4,7 @@ from sqlmodel import SQLModel as _SQLModel, Field
 from sqlalchemy.orm import declared_attr
 from datetime import datetime
 
+
 # id: implements proposal uuid7 draft4
 class SQLModel(_SQLModel):
     @declared_attr  # type: ignore

@@ -85,7 +85,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db_session = db_session or self.db.session
         if query is None:
             query = select(self.model)
-        
+
         output = await paginate(db_session, query, params)
         return output
 
